@@ -261,7 +261,6 @@ custom_types::Helpers::Coroutine PlaylistFilters::initCoroutine() {
     canvas = BeatSaberUI::CreateCanvas();
     canvas->AddComponent<HMUI::Screen*>();
     auto cvsTrans = canvas->get_transform();
-    UpdateTransform();
 
     canvas->SetActive(false);
 
@@ -487,7 +486,7 @@ custom_types::Helpers::Coroutine PlaylistFilters::initCoroutine() {
     defaultsToggle->get_transform()->GetParent()->get_gameObject()->AddComponent<UnityEngine::UI::ContentSizeFitter*>()->set_horizontalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
     #pragma endregion
 
-    canvas->SetActive(true);
+    UpdateTransform();
     setFoldersFilters(true);
 
     co_return;
