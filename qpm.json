@@ -4,7 +4,7 @@
   "info": {
     "name": "PlaylistManager",
     "id": "playlistmanager",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "url": "https://github.com/Metalit/PlaylistManager",
     "additionalData": {
       "overrideSoName": "libplaylistmanager.so"
@@ -13,7 +13,7 @@
   "dependencies": [
     {
       "id": "beatsaber-hook",
-      "versionRange": "^3.6.8, <3.8.0",
+      "versionRange": "^3.8.0",
       "additionalData": {
         "extraFiles": [
           "src/inline-hook"
@@ -22,31 +22,31 @@
     },
     {
       "id": "codegen",
-      "versionRange": "^0.22.0",
+      "versionRange": "^0.23.0",
       "additionalData": {}
     },
     {
       "id": "questui",
-      "versionRange": "^0.13.0",
-      "additionalData": {
-        "private": true
-      }
-    },
-    {
-      "id": "custom-types",
       "versionRange": "^0.15.0",
       "additionalData": {
         "private": true
       }
     },
     {
+      "id": "custom-types",
+      "versionRange": "^0.15.12",
+      "additionalData": {
+        "private": true
+      }
+    },
+    {
       "id": "songloader",
-      "versionRange": "^0.9.0",
+      "versionRange": "^0.9.7",
       "additionalData": {}
     },
     {
       "id": "songdownloader",
-      "versionRange": "^0.4.0",
+      "versionRange": "^0.4.7",
       "additionalData": {
         "private": true
       }
@@ -60,7 +60,7 @@
     },
     {
       "id": "rapidjson-macros",
-      "versionRange": "^0.1.0",
+      "versionRange": "^0.2.2",
       "additionalData": {}
     }
   ],

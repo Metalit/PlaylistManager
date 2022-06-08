@@ -1,31 +1,35 @@
 #pragma once
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wmacro-redefined"
 #include "rapidjson-macros/shared/macros.hpp"
-#pragma GCC diagnostic pop
 
 DECLARE_JSON_CLASS(PlaylistManager, Difficulty,
-    std::string Characteristic;
-    std::string Name;
+    NAMED_AUTO_VALUE(std::string, Characteristic, "characteristic");
+    NAMED_AUTO_VALUE(std::string, Name, "name");
 )
 
 DECLARE_JSON_CLASS(PlaylistManager, BPSong,
-    std::string Hash;
-    std::optional<std::string> SongName;
-    std::optional<std::string> Key;
-    std::optional<std::vector<PlaylistManager::Difficulty>> Difficulties;
+    NAMED_AUTO_VALUE(std::string, Hash, "hash");
+    NAMED_AUTO_VALUE_OPTIONAL(std::string, SongName, "songName");
+    NAMED_AUTO_VALUE_OPTIONAL(std::string, Key, "key");
+    NAMED_AUTO_VECTOR_OPTIONAL(PlaylistManager::Difficulty, Difficulties, "difficulties");
 )
 
 DECLARE_JSON_CLASS(PlaylistManager, CustomData,
-    std::optional<std::string> SyncURL;
+    NAMED_AUTO_VALUE_OPTIONAL(std::string, SyncURL, "syncURL");
 )
 
 DECLARE_JSON_CLASS(PlaylistManager, BPList,
-    std::string PlaylistTitle;
-    std::optional<std::string> PlaylistAuthor;
-    std::optional<std::string> PlaylistDescription;
-    std::vector<PlaylistManager::BPSong> Songs;
-    std::optional<std::string> ImageString;
-    std::optional<PlaylistManager::CustomData> CustomData;
+    NAMED_AUTO_VALUE(std::string, PlaylistTitle, "playlistTitle");
+    NAMED_AUTO_VALUE_OPTIONAL(std::string, PlaylistAuthor, "playlistAuthor");
+    NAMED_AUTO_VALUE_OPTIONAL(std::string, PlaylistDescription, "playlistDescription");
+    NAMED_AUTO_VECTOR(PlaylistManager::BPSong, Songs, "songs");
+    NAMED_AUTO_VALUE_OPTIONAL(std::string, ImageString, "imageString");
+    NAMED_AUTO_VALUE_OPTIONAL(PlaylistManager::CustomData, CustomData, "customData");
+    DESERIALIZE_ACTION(0,
+        if(jsonValue.HasMember("downloadURL") && jsonValue["downloadURL"].IsString()) {
+            if(!outerClass->CustomData.has_value())
+                outerClass->CustomData.emplace();
+            outerClass->CustomData->SyncURL = jsonValue["downloadURL"].GetString();
+        }
+    )
 )
