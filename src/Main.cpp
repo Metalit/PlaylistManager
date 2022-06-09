@@ -575,5 +575,22 @@ extern "C" void load() {
         for(auto& playlist : GetLoadedPlaylists())
             MarkPlaylistForReload(playlist);
     });
+    
+    AddPlaylistFilter(modInfo, [](std::string const& path) -> bool {
+        if(path == "Defaults") {
+            bool showDefaults = filterSelectionState != 2;
+            if(filterSelectionState == 3 && currentFolder && !currentFolder->HasSubfolders)
+                showDefaults = currentFolder->ShowDefaults;
+            return showDefaults;
+        }
+        if(filterSelectionState == 3 && currentFolder && !currentFolder->HasSubfolders) {
+            for(std::string& testPath : currentFolder->Playlists) {
+                if(path == testPath)
+                    return true;
+            }
+            return false;
+        }
+        return filterSelectionState != 1;
+    });
     LOG_INFO("Successfully installed PlaylistManager!");
 }

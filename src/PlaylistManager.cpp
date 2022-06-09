@@ -44,6 +44,8 @@ namespace PlaylistManager {
     std::unordered_set<std::string> staticPackIDs{};
     // playlists that need to be reloaded on the next reload
     std::unordered_set<Playlist*> needsReloadPlaylists{};
+    // functions that filter out playlists from being shown
+    std::vector<std::pair<ModInfo, std::function<bool(std::string const& path)>>> playlistFilters;
     
     UnityEngine::Sprite* GetDefaultCoverImage() {
         return FindComponent<GlobalNamespace::CustomLevelLoader*>()->defaultPackCover;
@@ -226,10 +228,7 @@ namespace PlaylistManager {
         if(!std::filesystem::is_directory(path))
             return;
         // clear out old playlists if showDefaults is off
-        bool showDefaults = filterSelectionState != 2;
-        if(filterSelectionState == 3 && currentFolder && !currentFolder->HasSubfolders)
-            showDefaults = currentFolder->ShowDefaults;
-        if(!showDefaults) {
+        if(!IsPlaylistShown("Defaults")) {
             GlobalNamespace::CustomBeatmapLevelPack *customsPack = nullptr, *customWIPsPack = nullptr;
             for(auto& pack : customBeatmapLevelPackCollectionSO->customBeatmapLevelPacks->items) {
                 if(!pack)
@@ -413,14 +412,23 @@ namespace PlaylistManager {
     }
 
     bool IsPlaylistShown(std::string const& path) {
-        if(filterSelectionState == 3 && currentFolder && !currentFolder->HasSubfolders) {
-            for(std::string& testPath : currentFolder->Playlists) {
-                if(path == testPath)
-                    return true;
+        bool shown = true;
+        for(auto& pair : playlistFilters)
+            shown &= pair.second(path);
+        return shown;
+    }
+
+    void AddPlaylistFilter(ModInfo mod, std::function<bool(std::string const& path)> func) {
+        playlistFilters.emplace_back(std::make_pair(mod, func));
+    }
+
+    void RemovePlaylistFilters(ModInfo mod) {
+        for(auto itr = playlistFilters.begin(); itr != playlistFilters.end(); itr++) {
+            if(itr->first.id == mod.id && itr->first.version == mod.version) {
+                playlistFilters.erase(itr);
+                itr--;
             }
-            return false;
         }
-        return filterSelectionState != 1;
     }
 
     std::string AddPlaylist(std::string const& title, std::string const& author, UnityEngine::Sprite* coverImage) {
