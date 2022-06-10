@@ -95,6 +95,11 @@ std::string GetCoversPath() {
     return coversPath;
 }
 
+void SaveConfig() {
+    if(!WriteToFile(GetConfigPath(), playlistConfig))
+        LOG_ERROR("Error saving config!");
+}
+
 using TupleType = System::Tuple_2<int, int>;
 // small fix for horizontal tables
 MAKE_HOOK_MATCH(TableView_GetVisibleCellsIdRange, &HMUI::TableView::GetVisibleCellsIdRange,
@@ -466,7 +471,7 @@ MAKE_HOOK_FIND_CLASS_INSTANCE(DownloadSongsSearchViewController_DidActivate, "So
             auto& songJson = *(json.Songs.end() - 1);
             songJson.Hash = hash;
             // write to file
-            WriteToFile(playlist->path, json);
+            playlist->Save();
             // have changes be updated
             MarkPlaylistForReload(playlist);
         }));
@@ -527,10 +532,9 @@ extern "C" void setup(ModInfo& info) {
             ReadFromFile(configPath, playlistConfig);
         } catch (const std::exception& err) {
             LOG_ERROR("Error reading playlist config: %s", err.what());
-            WriteToFile(configPath, playlistConfig);
         }
-    } else
-        WriteToFile(configPath, playlistConfig);
+    }
+    SaveConfig();
 }
 
 extern "C" void load() {

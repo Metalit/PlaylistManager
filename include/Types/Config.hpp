@@ -18,4 +18,6 @@ extern PlaylistManager::Folder* currentFolder;
 extern int filterSelectionState;
 extern bool allowInMultiplayer;
 
+void SaveConfig();
+
 void UpdateScrollSpeed();

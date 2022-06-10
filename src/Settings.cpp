@@ -118,7 +118,7 @@ void SettingsViewController::DidActivate(bool firstActivation, bool addedToHiera
     auto managementToggle = BeatSaberUI::CreateToggle(parent, "Enable playlist management", playlistConfig.Management, [this, uiButton](bool enabled) {
         uiButton->set_interactable(enabled);
         playlistConfig.Management = enabled;
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         if(!enabled)
             DestroyUI();
     });
@@ -126,21 +126,21 @@ void SettingsViewController::DidActivate(bool firstActivation, bool addedToHiera
     
     auto downloadToggle = BeatSaberUI::CreateToggle(parent, "Show download icons in grid", playlistConfig.DownloadIcon, [](bool enabled){
         playlistConfig.DownloadIcon = enabled;
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
     });
     downloadToggle->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(60);
     BeatSaberUI::AddHoverHint(downloadToggle->get_gameObject(), "Toggles download icons for custom playlists that do not have all their songs downloaded");
 
     auto removeSongsToggle = BeatSaberUI::CreateToggle(parent, "Remove songs not on BeatSaver", playlistConfig.RemoveMissing, [](bool enabled){
         playlistConfig.RemoveMissing = enabled;
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
     });
     downloadToggle->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(60);
     BeatSaberUI::AddHoverHint(removeSongsToggle->get_gameObject(), "Automatically removes songs that are not present on Beat Saver from playlists");
 
     auto scrollSpeedSlider = BeatSaberUI::CreateSliderSetting(parent, "Playlist Scroll Speed", 0.5, playlistConfig.ScrollSpeed, 0.5, 10, 0.1, [](float value) {
         playlistConfig.ScrollSpeed = value;
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         UpdateScrollSpeed();
     });
     BeatSaberUI::AddHoverHint(scrollSpeedSlider, "The speed at which to scroll through the playlists with the joystick.");

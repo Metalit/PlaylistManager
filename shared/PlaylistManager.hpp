@@ -17,6 +17,7 @@ namespace PlaylistManager {
         std::string name;
         std::string path;
         int imageIndex = -1;
+        void Save();
     };
 
     /// @brief Whether the playlists have loaded at least once yet

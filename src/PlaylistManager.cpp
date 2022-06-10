@@ -46,6 +46,11 @@ namespace PlaylistManager {
     std::unordered_set<Playlist*> needsReloadPlaylists{};
     // functions that filter out playlists from being shown
     std::vector<std::pair<ModInfo, std::function<bool(std::string const& path)>>> playlistFilters;
+
+    void Playlist::Save() {
+        if(!WriteToFile(path, playlistJSON))
+            LOG_ERROR("Error saving playlist! Path: %s", path.c_str());
+    }
     
     UnityEngine::Sprite* GetDefaultCoverImage() {
         return FindComponent<GlobalNamespace::CustomLevelLoader*>()->defaultPackCover;
@@ -88,7 +93,7 @@ namespace PlaylistManager {
             // write to playlist if changed
             if(imgHash != oldHash) {
                 json.ImageString = imageBase64;
-                WriteToFile(playlist->path, json);
+                playlist->Save();
             }
             foundItr = imageHashes.find(imgHash);
             if (foundItr != imageHashes.end()) {
@@ -316,7 +321,7 @@ namespace PlaylistManager {
                             }
                         }
                         // save removed duplicates
-                        WriteToFile(path, playlist->playlistJSON);
+                        playlist->Save();
                         songloaderBeatmapLevelPack->SetCustomPreviewBeatmapLevels(foundSongs->ToArray());
                         // add the playlist to the sorted array
                         if(IsPlaylistShown(playlist->path)) {
@@ -357,7 +362,7 @@ namespace PlaylistManager {
                 path_playlists.erase(pathItr);
             }
         }
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         hasLoaded = true;
         LOG_INFO("Playlists loaded");
     }
@@ -407,7 +412,7 @@ namespace PlaylistManager {
         }
         // add to end of config if not found
         playlistConfig.Order.push_back(path);
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         return -1;
     }
 
@@ -455,7 +460,7 @@ namespace PlaylistManager {
         }
         playlistConfig.Order.erase(playlistConfig.Order.begin() + originalIndex);
         playlistConfig.Order.insert(playlistConfig.Order.begin() + index, playlist->path);
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
     }
 
     void RenamePlaylist(Playlist* playlist, std::string const& title) {
@@ -469,7 +474,7 @@ namespace PlaylistManager {
             levelPack->shortPackName = title;
         }
         // save changes
-        WriteToFile(playlist->path, playlist->playlistJSON);
+        playlist->Save();
     }
 
     void ChangePlaylistCover(Playlist* playlist, int index) {
@@ -493,7 +498,7 @@ namespace PlaylistManager {
             levelPack->coverImage = newCover;
             levelPack->smallCoverImage = newCover;
         }
-        WriteToFile(playlist->path, json);
+        playlist->Save();
     }
 
     void DeletePlaylist(Playlist* playlist) {
@@ -512,7 +517,7 @@ namespace PlaylistManager {
             playlistConfig.Order.erase(playlistConfig.Order.begin() + orderIndex);
         else
             playlistConfig.Order.erase(playlistConfig.Order.end() - 1);
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         // delete playlist object
         delete playlist;
     }
@@ -621,7 +626,7 @@ namespace PlaylistManager {
         }
         // set the songs of the playlist to only those found
         playlist->playlistJSON.Songs = existingSongs;
-        WriteToFile(playlist->path, playlist->playlistJSON);
+        playlist->Save();
     }
 
     void AddSongToPlaylist(Playlist* playlist, GlobalNamespace::IPreviewBeatmapLevel* level) {
@@ -651,7 +656,7 @@ namespace PlaylistManager {
         songJson.Hash = GetLevelHash(level);
         songJson.SongName = level->get_songName();
         // write to file
-        WriteToFile(playlist->path, json);
+        playlist->Save();
     }
 
     void RemoveSongFromPlaylist(Playlist* playlist, GlobalNamespace::IPreviewBeatmapLevel* level) {
@@ -696,7 +701,7 @@ namespace PlaylistManager {
             }
         }
         // write to file
-        WriteToFile(playlist->path, json);
+        playlist->Save();
     }
 
     void SetSongIndex(Playlist* playlist, GlobalNamespace::IPreviewBeatmapLevel* level, int index) {
@@ -754,6 +759,6 @@ namespace PlaylistManager {
         songJson.Hash = GetLevelHash(level);
         songJson.SongName = level->get_songName();
         // write to file
-        WriteToFile(playlist->path, json);
+        playlist->Save();
     }
 }

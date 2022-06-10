@@ -138,7 +138,7 @@ void PlaylistFilters::folderTitleTyped(std::string const& newTitle) {
     currentTitle = newTitle;
     if(state == State::editing) {
         currentFolder->FolderName = newTitle;
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
     }
 }
 
@@ -153,7 +153,7 @@ void PlaylistFilters::editMenuCreateButtonPressed() {
     folder.ShowDefaults = currentDefaults;
     folder.Playlists = currentPlaylists;
     // write changes
-    WriteToFile(GetConfigPath(), playlistConfig);
+    SaveConfig();
     setFoldersFilters(false);
     RefreshFolders();
 }
@@ -174,7 +174,7 @@ void PlaylistFilters::deleteButtonPressed() {
         if(&(*itr) == currentFolder) {
             folders.erase(itr);
             // all folders are stored in playlistConfig, subfolders or not
-            WriteToFile(GetConfigPath(), playlistConfig);
+            SaveConfig();
             break;
         }
     }
@@ -192,7 +192,7 @@ void PlaylistFilters::subfoldersToggled(bool enabled) {
     subfoldersInfo->get_gameObject()->SetActive(enabled);
     if(state == State::editing) {
         currentFolder->HasSubfolders = enabled;
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         UpdateShownPlaylists();
     }
 }
@@ -201,7 +201,7 @@ void PlaylistFilters::defaultsToggled(bool enabled) {
     currentDefaults = enabled;
     if(state == State::editing) {
         currentFolder->ShowDefaults = enabled;
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         UpdateShownPlaylists();
     }
 }
@@ -215,7 +215,7 @@ void PlaylistFilters::playlistSelected(int cellIdx) {
     playlistVector.emplace_back(playlist->path);
     // save and update ingame playlists if editing
     if(state == State::editing) {
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         UpdateShownPlaylists();
     }
 }
@@ -234,7 +234,7 @@ void PlaylistFilters::playlistDeselected(int cellIdx) {
     }
     // save and update ingame playlists if editing
     if(state == State::editing) {
-        WriteToFile(GetConfigPath(), playlistConfig);
+        SaveConfig();
         UpdateShownPlaylists();
     }
 }

@@ -349,7 +349,7 @@ void PlaylistMenu::playlistAuthorTyped(std::string newValue) {
                 return;
             LOG_INFO("Author set to %s", currentAuthor.c_str());
             playlist->playlistJSON.PlaylistAuthor = currentAuthor;
-            WriteToFile(playlist->path, playlist->playlistJSON);
+            playlist->Save();
         };
     }
     // author cleared (x button)
