@@ -40,3 +40,5 @@ SelectionState GetSelectionState();
 void SetSelectionState(const SelectionState& state);
 
 void ReloadSongsKeepingSelection(std::function<void()> finishCallback = nullptr);
+
+void ReloadPlaylistsKeepingSelection();

@@ -174,9 +174,7 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
     // full reload the specific playlist only
     MarkPlaylistForReload(syncingPlaylist);
     // reload playlists but keep selection
-    int tableIdx = gameTableView->selectedCellIndex;
-    ReloadPlaylists();
-    gameTableView->SelectAndScrollToCellWithIdx(tableIdx);
+    ReloadPlaylistsKeepingSelection();
     // check for missing songs, download then reload again if so
     if(PlaylistHasMissingSongs(syncingPlaylist)) {
         static ConstString downloadText("Downloading missing songs...");
@@ -188,8 +186,6 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
         // wait for downloads
         while(!downloaded)
             co_yield nullptr;
-        // track selected table cell
-        tableIdx = gameTableView->selectedCellIndex;
         // full reload the specific playlist only
         MarkPlaylistForReload(syncingPlaylist);
         bool doneRefreshing = false;

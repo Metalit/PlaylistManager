@@ -218,10 +218,13 @@ SelectionState GetSelectionState() {
     // virtual methods T_T
     auto pack = ArrayW<GlobalNamespace::IBeatmapLevelPack*>(gridView->annotatedBeatmapLevelCollections)[listIdx];
     state.selectedPlaylist = GetPlaylistWithPrefix(pack->get_packID());
-    state.selectedPlaylistIdx = gridView->selectedCellIndex;
+    state.selectedPlaylistIdx = listIdx;
     auto levelsView = FindComponent<GlobalNamespace::LevelCollectionTableView*>();
     state.selectedSong = levelsView->selectedPreviewBeatmapLevel;
     state.selectedSongIdx = levelsView->selectedRow;
+    // the SelectLevelPackHeaderCell method doesn't update selectedPreviewBeatmapLevel
+    if(levelsView->selectedRow == 0)
+        state.selectedSong = nullptr;
     return state;
 }
 
@@ -237,7 +240,10 @@ void SetSelectionState(const SelectionState& state) {
     gridView->SelectAndScrollToCellWithIdx(state.selectedPlaylistIdx);
     auto levelsView = FindComponent<GlobalNamespace::LevelCollectionTableView*>();
     // checks for and finds song itself
-    levelsView->SelectLevel(state.selectedSong);
+    if(state.selectedSong)
+        levelsView->SelectLevel(state.selectedSong);
+    else
+        levelsView->SelectLevelPackHeaderCell();
 }
 
 void ReloadSongsKeepingSelection(std::function<void()> finishCallback) {
@@ -248,4 +254,10 @@ void ReloadSongsKeepingSelection(std::function<void()> finishCallback) {
             finishCallback();
     };
     RuntimeSongLoader::API::RefreshSongs(false, callback);
+}
+
+void ReloadPlaylistsKeepingSelection() {
+    auto state = GetSelectionState();
+    ReloadPlaylists();
+    SetSelectionState(state);
 }
