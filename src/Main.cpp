@@ -85,6 +85,11 @@ std::string GetPlaylistsPath() {
     return playlistsPath;
 }
 
+std::string GetBackupsPath() {
+    static std::string backupsPath(getDataDir(modInfo) + "PlaylistBackups");
+    return backupsPath;
+}
+
 std::string GetConfigPath() {
     static std::string configPath = Configuration::getConfigFilePath(modInfo);
     return configPath;
@@ -521,6 +526,10 @@ extern "C" void setup(ModInfo& info) {
     auto playlistsPath = GetPlaylistsPath();
     if(!direxists(playlistsPath))
         mkpath(playlistsPath);
+    
+    auto backupsPath = GetBackupsPath();
+    if(!direxists(backupsPath))
+        mkpath(backupsPath);
     
     auto coversPath = GetCoversPath();
     if(!direxists(coversPath))

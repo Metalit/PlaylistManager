@@ -6,6 +6,7 @@
 #include "SpriteCache.hpp"
 #include "Settings.hpp"
 #include "Utils.hpp"
+#include "Backup.hpp"
 
 #include <filesystem>
 #include <fstream>
@@ -48,7 +49,7 @@ namespace PlaylistManager {
     std::vector<std::pair<ModInfo, std::function<bool(std::string const& path)>>> playlistFilters;
 
     void Playlist::Save() {
-        if(!WriteToFile(path, playlistJSON))
+        if(!WriteToFile(path, playlistJSON) || !WriteToFile(GetPlaylistBackupPath(path), playlistJSON))
             LOG_ERROR("Error saving playlist! Path: %s", path.c_str());
     }
     
@@ -222,6 +223,7 @@ namespace PlaylistManager {
     }
 
     void LoadPlaylists(SongLoaderBeatmapLevelPackCollectionSO* customBeatmapLevelPackCollectionSO, bool fullReload) {
+        RemoveAllBMBFSuffixes();
         LoadCoverImages();
         // clear playlists if requested
         if(fullReload) {
@@ -347,6 +349,7 @@ namespace PlaylistManager {
             if(customBeatmapLevelPack)
                 customBeatmapLevelPackCollectionSO->AddLevelPack(customBeatmapLevelPack);
         }
+        PlaylistConfig configBackup(playlistConfig);
         // remove paths in order config that were not loaded
         for(auto& path : removedPaths) {
             for(auto iter = playlistConfig.Order.begin(); iter != playlistConfig.Order.end(); iter++) {
@@ -365,6 +368,15 @@ namespace PlaylistManager {
         SaveConfig();
         hasLoaded = true;
         LOG_INFO("Playlists loaded");
+        if(auto func = GetBackupFunction(GetLoadedPlaylists())) {
+            LOG_INFO("Showing backup dialog");
+            ShowBackupDialog(func, [configBackup = std::move(configBackup)] {
+                LOG_INFO("Restored backup");
+                playlistConfig = configBackup;
+                SaveConfig();
+                ReloadPlaylists();
+            });
+        }
     }
 
     std::vector<Playlist*> GetLoadedPlaylists() {
@@ -379,13 +391,11 @@ namespace PlaylistManager {
                 playlistArray.push_back(playlist);
         }
         // remove empty slots
-        int i = 0;
         for(auto itr = playlistArray.begin(); itr != playlistArray.end(); itr++) {
             if(*itr == nullptr) {
                 playlistArray.erase(itr);
                 itr--;
             }
-            i++;
         }
         return playlistArray;
     }
@@ -511,6 +521,7 @@ namespace PlaylistManager {
         path_playlists.erase(path_iter);
         // delete file
         std::filesystem::remove(playlist->path);
+        std::filesystem::remove(GetPlaylistBackupPath(playlist->path));
         // remove name from order config
         int orderIndex = GetPlaylistIndex(playlist->path);
         if(orderIndex >= 0)

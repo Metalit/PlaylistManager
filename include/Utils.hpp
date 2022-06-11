@@ -19,11 +19,15 @@ std::string GetLevelHash(GlobalNamespace::IPreviewBeatmapLevel* level);
 
 bool IsWipLevel(GlobalNamespace::IPreviewBeatmapLevel* level);
 
+void RemoveAllBMBFSuffixes();
+
 std::string SanitizeFileName(std::string const& fileName);
 
 bool UniqueFileName(std::string const& fileName, std::string const& compareDirectory);
 
 std::string GetNewPlaylistPath(std::string const& title);
+
+std::string GetPlaylistBackupPath(std::string const& path);
 
 std::string GetBase64ImageType(std::string const& base64);
 

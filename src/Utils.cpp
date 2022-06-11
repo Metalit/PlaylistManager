@@ -52,6 +52,17 @@ bool IsWipLevel(GlobalNamespace::IPreviewBeatmapLevel* level) {
     return level->get_levelID().ends_with(" WIP");
 }
 
+void RemoveAllBMBFSuffixes() {
+    static const std::string suffix("_BMBF.json");
+    static const int suffixLength = suffix.length();
+    for(const auto& entry : std::filesystem::directory_iterator(GetPlaylistsPath())) {
+        auto path = entry.path().string();
+        while(path.ends_with(suffix))
+            path = path.substr(0, path.length() - suffixLength);
+        std::filesystem::rename(entry.path(), path + suffix);
+    }
+}
+
 std::string SanitizeFileName(std::string const& fileName) {
     std::string newName;
     // yes I know not all of these are disallowed, and also that they are unlikely to end up in a name
@@ -85,6 +96,13 @@ std::string GetNewPlaylistPath(std::string const& title) {
     while(!UniqueFileName(fileTitle + ".bplist_BMBF.json", GetPlaylistsPath()))
         fileTitle += "_";
     return GetPlaylistsPath() + "/" + fileTitle + ".bplist_BMBF.json";
+}
+
+std::string GetPlaylistBackupPath(std::string const& path) {
+    if(!path.starts_with(GetPlaylistsPath()))
+        return "";
+    std::string suffix = path.substr(GetPlaylistsPath().length());
+    return GetBackupsPath() + suffix;
 }
 
 std::string GetBase64ImageType(std::string const& base64) {
