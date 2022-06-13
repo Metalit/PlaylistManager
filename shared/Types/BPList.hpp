@@ -31,5 +31,8 @@ DECLARE_JSON_CLASS(PlaylistManager, BPList,
                 outerClass->CustomData.emplace();
             outerClass->CustomData->SyncURL = jsonValue["downloadURL"].GetString();
         }
+        if(jsonValue.HasMember("image") && jsonValue["image"].IsString()) {
+            outerClass->ImageString = jsonValue["image"].GetString();
+        }
     )
 )
