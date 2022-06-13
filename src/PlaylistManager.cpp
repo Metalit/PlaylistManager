@@ -225,6 +225,11 @@ namespace PlaylistManager {
     void LoadPlaylists(SongLoaderBeatmapLevelPackCollectionSO* customBeatmapLevelPackCollectionSO, bool fullReload) {
         RemoveAllBMBFSuffixes();
         LoadCoverImages();
+        if(auto func = GetBackupFunction()) {
+            LOG_INFO("Showing backup dialog");
+            ShowBackupDialog(func);
+            return;
+        }
         // clear playlists if requested
         if(fullReload) {
             for(auto& pair : path_playlists)
@@ -349,7 +354,6 @@ namespace PlaylistManager {
             if(customBeatmapLevelPack)
                 customBeatmapLevelPackCollectionSO->AddLevelPack(customBeatmapLevelPack);
         }
-        PlaylistConfig configBackup(playlistConfig);
         // remove paths in order config that were not loaded
         for(auto& path : removedPaths) {
             for(auto iter = playlistConfig.Order.begin(); iter != playlistConfig.Order.end(); iter++) {
@@ -366,17 +370,9 @@ namespace PlaylistManager {
             }
         }
         SaveConfig();
+        needsReloadPlaylists.clear();
         hasLoaded = true;
         LOG_INFO("Playlists loaded");
-        if(auto func = GetBackupFunction(GetLoadedPlaylists())) {
-            LOG_INFO("Showing backup dialog");
-            ShowBackupDialog(func, [configBackup = std::move(configBackup)] {
-                LOG_INFO("Restored backup");
-                playlistConfig = configBackup;
-                SaveConfig();
-                ReloadPlaylists();
-            });
-        }
     }
 
     std::vector<Playlist*> GetLoadedPlaylists() {

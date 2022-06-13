@@ -3,7 +3,6 @@
 #include <vector>
 #include <functional>
 
-std::function<void(bool)> GetBackupFunction(std::vector<class PlaylistManager::Playlist*> playlists);
+std::function<void()> GetBackupFunction();
 
-// no onKeep function, as nothing should need to change in terms of loaded playlists
-void ShowBackupDialog(std::function<void(bool)> backupFunction, std::function<void()> onRestore);
+void ShowBackupDialog(std::function<void()> backupFunction);
