@@ -14,8 +14,12 @@
 #include "GlobalNamespace/CustomBeatmapLevelPack.hpp"
 #include "GlobalNamespace/IPreviewBeatmapLevel.hpp"
 
-namespace PlaylistManager {
+namespace PlaylistCore {
     class Playlist;
+    class CustomListSource;
+}
+
+namespace PlaylistManager {
 
     class ButtonsContainer {
 
@@ -23,13 +27,13 @@ namespace PlaylistManager {
         UnityEngine::GameObject *layoutObject, *movementButtonsContainer;
         UnityEngine::UI::Button *saveCoverButton, *playlistAddButton, *playlistRemoveButton;
         HMUI::ModalView *playlistAddModal, *infoModal, *removeModal;
-        class CustomListSource *playlistCovers;
+        PlaylistCore::CustomListSource *playlistCovers;
         GlobalNamespace::StandardLevelDetailView *levelDetailView;
         GlobalNamespace::LevelCollectionTableView *levelListTableView;
         GlobalNamespace::IPreviewBeatmapLevel* currentLevel;
-        Playlist* currentPlaylist = nullptr;
+        PlaylistCore::Playlist* currentPlaylist = nullptr;
 
-        std::vector<Playlist*> loadedPlaylists;
+        std::vector<PlaylistCore::Playlist*> loadedPlaylists;
         
         bool deleteSongOnRemoval = false;
 
@@ -55,7 +59,7 @@ namespace PlaylistManager {
         void Init(GlobalNamespace::StandardLevelDetailView* levelDetailView);
         void SetVisible(bool visible, bool inPlaylist, bool WIP);
         void SetLevel(GlobalNamespace::IPreviewBeatmapLevel* level);
-        void SetPlaylist(Playlist* playlist);
+        void SetPlaylist(PlaylistCore::Playlist* playlist);
         void RefreshPlaylists();
         void RefreshHighlightedDifficulties();
         void Destroy();

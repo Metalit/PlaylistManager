@@ -52,6 +52,11 @@
       }
     },
     {
+      "id": "playlistcore",
+      "versionRange": "^1.1.0",
+      "additionalData": {}
+    },
+    {
       "id": "modloader",
       "versionRange": "^1.2.3",
       "additionalData": {

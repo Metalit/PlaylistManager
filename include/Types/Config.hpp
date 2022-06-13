@@ -1,13 +1,11 @@
 #pragma once
 
-#include "shared/Types/Folder.hpp"
+#include "Types/Folder.hpp"
 
 DECLARE_JSON_CLASS(PlaylistManager, PlaylistConfig,
-    NAMED_AUTO_VALUE_DEFAULT(bool, Management, false, "enableManagement")
+    NAMED_AUTO_VALUE_DEFAULT(bool, Management, true, "enableManagement")
     NAMED_AUTO_VALUE_DEFAULT(bool, DownloadIcon, false, "showDownloadIcon")
     NAMED_AUTO_VALUE_DEFAULT(bool, RemoveMissing, true, "removeMissingBeatSaverSongs")
-    NAMED_AUTO_VALUE_DEFAULT(float, ScrollSpeed, 2, "scrollSpeed")
-    NAMED_AUTO_VECTOR(std::string, Order, "order")
     NAMED_AUTO_VECTOR(Folder, Folders, "folders")
 )
 
@@ -19,5 +17,3 @@ extern int filterSelectionState;
 extern bool allowInMultiplayer;
 
 void SaveConfig();
-
-void UpdateScrollSpeed();

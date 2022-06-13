@@ -17,7 +17,4 @@
 
 Logger& getLogger();
 
-std::string GetPlaylistsPath();
-std::string GetBackupsPath();
-std::string GetConfigPath();
 std::string GetCoversPath();

@@ -2,13 +2,13 @@
 #include "Types/PlaylistFilters.hpp"
 #include "Types/Folder.hpp"
 #include "Types/FolderTableCell.hpp"
-#include "Types/CoverTableCell.hpp"
 #include "Types/Config.hpp"
-#include "PlaylistManager.hpp"
-#include "ResettableStaticPtr.hpp"
 #include "Icons.hpp"
-#include "Utils.hpp"
 
+#include "playlistcore/shared/PlaylistCore.hpp"
+#include "playlistcore/shared/CustomTypes/CoverTableCell.hpp"
+#include "playlistcore/shared/ResettableStaticPtr.hpp"
+#include "playlistcore/shared/Utils.hpp"
 #include "questui/shared/BeatSaberUI.hpp"
 
 #include "GlobalNamespace/SharedCoroutineStarter.hpp"
@@ -28,6 +28,8 @@
 #include "songloader/shared/CustomTypes/SongLoaderCustomBeatmapLevelPack.hpp"
 
 using namespace PlaylistManager;
+using namespace PlaylistCore;
+using namespace PlaylistCore::Utils;
 using namespace QuestUI;
 
 PlaylistFilters* PlaylistFilters::filtersInstance = nullptr;

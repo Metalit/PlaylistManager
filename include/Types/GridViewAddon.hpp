@@ -6,7 +6,6 @@
 #include "GlobalNamespace/AnnotatedBeatmapLevelCollectionsViewController.hpp"
 
 namespace PlaylistManager {
-    class Playlist;
 
     class GridViewAddon {
 

@@ -1,4 +1,4 @@
-#include "ResettableStaticPtr.hpp"
+#include "playlistcore/shared/ResettableStaticPtr.hpp"
 #include "questui/shared/BeatSaberUI.hpp"
 
 #define CACHED_SPRITE(name, data) const std::string name##SpriteBase64 = data; \

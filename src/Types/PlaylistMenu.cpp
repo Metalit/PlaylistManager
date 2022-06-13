@@ -2,13 +2,12 @@
 #include "Types/Config.hpp"
 #include "Types/PlaylistMenu.hpp"
 #include "Types/LevelButtons.hpp"
-#include "Types/CustomListSource.hpp"
-#include "Types/CoverTableCell.hpp"
-#include "PlaylistManager.hpp"
-#include "ResettableStaticPtr.hpp"
 #include "Icons.hpp"
-#include "Utils.hpp"
 
+#include "playlistcore/shared/PlaylistCore.hpp"
+#include "playlistcore/shared/CustomTypes/CoverTableCell.hpp"
+#include "playlistcore/shared/ResettableStaticPtr.hpp"
+#include "playlistcore/shared/Utils.hpp"
 #include "questui/shared/BeatSaberUI.hpp"
 #include "questui/shared/CustomTypes/Components/Backgroundable.hpp"
 
@@ -42,6 +41,8 @@
 #include <math.h>
 
 using namespace PlaylistManager;
+using namespace PlaylistCore;
+using namespace PlaylistCore::Utils;
 using namespace QuestUI;
 using namespace GlobalNamespace;
 

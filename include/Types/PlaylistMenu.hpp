@@ -14,8 +14,9 @@
 
 #include "GlobalNamespace/AnnotatedBeatmapLevelCollectionsGridView.hpp"
 
-namespace PlaylistManager {
+namespace PlaylistCore {
     class Playlist;
+    class CustomListSource;
 }
 
 DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistMenu, UnityEngine::MonoBehaviour,
@@ -27,7 +28,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistMenu, UnityEngine::MonoBehaviour,
     UnityEngine::UI::Button *coverButton, *createButton, *cancelButton, *deleteButton, *syncButton, *downloadButton;
     HMUI::ImageView *coverImage, *packImage;
     HMUI::ModalView *confirmModal, *coverModal, *syncingModal;
-    class CustomListSource *list;
+    PlaylistCore::CustomListSource *list;
 
     int coverImageIndex;
 
@@ -37,7 +38,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistMenu, UnityEngine::MonoBehaviour,
     bool hasConstructed, visibleOnFinish, customOnFinish;
 
     GlobalNamespace::AnnotatedBeatmapLevelCollectionsGridView* gameTableView;
-    Playlist* playlist;
+    PlaylistCore::Playlist* playlist;
 
     custom_types::Helpers::Coroutine moveCoroutine(bool reversed);
     custom_types::Helpers::Coroutine refreshCoroutine();
@@ -72,7 +73,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistMenu, UnityEngine::MonoBehaviour,
     static PlaylistMenu* menuInstance;
 
     void Init(HMUI::ImageView* packImage);
-    void SetPlaylist(Playlist* playlist);
+    void SetPlaylist(PlaylistCore::Playlist* playlist);
     void RefreshCovers();
 
     void SetVisible(bool visible, bool custom = false);

@@ -1,13 +1,12 @@
 #include "Main.hpp"
 #include "Types/LevelButtons.hpp"
 #include "Types/PlaylistMenu.hpp"
-#include "Types/CustomListSource.hpp"
-#include "Types/CoverTableCell.hpp"
-#include "PlaylistManager.hpp"
-#include "ResettableStaticPtr.hpp"
-#include "Utils.hpp"
 #include "Icons.hpp"
 
+#include "playlistcore/shared/PlaylistCore.hpp"
+#include "playlistcore/shared/CustomTypes/CoverTableCell.hpp"
+#include "playlistcore/shared/ResettableStaticPtr.hpp"
+#include "playlistcore/shared/Utils.hpp"
 #include "questui/shared/BeatSaberUI.hpp"
 
 #include "songloader/shared/API.hpp"
@@ -29,6 +28,8 @@
 #include "System/Tuple_2.hpp"
 
 using namespace PlaylistManager;
+using namespace PlaylistCore;
+using namespace PlaylistCore::Utils;
 using namespace QuestUI;
 
 ButtonsContainer* ButtonsContainer::buttonsInstance = nullptr;

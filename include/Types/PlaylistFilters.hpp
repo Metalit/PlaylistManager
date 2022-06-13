@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Types/CustomListSource.hpp"
 #include "Types/Folder.hpp"
 
 #include "custom-types/shared/coroutine.hpp"
@@ -10,9 +9,14 @@
 #include "UnityEngine/RectTransform.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "HMUI/InputFieldView.hpp"
+#include "HMUI/TableView.hpp"
+
+namespace PlaylistCore {
+    class Playlist;
+    class CustomListSource;
+}
 
 namespace PlaylistManager {
-    class Playlist;
 
     class PlaylistFilters {
 
@@ -24,7 +28,7 @@ namespace PlaylistManager {
         };
 
         private:
-        CustomListSource *filterList, *folderList, *playlistList;
+        PlaylistCore::CustomListSource *filterList, *folderList, *playlistList;
         UnityEngine::GameObject *folderMenu, *folderEditMenu, *playlistListContainer, *canvas;
         UnityEngine::RectTransform *topLayout;
         UnityEngine::UI::Button *editButton, *deleteButton, *editCreateButton;
@@ -39,7 +43,7 @@ namespace PlaylistManager {
         std::vector<Folder*> parentFolders;
         std::vector<Folder*> currentFolderList;
 
-        std::vector<Playlist*> loadedPlaylists;
+        std::vector<PlaylistCore::Playlist*> loadedPlaylists;
 
         State state;
 

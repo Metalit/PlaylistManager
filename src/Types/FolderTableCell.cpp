@@ -1,8 +1,8 @@
 #include "Main.hpp"
 #include "Types/FolderTableCell.hpp"
-#include "ResettableStaticPtr.hpp"
 #include "Icons.hpp"
 
+#include "playlistcore/shared/ResettableStaticPtr.hpp"
 #include "questui/shared/BeatSaberUI.hpp"
 
 #include "UnityEngine/Resources.hpp"

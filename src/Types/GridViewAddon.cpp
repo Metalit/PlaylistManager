@@ -1,8 +1,8 @@
 #include "Main.hpp"
 #include "Types/GridViewAddon.hpp"
 #include "Types/PlaylistMenu.hpp"
-#include "ResettableStaticPtr.hpp"
 
+#include "playlistcore/shared/ResettableStaticPtr.hpp"
 #include "questui/shared/BeatSaberUI.hpp"
 
 #include "GlobalNamespace/LevelCollectionTableView.hpp"
