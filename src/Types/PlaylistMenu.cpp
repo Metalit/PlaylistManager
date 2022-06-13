@@ -172,6 +172,8 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
     // save synced playlist
     std::string text = webRequest->get_downloadHandler()->GetText();
     writefile(syncingPlaylist->path, text);
+    // save in backups as well
+    writefile(GetPlaylistBackupPath(syncingPlaylist->path), text);
     // full reload the specific playlist only
     MarkPlaylistForReload(syncingPlaylist);
     // reload playlists but keep selection
