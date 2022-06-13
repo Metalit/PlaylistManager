@@ -46,6 +46,7 @@ namespace PlaylistManager {
         std::vector<PlaylistCore::Playlist*> loadedPlaylists;
 
         State state;
+        bool shouldBeVisible, constructed = false;
 
         custom_types::Helpers::Coroutine initCoroutine();
         void refreshFolderPlaylists();

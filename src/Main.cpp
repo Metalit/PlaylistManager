@@ -160,10 +160,9 @@ MAKE_HOOK_MATCH(LevelFilteringNavigationController_DidActivate, &LevelFilteringN
     if(!PlaylistFilters::filtersInstance) {
         PlaylistFilters::filtersInstance = new PlaylistFilters();
         PlaylistFilters::filtersInstance->Init();
-    } else {
-        PlaylistFilters::filtersInstance->SetVisible(true);
-        PlaylistFilters::filtersInstance->UpdateTransform();
     }
+    PlaylistFilters::filtersInstance->SetVisible(true);
+    PlaylistFilters::filtersInstance->UpdateTransform();
 }
 
 // when to hide the playlist filters
@@ -272,8 +271,10 @@ extern "C" void setup(ModInfo& info) {
 MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &MenuTransitionsHelper::RestartGame,
         void, MenuTransitionsHelper* self, System::Action_1<Zenject::DiContainer*>* finishCallback) {
 
+    ResettableStaticPtr::resetAll();
+
     SettingsViewController::DestroyUI();
-    
+
     filterSelectionState = 0;
     
     MenuTransitionsHelper_RestartGame(self, finishCallback);

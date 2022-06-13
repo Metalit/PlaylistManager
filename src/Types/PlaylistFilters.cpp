@@ -488,6 +488,8 @@ custom_types::Helpers::Coroutine PlaylistFilters::initCoroutine() {
     defaultsToggle->get_transform()->GetParent()->get_gameObject()->AddComponent<UnityEngine::UI::ContentSizeFitter*>()->set_horizontalFit(UnityEngine::UI::ContentSizeFitter::FitMode::PreferredSize);
     #pragma endregion
 
+    canvas->SetActive(shouldBeVisible);
+    constructed = true;
     UpdateTransform();
     setFoldersFilters(true);
 
@@ -681,7 +683,9 @@ void PlaylistFilters::UpdateTransform() {
 }
 
 void PlaylistFilters::SetVisible(bool visible) {
-    canvas->SetActive(visible);
+    shouldBeVisible = visible;
+    if(constructed)
+        canvas->SetActive(visible);
 }
 
 void PlaylistFilters::Destroy() {
