@@ -210,6 +210,3 @@ jobs:
         
 #     - name: Merge this branch into whatever branch we were originally built off of.
 #       TODO
-        
-    - name: QPM Publish
-      run: ./QPM/qpm-rust publish
