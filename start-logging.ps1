@@ -45,11 +45,11 @@ if ($all -eq $false) {
     }
 
     if ([string]::IsNullOrEmpty($bspid)) {
-        Write-Output "Could not connect to adb, exiting..."
-        exit 1
+        Write-Output "Could not find process"
     }
-
-    $command += "--pid $bspid"
+    else {
+        $command += "--pid $bspid"
+    }
 }
 
 if ($all -eq $false) {
@@ -64,7 +64,8 @@ if ($all -eq $false) {
     if ($pattern -eq "(") {
         $pattern = "(QuestHook|modloader|"
     }
-    $pattern += "AndroidRuntime|CRASH)"
+    # $pattern += "AndroidRuntime|CRASH)"
+    $pattern += "CRASH)"
     $command += " | Select-String -pattern `"$pattern`""
 }
 
