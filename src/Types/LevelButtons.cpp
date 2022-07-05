@@ -97,8 +97,8 @@ void ButtonsContainer::scrollListRightButtonPressed() {
 
 void ButtonsContainer::confirmRemovalButtonPressed() {
     removeModal->Hide(true, nullptr);
-    RemoveSongFromPlaylist(currentPlaylist, currentLevel);
     if(deleteSongOnRemoval) {
+        RemoveSongFromAllPlaylists(currentLevel);
         std::string path = ((GlobalNamespace::CustomPreviewBeatmapLevel*) currentLevel)->customLevelPath;
         auto state = GetSelectionState();
         RuntimeSongLoader::API::DeleteSong(path, [state] {
@@ -107,6 +107,7 @@ void ButtonsContainer::confirmRemovalButtonPressed() {
             });
         });
     } else {
+        RemoveSongFromPlaylist(currentPlaylist, currentLevel);
         // keep scroll position
         float anchorPosY = levelListTableView->tableView->get_contentTransform()->get_anchoredPosition().y;
         auto levelList = currentPlaylist->playlistCS->beatmapLevelCollection->get_beatmapLevels();
