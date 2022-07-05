@@ -414,7 +414,7 @@ custom_types::Helpers::Coroutine PlaylistFilters::initCoroutine() {
     });
     subfoldersToggle->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(35);
 
-    subfoldersInfo = BeatSaberUI::CreateText(folderEditMenu->get_transform(), "This folder will be able to store other folders\ninstead of playlists.", {0, -15});
+    subfoldersInfo = BeatSaberUI::CreateText(folderEditMenu->get_transform(), "This folder will be able to store other folders instead of playlists.\nSubfolders are created outside of this menu.", {0, -15});
     subfoldersInfo->set_alignment(TMPro::TextAlignmentOptions::Center);
     subfoldersInfo->set_color({1, 1, 1, 0.5});
     subfoldersInfo->set_fontSize(3);
