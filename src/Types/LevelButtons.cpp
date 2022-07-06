@@ -102,7 +102,7 @@ void ButtonsContainer::confirmRemovalButtonPressed() {
         std::string path = ((GlobalNamespace::CustomPreviewBeatmapLevel*) currentLevel)->customLevelPath;
         auto state = GetSelectionState();
         RuntimeSongLoader::API::DeleteSong(path, [state] {
-            RuntimeSongLoader::API::RefreshSongs(false, [state](std::vector<GlobalNamespace::CustomPreviewBeatmapLevel*> const& _) {
+            RuntimeSongLoader::API::RefreshSongs(true, [state](std::vector<GlobalNamespace::CustomPreviewBeatmapLevel*> const& _) {
                 SetSelectionState(state);
             });
         });
@@ -397,6 +397,8 @@ void ButtonsContainer::RefreshHighlightedDifficulties() {
     }
     if(difficulties.size() == 0)
         return;
+    // keep set of indices to be highlighted so the rest can be unhighlighted
+    std::set<int> highlights;
     // set highlights based on found difficulties
     for(auto& difficulty : difficulties) {
         LOWER(difficulty.Characteristic);
@@ -413,12 +415,18 @@ void ButtonsContainer::RefreshHighlightedDifficulties() {
             } if(diff < 0)
                 continue;
             // get closest index for pc parity
-            auto text = cells->get_Item(segmentedController->GetClosestDifficultyIndex(diff))->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
-            if(text)
-                text->set_faceColor({255, 255, 0, 255});
+            highlights.insert(segmentedController->GetClosestDifficultyIndex(diff));
         }
     }
-    
+    for(int i = 0; i < cells->get_Count(); i++) {
+        auto text = cells->get_Item(i)->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
+        if(!text)
+            continue;
+        if(highlights.contains(i))
+            text->set_faceColor({255, 255, 0, 255});
+        else
+            text->set_faceColor({255, 255, 255, 255});
+    }
 }
 
 void ButtonsContainer::Destroy() {

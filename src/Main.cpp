@@ -231,6 +231,16 @@ MAKE_HOOK_MATCH(StandardLevelDetailViewController_ShowContent, &StandardLevelDet
     ButtonsContainer::buttonsInstance->RefreshHighlightedDifficulties();
 }
 
+// make sure level difficulties stay highlighted
+MAKE_HOOK_MATCH(BeatmapDifficultySegmentedControlController_SetData, &BeatmapDifficultySegmentedControlController::SetData,
+        void, BeatmapDifficultySegmentedControlController* self, System::Collections::Generic::IReadOnlyList_1<IDifficultyBeatmap*>* difficultyBeatmaps, BeatmapDifficulty selectedDifficulty) {
+    
+    BeatmapDifficultySegmentedControlController_SetData(self, difficultyBeatmaps, selectedDifficulty);
+
+    if(playlistConfig.Management && ButtonsContainer::buttonsInstance)
+        ButtonsContainer::buttonsInstance->RefreshHighlightedDifficulties();
+}
+
 // hook to apply changes when deselecting a cell in a multi select
 MAKE_HOOK_MATCH(TableView_HandleCellSelectionDidChange, &HMUI::TableView::HandleCellSelectionDidChange,
         void, HMUI::TableView* self, HMUI::SelectableCell* selectableCell, HMUI::SelectableCell::TransitionType transitionType, ::Il2CppObject* changeOwner) {
@@ -297,6 +307,7 @@ extern "C" void load() {
     INSTALL_HOOK(getLogger(), LevelFilteringNavigationController_DidDeactivate);
     INSTALL_HOOK(getLogger(), LevelPackDetailViewController_ShowContent);
     INSTALL_HOOK(getLogger(), StandardLevelDetailViewController_ShowContent);
+    INSTALL_HOOK(getLogger(), BeatmapDifficultySegmentedControlController_SetData);
     INSTALL_HOOK(getLogger(), TableView_HandleCellSelectionDidChange);
     INSTALL_HOOK(getLogger(), MenuTransitionsHelper_RestartGame);
     
