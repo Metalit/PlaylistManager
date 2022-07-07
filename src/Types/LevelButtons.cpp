@@ -372,11 +372,16 @@ void ButtonsContainer::RefreshPlaylists() {
 }
 
 void ButtonsContainer::RefreshHighlightedDifficulties() {
-    if(!currentPlaylist)
-        return;
     // get difficulty display object
     auto segmentedController = levelDetailView->beatmapDifficultySegmentedControlController;
     auto cells = segmentedController->difficultySegmentedControl->cells;
+    // reset all text colors
+    for(int i = 0; i < cells->get_Count(); i++) {
+        auto text = cells->get_Item(i)->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
+        if(!text)
+            continue;
+        text->set_faceColor({255, 255, 255, 255});
+    }
     // get selected characteristic
     auto selected = levelDetailView->beatmapCharacteristicSegmentedControlController->selectedBeatmapCharacteristic;
     // might not be selected at first
@@ -385,6 +390,8 @@ void ButtonsContainer::RefreshHighlightedDifficulties() {
     std::string characteristic = selected->serializedName;
     LOWER(characteristic);
     // get current song difficulties
+    if(!currentPlaylist)
+        return;
     auto& songs = currentPlaylist->playlistJSON.Songs;
     auto currentHash = GetLevelHash(currentLevel);
     std::vector<Difficulty> difficulties;
@@ -415,17 +422,10 @@ void ButtonsContainer::RefreshHighlightedDifficulties() {
             } if(diff < 0)
                 continue;
             // get closest index for pc parity
-            highlights.insert(segmentedController->GetClosestDifficultyIndex(diff));
+            auto text = cells->get_Item(segmentedController->GetClosestDifficultyIndex(diff))->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
+            if(text)
+                text->set_faceColor({255, 255, 0, 255});
         }
-    }
-    for(int i = 0; i < cells->get_Count(); i++) {
-        auto text = cells->get_Item(i)->GetComponentInChildren<TMPro::TextMeshProUGUI*>();
-        if(!text)
-            continue;
-        if(highlights.contains(i))
-            text->set_faceColor({255, 255, 0, 255});
-        else
-            text->set_faceColor({255, 255, 255, 255});
     }
 }
 
