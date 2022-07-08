@@ -18,6 +18,9 @@ namespace PlaylistCore {
     class Playlist;
     class CustomListSource;
 }
+namespace QuestUI {
+    class ProgressBar;
+}
 
 DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistMenu, UnityEngine::MonoBehaviour,
 
@@ -29,6 +32,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistMenu, UnityEngine::MonoBehaviour,
     HMUI::ImageView *coverImage, *packImage;
     HMUI::ModalView *confirmModal, *coverModal, *syncingModal;
     PlaylistCore::CustomListSource *list;
+    QuestUI::ProgressBar *downloadProgress;
 
     int coverImageIndex;
 

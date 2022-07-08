@@ -166,6 +166,7 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
     if(webRequest->GetError() != UnityEngine::Networking::UnityWebRequest::UnityWebRequestError::OK) {
         LOG_ERROR("Sync request failed! Error: %s", webRequest->GetWebErrorString(webRequest->GetError()).operator std::string().c_str());
         awaitingSync = false;
+        syncingModal->Hide(true, nullptr);
         co_return;
     }
 
@@ -182,13 +183,19 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
     if(PlaylistHasMissingSongs(syncingPlaylist)) {
         static ConstString downloadText("Downloading missing songs...");
         syncingText->set_text(downloadText);
+        downloadProgress->subText1->SetText("0 / 0");
+        downloadProgress->SetProgress(0);
         bool downloaded = false;
         DownloadMissingSongsFromPlaylist(syncingPlaylist, [&downloaded] {
             downloaded = true;
+        }, [this](int progress, int total) {
+            downloadProgress->subText1->SetText(std::to_string(progress) + " / " + std::to_string(total));
+            downloadProgress->SetProgress(progress / (float) total);
         });
         // wait for downloads
         while(!downloaded)
             co_yield nullptr;
+        downloadProgress->get_gameObject()->SetActive(false);
         // full reload the specific playlist only
         MarkPlaylistForReload(syncingPlaylist);
         bool doneRefreshing = false;
@@ -237,10 +244,13 @@ void PlaylistMenu::downloadButtonPressed() {
     awaitingSync = true;
     static ConstString downloadText("Downloading missing songs...");
     syncingText->set_text(downloadText);
+    downloadProgress->subText1->SetText("0 / 0");
+    downloadProgress->SetProgress(0);
     ((UnityEngine::RectTransform*) syncingModal->get_transform())->set_anchoredPosition({-7, 0});
     syncingModal->Show(true, false, nullptr);
     auto downloadingPlaylist = playlist;
     DownloadMissingSongsFromPlaylist(downloadingPlaylist, [this, downloadingPlaylist] {
+        downloadProgress->get_gameObject()->SetActive(false);
         MarkPlaylistForReload(downloadingPlaylist);
         ReloadSongsKeepingSelection([this, downloadingPlaylist] {
             awaitingSync = false;
@@ -252,6 +262,9 @@ void PlaylistMenu::downloadButtonPressed() {
                 gameTableView->RefreshAvailability();
             }
         });
+    }, [this](int progress, int total) {
+        downloadProgress->subText1->SetText(std::to_string(progress) + " / " + std::to_string(total));
+        downloadProgress->SetProgress(progress / (float) total);
     });
 }
 
@@ -623,10 +636,13 @@ custom_types::Helpers::Coroutine PlaylistMenu::initCoroutine() {
     ((UnityEngine::RectTransform*) right->get_transform()->GetChild(0))->set_sizeDelta({8, 8});
     BeatSaberUI::SetButtonSprites(right, RightCaratInactiveSprite(), RightCaratSprite());
 
-    syncingModal = BeatSaberUI::CreateModal(get_transform(), {45, 20}, {-7, 0}, nullptr, false);
+    syncingModal = BeatSaberUI::CreateModal(get_transform(), {45, 20}, {-7, 0}, nullptr);
     
     syncingText = BeatSaberUI::CreateText(syncingModal->get_transform(), "Syncing Playlist...", false, {0, 0}, {30, 10});
     syncingText->set_alignment(TMPro::TextAlignmentOptions::Center);
+
+    downloadProgress = BeatSaberUI::CreateProgressBar({1.4, 3.1, 4}, "Downloading Songs...", "0 / 0", "PlaylistManager");
+    downloadProgress->get_gameObject()->SetActive(false);
     #pragma endregion
     
     hasConstructed = true;
