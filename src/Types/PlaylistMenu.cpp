@@ -780,6 +780,7 @@ void PlaylistMenu::Destroy() {
     UnityEngine::Object::Destroy(detailsContainer);
     UnityEngine::Object::Destroy(buttonsContainer);
     UnityEngine::Object::Destroy(bootstrapContainer);
+    UnityEngine::Object::Destroy(downloadProgress->get_gameObject());
     PlaylistMenu::menuInstance = nullptr;
     PlaylistMenu::nextCloseKeyboard = nullptr;
     UnityEngine::Object::Destroy(this);
