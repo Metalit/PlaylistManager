@@ -22,31 +22,31 @@
     },
     {
       "id": "codegen",
-      "versionRange": "^0.24.0",
+      "versionRange": "^0.25.0",
       "additionalData": {}
     },
     {
       "id": "questui",
-      "versionRange": "^0.16.0",
+      "versionRange": "^0.16.2",
       "additionalData": {
         "private": true
       }
     },
     {
       "id": "custom-types",
-      "versionRange": "^0.15.12",
+      "versionRange": "^0.15.13",
       "additionalData": {
         "private": true
       }
     },
     {
       "id": "songloader",
-      "versionRange": "^0.10.0",
+      "versionRange": "^0.10.1",
       "additionalData": {}
     },
     {
       "id": "songdownloader",
-      "versionRange": "^0.4.7",
+      "versionRange": "^0.4.9",
       "additionalData": {
         "private": true
       }
