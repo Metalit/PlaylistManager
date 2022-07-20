@@ -142,6 +142,8 @@ custom_types::Helpers::Coroutine PlaylistMenu::refreshCoroutine() {
     co_return;
 }
 
+#define CHECK_VALID(invalidAction) if(this != PlaylistMenu::menuInstance) invalidAction;
+
 custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
     auto& customData = playlist->playlistJSON.CustomData;
     if(!customData.has_value())
@@ -154,6 +156,7 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
     // probably best not to sync two playlists at once
     if(awaitingSync)
         co_return;
+
     awaitingSync = true;
     static ConstString syncText("Syncing playlist...");
     syncingText->set_text(syncText);
@@ -162,6 +165,8 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
     auto webRequest = UnityEngine::Networking::UnityWebRequest::Get(syncUrl.value());
 
     co_yield (System::Collections::IEnumerator*) webRequest->SendWebRequest();
+
+    CHECK_VALID(co_return)
 
     if(webRequest->GetError() != UnityEngine::Networking::UnityWebRequest::UnityWebRequestError::OK) {
         LOG_ERROR("Sync request failed! Error: %s", webRequest->GetWebErrorString(webRequest->GetError()).operator std::string().c_str());
@@ -189,22 +194,26 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
         DownloadMissingSongsFromPlaylist(syncingPlaylist, [&downloaded] {
             downloaded = true;
         }, [this](int progress, int total) {
+            CHECK_VALID(return)
             downloadProgress->subText1->SetText(std::to_string(progress) + " / " + std::to_string(total));
             downloadProgress->SetProgress(progress / (float) total);
         });
         // wait for downloads
         while(!downloaded)
             co_yield nullptr;
-        downloadProgress->get_gameObject()->SetActive(false);
         // full reload the specific playlist only
         MarkPlaylistForReload(syncingPlaylist);
         bool doneRefreshing = false;
-        ReloadSongsKeepingSelection([&doneRefreshing] {
+        ReloadSongsKeepingSelection([this, &doneRefreshing] {
+            CHECK_VALID(return)
             doneRefreshing = true;
         });
+        CHECK_VALID(co_return)
+        downloadProgress->get_gameObject()->SetActive(false);
         // wait for songs to refresh
         while(!doneRefreshing)
             co_yield nullptr;
+        CHECK_VALID(co_return)
         // clears any songs that could not be downloaded
         if(playlistConfig.RemoveMissing) {
             RemoveMissingSongsFromPlaylist(syncingPlaylist);
@@ -250,9 +259,9 @@ void PlaylistMenu::downloadButtonPressed() {
     syncingModal->Show(true, false, nullptr);
     auto downloadingPlaylist = playlist;
     DownloadMissingSongsFromPlaylist(downloadingPlaylist, [this, downloadingPlaylist] {
-        downloadProgress->get_gameObject()->SetActive(false);
         MarkPlaylistForReload(downloadingPlaylist);
         ReloadSongsKeepingSelection([this, downloadingPlaylist] {
+            CHECK_VALID(return)
             awaitingSync = false;
             syncingModal->Hide(true, nullptr);
             // clears any songs that could not be downloaded
@@ -262,7 +271,10 @@ void PlaylistMenu::downloadButtonPressed() {
                 gameTableView->RefreshAvailability();
             }
         });
+        CHECK_VALID(return)
+        downloadProgress->get_gameObject()->SetActive(false);
     }, [this](int progress, int total) {
+        CHECK_VALID(return)
         downloadProgress->subText1->SetText(std::to_string(progress) + " / " + std::to_string(total));
         downloadProgress->SetProgress(progress / (float) total);
     });
