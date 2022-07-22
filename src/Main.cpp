@@ -281,13 +281,13 @@ extern "C" void setup(ModInfo& info) {
 MAKE_HOOK_MATCH(MenuTransitionsHelper_RestartGame, &MenuTransitionsHelper::RestartGame,
         void, MenuTransitionsHelper* self, System::Action_1<Zenject::DiContainer*>* finishCallback) {
 
-    ResettableStaticPtr::resetAll();
-
     SettingsViewController::DestroyUI();
 
     filterSelectionState = 0;
     
     MenuTransitionsHelper_RestartGame(self, finishCallback);
+
+    ResettableStaticPtr::resetAll();
 }
 
 extern "C" void load() {
