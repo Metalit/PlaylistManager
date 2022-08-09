@@ -32,6 +32,8 @@ using namespace PlaylistCore;
 using namespace PlaylistCore::Utils;
 using namespace QuestUI;
 
+#define SET_PARENT_ACTIVE(obj, active) obj->get_transform()->GetParent()->get_gameObject()->SetActive(active)
+
 ButtonsContainer* ButtonsContainer::buttonsInstance = nullptr;
 
 #pragma region uiFunctions
@@ -179,15 +181,28 @@ custom_types::Helpers::Coroutine ButtonsContainer::initCoroutine() {
     auto levelDetailTransform = levelDetailView->get_transform();
 
     #pragma region buttons
-    auto horizontal = BeatSaberUI::CreateHorizontalLayoutGroup(levelDetailTransform);
-    layoutObject = horizontal->get_gameObject();
-    horizontal->set_childScaleWidth(false);
-    horizontal->set_childControlWidth(false);
-    horizontal->set_childForceExpandWidth(false);
-    horizontal->set_childAlignment(UnityEngine::TextAnchor::MiddleRight);
-    horizontal->GetComponent<UnityEngine::RectTransform*>()->set_anchoredPosition({-1, 17});
+    layoutObject = BeatSaberUI::CreateCanvas();
+    layoutObject->get_transform()->SetParent(levelDetailTransform, false);
+    // local scale is funky on canvases because they're intended to be used unparented
+    layoutObject->get_transform()->set_localScale({1, 1, 1});
 
-    saveCoverButton = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", {0, 0}, {5, 5}, [this](){
+    auto vertical = BeatSaberUI::CreateVerticalLayoutGroup(layoutObject);
+    vertical->set_childScaleHeight(false);
+    vertical->set_childControlHeight(false);
+    vertical->set_childForceExpandHeight(false);
+    vertical->set_childControlWidth(true);
+    vertical->set_childAlignment(UnityEngine::TextAnchor::MiddleCenter);
+    vertical->GetComponent<UnityEngine::RectTransform*>()->set_anchoredPosition({38, 21});
+
+    static auto MakeSubcontainer = [](auto parent) {
+        auto subcontainer = UnityEngine::GameObject::New_ctor("PlaylistManagerLayoutButtonContainer");
+        subcontainer->get_transform()->SetParent(parent->get_transform(), false);
+        auto rect = subcontainer->AddComponent<UnityEngine::RectTransform*>();
+        rect->set_sizeDelta({5, 5});
+        return subcontainer->get_transform();
+    };
+    
+    saveCoverButton = BeatSaberUI::CreateUIButton(MakeSubcontainer(vertical), "", "SettingsButton", {0, 0}, {5, 5}, [this](){
         saveCoverButtonPressed();
     });
     ((UnityEngine::RectTransform*) saveCoverButton->get_transform()->GetChild(0))->set_sizeDelta({5, 5});
@@ -195,7 +210,7 @@ custom_types::Helpers::Coroutine ButtonsContainer::initCoroutine() {
     BeatSaberUI::SetButtonSprites(saveCoverButton, SaveCoverInactiveSprite(), SaveCoverSprite());
     BeatSaberUI::AddHoverHint(saveCoverButton, "Save the cover image of the song for use as a playlist cover");
 
-    playlistAddButton = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", {0, 0}, {5, 5}, [this](){
+    playlistAddButton = BeatSaberUI::CreateUIButton(MakeSubcontainer(vertical), "", "SettingsButton", {-1, 0}, {5, 5}, [this](){
         addToPlaylistButtonPressed();
     });
     ((UnityEngine::RectTransform*) playlistAddButton->get_transform()->GetChild(0))->set_sizeDelta({5, 5});
@@ -203,17 +218,17 @@ custom_types::Helpers::Coroutine ButtonsContainer::initCoroutine() {
     BeatSaberUI::SetButtonSprites(playlistAddButton, AddToPlaylistInactiveSprite(), AddToPlaylistSprite());
     BeatSaberUI::AddHoverHint(playlistAddButton, "Add this song to a playlist");
 
-    playlistRemoveButton = BeatSaberUI::CreateUIButton(horizontal->get_transform(), "", "SettingsButton", {0, 0}, {5, 5}, [this](){
+    playlistRemoveButton = BeatSaberUI::CreateUIButton(MakeSubcontainer(vertical), "", "SettingsButton", {-2, 0}, {5, 5}, [this](){
         removeFromPlaylistButtonPressed();
     });
     ((UnityEngine::RectTransform*) playlistRemoveButton->get_transform()->GetChild(0))->set_sizeDelta({5, 5});
     playlistRemoveButton->GetComponentInChildren<HMUI::ImageView*>()->skew = 0.18;
     BeatSaberUI::SetButtonSprites(playlistRemoveButton, RemoveFromPlaylistInactiveSprite(), RemoveFromPlaylistSprite());
     BeatSaberUI::AddHoverHint(playlistRemoveButton, "Remove this song from this playlist");
-
-    saveCoverButton->get_gameObject()->SetActive(false);
-    playlistAddButton->get_gameObject()->SetActive(false);
-    playlistRemoveButton->get_gameObject()->SetActive(false);
+    
+    SET_PARENT_ACTIVE(saveCoverButton, false);
+    SET_PARENT_ACTIVE(playlistAddButton, false);
+    SET_PARENT_ACTIVE(playlistRemoveButton, false);
     co_yield nullptr;
 
     movementButtonsContainer = BeatSaberUI::CreateCanvas();
@@ -327,11 +342,11 @@ void ButtonsContainer::SetVisible(bool visible, bool inPlaylist, bool WIP) {
         return;
     }
     if(saveCoverButton)
-        saveCoverButton->get_gameObject()->SetActive(visible);
+        SET_PARENT_ACTIVE(saveCoverButton, visible);
     if(playlistAddButton)
-        playlistAddButton->get_gameObject()->SetActive(visible && !WIP);
+        SET_PARENT_ACTIVE(playlistAddButton, visible && !WIP);
     if(playlistRemoveButton)
-        playlistRemoveButton->get_gameObject()->SetActive(visible && inPlaylist);
+        SET_PARENT_ACTIVE(playlistRemoveButton, visible && inPlaylist);
     if(movementButtonsContainer)
         movementButtonsContainer->SetActive(visible && inPlaylist);
     if(playlistAddModal)
