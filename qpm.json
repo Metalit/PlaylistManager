@@ -4,7 +4,7 @@
   "info": {
     "name": "PlaylistManager",
     "id": "playlistmanager",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "url": "https://github.com/Metalit/PlaylistManager",
     "additionalData": {
       "overrideSoName": "libplaylistmanager.so"
@@ -53,7 +53,7 @@
     },
     {
       "id": "playlistcore",
-      "versionRange": "^1.0.0",
+      "versionRange": "^1.1.0",
       "additionalData": {}
     },
     {
@@ -65,7 +65,7 @@
     },
     {
       "id": "rapidjson-macros",
-      "versionRange": "^0.2.3",
+      "versionRange": "^0.3.0",
       "additionalData": {}
     }
   ],
