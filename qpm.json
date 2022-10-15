@@ -46,7 +46,7 @@
     },
     {
       "id": "songdownloader",
-      "versionRange": "^0.4.16",
+      "versionRange": "^0.5.0",
       "additionalData": {
         "private": true
       }
