@@ -191,6 +191,12 @@ MAKE_HOOK_MATCH(LevelPackDetailViewController_ShowContent, &LevelPackDetailViewC
         PlaylistMenu::menuInstance->Init(self->packImage);
     }
 
+    // disable level buttons (hides modal if necessary)
+    if(ButtonsContainer::buttonsInstance) {
+        ButtonsContainer::buttonsInstance->SetPlaylist(nullptr);
+        ButtonsContainer::buttonsInstance->SetVisible(false, false, false);
+    }
+
     if(contentType == LevelPackDetailViewController::ContentType::Owned && self->pack->get_packID()->Contains(customPackName)) {
         // find playlist json
         auto playlist = GetPlaylistWithPrefix(self->pack->get_packID());
@@ -199,12 +205,10 @@ MAKE_HOOK_MATCH(LevelPackDetailViewController_ShowContent, &LevelPackDetailViewC
             PlaylistMenu::menuInstance->SetVisible(true);
         } else
             PlaylistMenu::menuInstance->SetVisible(false, true);
+        if(ButtonsContainer::buttonsInstance)
+            ButtonsContainer::buttonsInstance->SetPlaylist(playlist);
     } else
         PlaylistMenu::menuInstance->SetVisible(false);
-
-    // disable level buttons (hides modal if necessary)
-    if(ButtonsContainer::buttonsInstance)
-        ButtonsContainer::buttonsInstance->SetVisible(false, false, false);
 }
 
 // when to show the level buttons
