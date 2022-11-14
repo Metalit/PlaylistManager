@@ -7,7 +7,11 @@
     "version": "1.2.1",
     "url": "https://github.com/Metalit/PlaylistManager",
     "additionalData": {
-      "overrideSoName": "libplaylistmanager.so"
+      "soLink": "https://github.com/Metalit/PlaylistManager/releases/download/v1.2.1/libplaylistmanager.so",
+      "debugSoLink": "https://github.com/Metalit/PlaylistManager/releases/download/v1.2.1/debug_libplaylistmanager.so",
+      "overrideSoName": "libplaylistmanager.so",
+      "modLink": "https://github.com/Metalit/PlaylistManager/releases/download/v1.2.1/PlaylistManager.qmod",
+      "branchName": "version-v1.2.1"
     }
   },
   "dependencies": [
