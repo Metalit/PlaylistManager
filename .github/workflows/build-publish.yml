@@ -74,7 +74,7 @@ jobs:
         if: github.event_name != 'pull_request'
         with:
           text: ${{ github.event.head_commit.message }}
-          regex: ^release.*?((v?)((?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)?)):?\W*(.*)
+          regex: ^release.*?(v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)?):?\W*(.*)
           flags: i
 
       - name: Rename debug
@@ -92,7 +92,7 @@ jobs:
         uses: softprops/action-gh-release@v0.1.12
         if: github.event_name != 'pull_request' && steps.commit-regex.outputs.match != ''
         with:
-          name: ${{ steps.commit-regex.outputs.group4 }}
+          name: ${{ steps.commit-regex.outputs.group2 }}
           tag_name: ${{ steps.commit-regex.outputs.group1 }}
           files: |
             ./build/${{ steps.libname.outputs.NAME }}
