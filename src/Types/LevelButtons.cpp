@@ -384,6 +384,11 @@ void ButtonsContainer::RefreshPlaylists() {
     playlistCovers->replaceSprites(newCovers);
     playlistCovers->replaceTexts(newHovers);
     playlistCovers->tableView->ReloadDataKeepingPosition();
+    playlistCovers->tableView->contentTransform->set_anchorMin({0, 0});
+    playlistCovers->tableView->contentTransform->set_anchorMax({0, 1});
+
+    LOG_DEBUG("Buttons container refreshed, %i cells visible", playlistCovers->tableView->visibleCells->get_Count());
+    LOG_DEBUG("Position: %.2f", playlistCovers->tableView->contentTransform->get_anchoredPosition().x);
 }
 
 void ButtonsContainer::RefreshHighlightedDifficulties() {
