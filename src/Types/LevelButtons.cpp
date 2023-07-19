@@ -433,7 +433,7 @@ void ButtonsContainer::RefreshHighlightedDifficulties() {
             // attempt to find difficulty
             LOWER(difficulty.Name);
             int diff = -1;
-            static const std::vector<std::string> diffNames = {"easy", "normal", "hard", "expert", "expertPlus"};
+            static const std::vector<std::string> diffNames = {"easy", "normal", "hard", "expert", "expertplus"};
             for(int i = 0; i < diffNames.size(); i++) {
                 if(diffNames[i] == difficulty.Name) {
                     diff = i;
