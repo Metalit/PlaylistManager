@@ -1,5 +1,5 @@
 #include "Main.hpp"
-#include "Types/Config.hpp"
+#include "Config.hpp"
 #include "Types/PlaylistMenu.hpp"
 #include "Types/LevelButtons.hpp"
 #include "Icons.hpp"
@@ -215,7 +215,7 @@ custom_types::Helpers::Coroutine PlaylistMenu::syncCoroutine() {
             co_yield nullptr;
         CHECK_VALID(co_return)
         // clears any songs that could not be downloaded
-        if(playlistConfig.RemoveMissing) {
+        if(getConfig().RemoveMissing.GetValue()) {
             RemoveMissingSongsFromPlaylist(syncingPlaylist);
             // sets the download icons based on after songs have or haven't been removed
             gameTableView->RefreshAvailability();
@@ -265,7 +265,7 @@ void PlaylistMenu::downloadButtonPressed() {
             awaitingSync = false;
             syncingModal->Hide(true, nullptr);
             // clears any songs that could not be downloaded
-            if(playlistConfig.RemoveMissing) {
+            if(getConfig().RemoveMissing.GetValue()) {
                 RemoveMissingSongsFromPlaylist(downloadingPlaylist);
                 // sets the download icons based on after songs have or haven't been removed
                 gameTableView->RefreshAvailability();

@@ -1,9 +1,9 @@
 #include "Main.hpp"
+#include "Config.hpp"
 #include "Types/PlaylistMenu.hpp"
 #include "Types/PlaylistFilters.hpp"
 #include "Types/LevelButtons.hpp"
 #include "Types/GridViewAddon.hpp"
-#include "Types/Config.hpp"
 #include "Settings.hpp"
 
 #include <chrono>
@@ -72,7 +72,6 @@ using namespace PlaylistCore::Utils;
 ModInfo modInfo;
 
 // shared config data
-PlaylistConfig playlistConfig;
 Folder* currentFolder = nullptr;
 int filterSelectionState = 0;
 bool allowInMultiplayer = false;
@@ -82,19 +81,9 @@ Logger& getLogger() {
     return *logger;
 }
 
-std::string GetConfigPath() {
-    static std::string configPath = Configuration::getConfigFilePath(modInfo);
-    return configPath;
-}
-
 std::string GetCoversPath() {
     static std::string coversPath(getDataDir(modInfo) + "Covers");
     return coversPath;
-}
-
-void SaveConfig() {
-    if(!WriteToFile(GetConfigPath(), playlistConfig))
-        LOG_ERROR("Error saving config!");
 }
 
 // allow name and author changes to be made on keyboard close (assumes only one keyboard will be open at a time)
@@ -128,7 +117,7 @@ MAKE_HOOK_MATCH(AnnotatedBeatmapLevelCollectionCell_RefreshAvailabilityAsync, &A
     if(pack.has_value()) {
         auto playlist = GetPlaylistWithPrefix(pack.value()->get_packID());
         if(playlist)
-            self->SetDownloadIconVisible(playlistConfig.DownloadIcon && PlaylistHasMissingSongs(playlist));
+            self->SetDownloadIconVisible(getConfig().DownloadIcon.GetValue() && PlaylistHasMissingSongs(playlist));
     }
 }
 
@@ -138,7 +127,7 @@ MAKE_HOOK_MATCH(LevelFilteringNavigationController_UpdateSecondChildControllerCo
     
     LevelFilteringNavigationController_UpdateSecondChildControllerContent(self, levelCategory);
 
-    if(!playlistConfig.Management)
+    if(!getConfig().Management.GetValue())
         return;
     
     if(!GridViewAddon::addonInstance) {
@@ -154,7 +143,7 @@ MAKE_HOOK_MATCH(LevelFilteringNavigationController_DidActivate, &LevelFilteringN
     
     LevelFilteringNavigationController_DidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
 
-    if(!playlistConfig.Management)
+    if(!getConfig().Management.GetValue())
         return;
 
     if(!PlaylistFilters::filtersInstance) {
@@ -181,7 +170,7 @@ MAKE_HOOK_MATCH(LevelPackDetailViewController_ShowContent, &LevelPackDetailViewC
     
     LevelPackDetailViewController_ShowContent(self, contentType, errorText);
 
-    if(!playlistConfig.Management)
+    if(!getConfig().Management.GetValue())
         return;
 
     static ConstString customPackName(CustomLevelPackPrefixID);
@@ -217,7 +206,7 @@ MAKE_HOOK_MATCH(StandardLevelDetailViewController_ShowContent, &StandardLevelDet
 
     StandardLevelDetailViewController_ShowContent(self, contentType, errorText, downloadingProgress, downloadingText);
 
-    if(!playlistConfig.Management || contentType != StandardLevelDetailViewController::ContentType::OwnedAndReady)
+    if(!getConfig().Management.GetValue() || contentType != StandardLevelDetailViewController::ContentType::OwnedAndReady)
         return;
     
     if(!ButtonsContainer::buttonsInstance) {
@@ -241,7 +230,7 @@ MAKE_HOOK_MATCH(BeatmapDifficultySegmentedControlController_SetData, &BeatmapDif
     
     BeatmapDifficultySegmentedControlController_SetData(self, difficultyBeatmaps, selectedDifficulty);
 
-    if(playlistConfig.Management && ButtonsContainer::buttonsInstance)
+    if(getConfig().Management.GetValue() && ButtonsContainer::buttonsInstance)
         ButtonsContainer::buttonsInstance->RefreshHighlightedDifficulties();
 }
 
@@ -270,15 +259,7 @@ extern "C" void setup(ModInfo& info) {
     if(!direxists(coversPath))
         mkpath(coversPath);
     
-    auto configPath = GetConfigPath();
-    if(fileexists(configPath)) {
-        try {
-            ReadFromFile(configPath, playlistConfig);
-        } catch (const std::exception& err) {
-            LOG_ERROR("Error reading playlist config: %s", err.what());
-        }
-    }
-    SaveConfig();
+    getConfig().Init(modInfo);
 }
 
 // throw away objects on a soft restart

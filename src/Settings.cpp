@@ -1,10 +1,10 @@
 #include "Main.hpp"
+#include "Config.hpp"
 #include "Settings.hpp"
 #include "Types/PlaylistMenu.hpp"
 #include "Types/PlaylistFilters.hpp"
 #include "Types/LevelButtons.hpp"
 #include "Types/GridViewAddon.hpp"
-#include "Types/Config.hpp"
 #include "Icons.hpp"
 
 #include "playlistcore/shared/PlaylistCore.hpp"
@@ -95,27 +95,24 @@ void SettingsViewController::DidActivate(bool firstActivation, bool addedToHiera
         DestroyUI();
     });
     BeatSaberUI::AddHoverHint(uiButton->get_gameObject(), "Resets all UI instances");
-    uiButton->set_interactable(playlistConfig.Management);
+    uiButton->set_interactable(getConfig().Management.GetValue());
 
-    auto managementToggle = BeatSaberUI::CreateToggle(parent, "Enable playlist management", playlistConfig.Management, [this, uiButton](bool enabled) {
+    auto managementToggle = BeatSaberUI::CreateToggle(parent, "Enable playlist management", getConfig().Management.GetValue(), [this, uiButton](bool enabled) {
+        getConfig().Management.SetValue(enabled);
         uiButton->set_interactable(enabled);
-        playlistConfig.Management = enabled;
-        SaveConfig();
         if(!enabled)
             DestroyUI();
     });
     managementToggle->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(60);
-    
-    auto downloadToggle = BeatSaberUI::CreateToggle(parent, "Show download icons in grid", playlistConfig.DownloadIcon, [](bool enabled){
-        playlistConfig.DownloadIcon = enabled;
-        SaveConfig();
+
+    auto downloadToggle = BeatSaberUI::CreateToggle(parent, "Show download icons in grid", getConfig().DownloadIcon.GetValue(), [](bool enabled){
+        getConfig().DownloadIcon.SetValue(enabled);
     });
     downloadToggle->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(60);
     BeatSaberUI::AddHoverHint(downloadToggle->get_gameObject(), "Toggles download icons for custom playlists that do not have all their songs downloaded");
 
-    auto removeSongsToggle = BeatSaberUI::CreateToggle(parent, "Remove songs not on BeatSaver", playlistConfig.RemoveMissing, [](bool enabled){
-        playlistConfig.RemoveMissing = enabled;
-        SaveConfig();
+    auto removeSongsToggle = BeatSaberUI::CreateToggle(parent, "Remove songs not on BeatSaver", getConfig().RemoveMissing.GetValue(), [](bool enabled){
+        getConfig().RemoveMissing.SetValue(enabled);
     });
     downloadToggle->get_transform()->GetParent()->GetComponent<UnityEngine::UI::LayoutElement*>()->set_preferredWidth(60);
     BeatSaberUI::AddHoverHint(removeSongsToggle->get_gameObject(), "Automatically removes songs that are not present on Beat Saver from playlists");

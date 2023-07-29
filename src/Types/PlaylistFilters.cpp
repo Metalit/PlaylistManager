@@ -1,8 +1,7 @@
 #include "Main.hpp"
+#include "Config.hpp"
 #include "Types/PlaylistFilters.hpp"
-#include "Types/Folder.hpp"
 #include "Types/FolderTableCell.hpp"
-#include "Types/Config.hpp"
 #include "Icons.hpp"
 
 #include "playlistcore/shared/PlaylistCore.hpp"
@@ -31,6 +30,13 @@ using namespace PlaylistManager;
 using namespace PlaylistCore;
 using namespace PlaylistCore::Utils;
 using namespace QuestUI;
+
+std::vector<Folder> folders;
+
+void SaveFolders() {
+    getConfig().Folders.SetValue(folders);
+}
+
 
 PlaylistFilters* PlaylistFilters::filtersInstance = nullptr;
 HMUI::TableView* PlaylistFilters::monitoredTable;
@@ -140,13 +146,13 @@ void PlaylistFilters::folderTitleTyped(std::string const& newTitle) {
     currentTitle = newTitle;
     if(state == State::editing) {
         currentFolder->FolderName = newTitle;
-        SaveConfig();
+        SaveFolders();
     }
 }
 
 void PlaylistFilters::editMenuCreateButtonPressed() {
     // add new folder as subfolder if open
-    auto& parentArr = parentFolders.size() > 0 ? parentFolders.back()->Subfolders : playlistConfig.Folders;
+    auto& parentArr = parentFolders.size() > 0 ? parentFolders.back()->Subfolders : folders;
     parentArr.emplace_back(Folder());
     // populate folder fields
     auto& folder = parentArr.back();
@@ -155,7 +161,7 @@ void PlaylistFilters::editMenuCreateButtonPressed() {
     folder.ShowDefaults = currentDefaults;
     folder.Playlists = currentPlaylists;
     // write changes
-    SaveConfig();
+    SaveFolders();
     setFoldersFilters(false);
     RefreshFolders();
 }
@@ -165,18 +171,15 @@ void PlaylistFilters::editButtonPressed() {
 }
 
 void PlaylistFilters::deleteButtonPressed() {
-    // get parent array of current folder
-    std::vector<Folder>* folderVecPtr = nullptr;
     // remove from parent folders if it is present
     if(parentFolders.size() > 0 && parentFolders.back() == currentFolder)
-            parentFolders.erase(parentFolders.end() - 1);
+        parentFolders.erase(parentFolders.end() - 1);
     // get new parent folder list
-    auto& folders = parentFolders.size() > 0 ? parentFolders.back()->Subfolders : playlistConfig.Folders;
-    for(auto itr = folders.begin(); itr != folders.end(); itr++) {
+    auto& newFolders = parentFolders.size() > 0 ? parentFolders.back()->Subfolders : folders;
+    for(auto itr = newFolders.begin(); itr != newFolders.end(); itr++) {
         if(&(*itr) == currentFolder) {
-            folders.erase(itr);
-            // all folders are stored in playlistConfig, subfolders or not
-            SaveConfig();
+            newFolders.erase(itr);
+            SaveFolders();
             break;
         }
     }
@@ -194,7 +197,7 @@ void PlaylistFilters::subfoldersToggled(bool enabled) {
     subfoldersInfo->get_gameObject()->SetActive(enabled);
     if(state == State::editing) {
         currentFolder->HasSubfolders = enabled;
-        SaveConfig();
+        SaveFolders();
         UpdateShownPlaylists();
     }
 }
@@ -203,7 +206,7 @@ void PlaylistFilters::defaultsToggled(bool enabled) {
     currentDefaults = enabled;
     if(state == State::editing) {
         currentFolder->ShowDefaults = enabled;
-        SaveConfig();
+        SaveFolders();
         UpdateShownPlaylists();
     }
 }
@@ -217,7 +220,7 @@ void PlaylistFilters::playlistSelected(int cellIdx) {
     playlistVector.emplace_back(playlist->path);
     // save and update ingame playlists if editing
     if(state == State::editing) {
-        SaveConfig();
+        SaveFolders();
         UpdateShownPlaylists();
     }
 }
@@ -236,7 +239,7 @@ void PlaylistFilters::playlistDeselected(int cellIdx) {
     }
     // save and update ingame playlists if editing
     if(state == State::editing) {
-        SaveConfig();
+        SaveFolders();
         UpdateShownPlaylists();
     }
 }
@@ -265,6 +268,8 @@ custom_types::Helpers::Coroutine PlaylistFilters::initCoroutine() {
     auto cvsTrans = canvas->get_transform();
 
     canvas->SetActive(false);
+
+    folders = getConfig().Folders.GetValue();
 
     co_yield nullptr;
 
@@ -608,7 +613,7 @@ void PlaylistFilters::RefreshFolders() {
             currentFolderList.push_back(&folder);
         }
     } else {
-        for(auto& folder : playlistConfig.Folders) {
+        for(auto& folder : folders) {
             folderNames.push_back(folder.FolderName);
             currentFolderList.push_back(&folder);
         }
