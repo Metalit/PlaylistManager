@@ -1,15 +1,14 @@
 name: Publish
 
 env:
-  module_id: playlistcore
-  cache-name: playlistcore_cache
-  qmodName: PlaylistCore
+  module_id: playlistmanager
+  qmodName: PlaylistManager
 
 on:
   workflow_dispatch:
     inputs:
-      release_ver:
-        description: 'Version to tag release'
+      version:
+        description: 'Version to release (v will be added to the tag)'
         required: true
       release_msg:
         description: 'Message for release'
@@ -33,13 +32,14 @@ jobs:
           echo "$ANDROID_NDK_LATEST_HOME" > ${GITHUB_WORKSPACE}/ndkpath.txt
           cat ${GITHUB_WORKSPACE}/ndkpath.txt
 
-      - name: QPM Rust Action
-        uses: Fernthedev/qpm-rust-action@main
+      - name: QPM Action
+        uses: Fernthedev/qpm-action@main
         with:
           workflow_token: ${{ secrets.GITHUB_TOKEN }}
 
           restore: true
           cache: true
+          version: "${{ github.event.inputs.version }}"
 
           publish: false
 
@@ -49,8 +49,6 @@ jobs:
           ls -la ${GITHUB_WORKSPACE}/extern/includes
           echo libs:
           ls -la ${GITHUB_WORKSPACE}/extern/libs
-          echo cache:
-          ls -la $HOME/.local/share/QPM-Rust/cache
 
       - name: Build
         run: |
@@ -78,7 +76,7 @@ jobs:
         uses: softprops/action-gh-release@v0.1.12
         with:
           name: ${{ github.event.inputs.release_msg }}
-          tag_name: ${{ github.event.inputs.release_ver }}
+          tag_name: "v${{ github.event.inputs.version }}"
           files: |
             ./build/${{ steps.libname.outputs.NAME }}
             ./build/debug/debug_${{ steps.libname.outputs.NAME }}
