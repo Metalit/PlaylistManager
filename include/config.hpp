@@ -19,8 +19,6 @@ DECLARE_CONFIG(Config,
     CONFIG_VALUE(Folders, std::vector<PlaylistManager::Folder>, "folders", {});
 )
 
-// defined in Main.cpp
-extern PlaylistManager::Folder* currentFolder;
 // 0: all playlists, 1: just defaults, 2: just customs, 3: use current folder
 extern int filterSelectionState;
 extern bool allowInMultiplayer;

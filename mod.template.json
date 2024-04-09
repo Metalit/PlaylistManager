@@ -1,16 +1,15 @@
 {
+  "$schema": "https://raw.githubusercontent.com/Lauriethefish/QuestPatcher.QMod/main/QuestPatcher.QMod/Resources/qmod.schema.json",
   "_QPVersion": "0.1.1",
   "name": "${mod_name}",
   "id": "${mod_id}",
   "author": "Metalit",
   "version": "${version}",
   "packageId": "com.beatgames.beatsaber",
-  "packageVersion": "1.28.0_4124311467",
-  "description": "Create and manage playlists ingame!",
+  "packageVersion": "1.35.0_8016709773",
+  "description": "Manage all your songs and playlists!",
   "coverImage": "cover.png",
   "dependencies": [],
-  "modFiles": [],
   "libraryFiles": [],
-  "fileCopies": [],
-  "copyExtensions": []
+  "fileCopies": []
 }

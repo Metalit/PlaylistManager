@@ -32,8 +32,13 @@
 *.app
 
 # VSCode config stuff
+.cache
 !.vscode/c_cpp_properties.json
 !.vscode/tasks.json
+!.vscode/settings.json
+
+# Jetbrains IDEs
+.idea/
 
 # NDK stuff
 out/
@@ -43,15 +48,21 @@ out/
 [Oo]bjs/
 ndkpath.txt
 *.zip
-*.cmake
-
-extern/
-
-build/
-
-mod.json
-qpm.shared.json
-
+*.txt
 *.log
+Android.mk.backup
 
+# QPM stuff
+[Ee]xtern/
 *.qmod
+mod.json
+qpm_defines.cmake
+![Cc][Mm]ake[Ll]ists.txt
+
+# CMake stuff
+[Bb]uild/
+cmake-build-*/
+extern.cmake
+
+# QMOD Schema
+mod.json.schema
