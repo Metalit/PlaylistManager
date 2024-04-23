@@ -13,9 +13,7 @@ namespace PlaylistManager {
 }
 
 DECLARE_CONFIG(Config,
-    CONFIG_VALUE(Management, bool, "enableManagement", true);
     CONFIG_VALUE(DownloadIcon, bool, "showDownloadIcon", true);
-    CONFIG_VALUE(RemoveMissing, bool, "removeMissingBeatSaverSongs", true);
     CONFIG_VALUE(Folders, std::vector<PlaylistManager::Folder>, "folders", {});
 )
 

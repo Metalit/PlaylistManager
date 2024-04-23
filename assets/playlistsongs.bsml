@@ -1,0 +1,42 @@
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd">
+    <text text="Songs in playlist" font-size="3" align="Center" anchor-pos-x="-24" anchor-pos-y="28.5"/>
+    <horizontal id="searchBar" anchor-pos-y="35" child-control-width="true" spacing="3">
+        <icon-button id="filterButton" pref-width="9" pref-height="9" on-click="filterModal#Show" icon="#FilterIcon"/>
+    </horizontal>
+    <horizontal child-align="MiddleCenter" child-expand-width="false">
+        <loading-indicator id="loadingIndicator" preserve-aspect="true" pref-width="10" pref-height="10" active="false"/>
+        <text id="emptyText" text="No songs" active="false"/>
+    </horizontal>
+    <horizontal id="levelList" spacing="1" anchor-pos-y="-6" pref-height="64" child-align="UpperLeft" child-expand-width="false">
+        <vertical child-align="UpperCenter" horizontal-fit="PreferredSize" min-width="4" child-expand-height="false">
+            <clickable-image id="optionsButton" src="PlaylistManager_options_png" pref-width="4" pref-height="4" preserve-aspect="true" on-click="optionsModal#Show"/>
+            <text id="selectionText" text="0" align="Center" font-size="2"/>
+        </vertical>
+        <bg id="layout"/>
+    </horizontal>
+    <modal id="filterModal" size-delta-x="70" size-delta-y="38" anchor-pos-x="0" click-off-closes="true">
+        <vertical spacing="2" pref-width="65" vertical-fit="PreferredSize" child-control-width="true" child-control-height="false">
+            <toggle-setting text="Only Owned" on-change="ownedToggled"/>
+            <toggle-setting text="Only Unplayed" on-change="unplayedToggled"/>
+            <dropdown-list-setting id="diffSelector" text="Has Difficulty" choices="difficultyTexts" on-change="difficultySelected"/>
+            <dropdown-list-setting id="charSelector" text="Has Characteristic" choices="characteristicTexts" on-change="characteristicSelected"/>
+        </vertical>
+    </modal>
+    <modal id="optionsModal" size-delta-x="35" size-delta-y="30" anchor-pos-x="-16" anchor-pos-y="13" move-to-center="false" click-off-closes="true">
+        <vertical pad="2">
+            <clickable-text text=": Remove from playlist" font-size="4" highlight-color="grey" on-click="removeClicked"/>
+            <clickable-text text=": Use covers as cover" font-size="4" highlight-color="grey" on-click="coversClicked"/>
+            <clickable-text text=": Delete and remove" font-size="4" highlight-color="grey" on-click="deleteClicked"/>
+            <clickable-text text=": Clear selection" font-size="4" highlight-color="grey" on-click="clearClicked"/>
+            <clickable-text text=": Highlight Difficulties" font-size="4" highlight-color="grey" on-click="highlightClicked"/>
+        </vertical>
+    </modal>
+    <modal id="highlightModal" size-delta-x="43" size-delta-y="50" anchor-pos-x="-12" anchor-pos-y="3" move-to-center="false" click-off-closes="true">
+        <vertical pad="2" child-expand-width="false" child-align="MiddleCenter">
+            <dropdown-list-setting id="highlightCharSelector" text="" choices="characteristicTexts" on-change="highlightCharSelected" pref-width="40"/>
+            <macro.for-each items="difficultyTexts">
+                <toggle-setting text="" pref-width="36"/>
+            </macro.for-each>
+        </vertical>
+    </modal>
+</bg>

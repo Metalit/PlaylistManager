@@ -1,0 +1,54 @@
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd">
+    <button id="dummyButton" active="false"/>
+    <image id="dummyImage" active="false"/>
+    <vertical horizontal-fit="PreferredSize" vertical-fit="PreferredSize" child-expand-width="true" child-control-height="false">
+        <horizontal spacing="1" child-control-width="false" child-expand-width="false">
+            <vertical pref-width="15" pref-height="15">
+                <clickable-image id="coverImage" on-click="coverClicked" preserve-aspect="false"/>
+            </vertical>
+            <scroll-view id="infoScroll" size-delta-x="50" size-delta-y="15" child-control-width="true">
+                <stack pad-left="2" pref-width="40" vertical-fit="PreferredSize">
+                    <text id="nameText" align="Left" overflow-mode="Ellipsis"/>
+                    <text id="namePlaceholder" text="Name" align="Left" italics="true" color="grey"/>
+                </stack>
+                <stack pad-left="2" pref-width="40" vertical-fit="PreferredSize">
+                    <text id="authorText" align="Left" word-wrapping="true"/>
+                    <text id="authorPlaceholder" text="Author" align="Left" italics="true" color="grey"/>
+                </stack>
+            </scroll-view>
+        </horizontal>
+        <horizontal pref-width="63" pref-height="50" pad-left="3" pad-bottom="1">
+            <text-page id="descriptionText"/>
+        </horizontal>
+        <icon-segments id="creationIconControl" data="creationButtonData" spacing="1" size-delta-y="8" select-cell="creationIconClicked"/>
+        <icon-segments id="editIconControl" data="editButtonData" spacing="1" size-delta-y="8" select-cell="editIconClicked" active="false"/>
+    </vertical>
+    <modal id="coverModal" size-delta-x="80" size-delta-y="55" click-off-closes="true">
+        <grid id="imageGrid" anchor-pos-x="2" anchor-pos-y="-2" vertical-fit="Unconstrained" cell-size-x="10" cell-size-y="10" spacing-x="1" spacing-y="1">
+            <macro.as-host host="imageGrid">
+                <macro.repeat count="28">
+                    <clickable-image pref-width="10" pref-height="10"/>
+                </macro.repeat>
+            </macro.as-host>
+        </grid>
+        <horizontal spacing="10" anchor-pos-y="-22.5" pref-height="5">
+            <page-button id="imageLeft" on-click="imageLeftClicked" direction="Left" pref-width="3" pref-height="3"/>
+            <page-button id="imageRight" on-click="imageRightClicked" direction="Right" pref-width="3" pref-height="3"/>
+        </horizontal>
+    </modal>
+    <modal id="confirmModal" size-delta-x="68" size-delta-y="20" click-off-closes="true">
+        <vertical child-align="MiddleCenter" child-expand-width="false" child-control-height="false">
+            <text text="Are you sure?" size-delta-y="2"/>
+            <horizontal spacing="2">
+                <button text="CONFIRM" on-click="modalYesClicked"/>
+                <button text="CANCEL" on-click="confirmModal#Hide"/>
+            </horizontal>
+        </vertical>
+    </modal>
+    <modal id="processingModal" size-delta-x="40" size-delta-y="20" click-off-closes="false">
+        <vertical>
+            <text id="syncText" text="Syncing playlist..." align="Center"/>
+            <text id="downloadText" text="Downloading songs..." align="Center" active="false"/>
+        </vertical>
+    </modal>
+</bg>

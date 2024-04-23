@@ -1,0 +1,10 @@
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd">
+    <scrollable-container id="scroller" mask-overflow="false" anchor-pos-y="-5">
+        <grid id="grid" cell-size-x="15" cell-size-y="15" spacing-x="2" spacing-y="2">
+            <horizontal id="addCell" pref-width="15" pref-height="15" child-align="UpperLeft" child-control-width="false" child-control-height="false">
+                <action-button text="+" hover-hint="Create new playlist" pref-width="-1" on-click="addClicked" italics="false"/>
+            </horizontal>
+            <horizontal id="fakeCell" pref-width="15" pref-height="15" active="false"/>
+        </grid>
+    </scrollable-container>
+</bg>

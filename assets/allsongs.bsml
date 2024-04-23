@@ -1,0 +1,34 @@
+<bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd">
+    <text text="All songs" font-size="3" align="Center" anchor-pos-x="-28" anchor-pos-y="28.5"/>
+    <horizontal id="searchBar" anchor-pos-y="35" child-control-width="true" spacing="3" pad-right="3">
+        <icon-button pref-width="9" pref-height="9" on-click="filterModal#Show" icon="#FilterIcon"/>
+        <clickable-image id="linkButton" src="PlaylistManager_link_png" hover-hint="Sync search and filter" preserve-aspect="true" highlight-color="grey" on-click="linkClicked"/>
+        <clickable-image id="unlinkButton" src="PlaylistManager_unlink_png" hover-hint="Separate search and filter" preserve-aspect="true" highlight-color="grey" on-click="unlinkClicked" active="false"/>
+    </horizontal>
+    <horizontal child-align="MiddleCenter" child-expand-width="false">
+        <loading-indicator id="loadingIndicator" preserve-aspect="true" pref-width="10" pref-height="10" active="false"/>
+        <text id="emptyText" text="No songs" active="false"/>
+    </horizontal>
+    <horizontal id="levelList" anchor-pos-y="-6" pref-height="64" size-delta-x="6" anchor-pos-x="-3" child-align="UpperLeft">
+        <vertical child-align="UpperCenter" horizontal-fit="PreferredSize" child-expand-height="false" pref-width="4" pad-right="-9">
+            <clickable-image id="optionsButton" src="PlaylistManager_options_png" hover-hint="Selection options" pref-width="4" pref-height="4" preserve-aspect="true" on-click="optionsModal#Show"/>
+            <text id="selectionText" text="0" align="Center" font-size="2"/>
+        </vertical>
+        <bg id="layout"/>
+    </horizontal>
+    <modal id="filterModal" size-delta-x="70" size-delta-y="38" anchor-pos-x="0" click-off-closes="true">
+        <vertical spacing="2" pref-width="65" vertical-fit="PreferredSize" child-control-width="true" child-control-height="false">
+            <toggle-setting text="Only Owned" on-change="ownedToggled"/>
+            <toggle-setting text="Only Unplayed" on-change="unplayedToggled"/>
+            <dropdown-list-setting id="diffSelector" text="Has Difficulty" choices="difficultyTexts" on-change="difficultySelected"/>
+            <dropdown-list-setting id="charSelector" text="Has Characteristic" choices="characteristicTexts" on-change="characteristicSelected"/>
+        </vertical>
+    </modal>
+    <modal id="optionsModal" size-delta-x="35" size-delta-y="20" anchor-pos-x="-16" anchor-pos-y="18" move-to-center="false" click-off-closes="true">
+        <vertical pad="2">
+            <clickable-text text=": Add to playlist" font-size="4" highlight-color="grey" on-click="addClicked"/>
+            <clickable-text text=": Delete selected songs" font-size="4" highlight-color="grey" on-click="deleteClicked"/>
+            <clickable-text text=": Clear selection" font-size="4" highlight-color="grey" on-click="clearClicked"/>
+        </vertical>
+    </modal>
+</bg>
