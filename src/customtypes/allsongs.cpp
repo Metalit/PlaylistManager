@@ -15,6 +15,7 @@
 #include "UnityEngine/UI/LayoutElement.hpp"
 #include "UnityEngine/UI/LayoutRebuilder.hpp"
 #include "VRUIControls/VRGraphicRaycaster.hpp"
+#include "assets.hpp"
 #include "bsml/shared/BSML.hpp"
 #include "bsml/shared/BSML/MainThreadScheduler.hpp"
 #include "bsml/shared/Helpers/creation.hpp"
@@ -61,8 +62,8 @@ void AllSongs::SetupFields() {
 void AllSongs::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     if (firstActivation) {
         SetupFields();
-        AddHotReload(this, "allsongs");
-        // BSML::parse_and_construct(IncludedAssets::allsongs_bsml, transform, this);
+        // AddHotReload(this, "allsongs");
+        BSML::parse_and_construct(IncludedAssets::allsongs_bsml, transform, this);
     } else
         Refresh();
 }

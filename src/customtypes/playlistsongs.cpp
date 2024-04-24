@@ -64,8 +64,8 @@ void PlaylistSongs::SetupFields() {
 void PlaylistSongs::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     if (firstActivation) {
         SetupFields();
-        AddHotReload(this, "playlistsongs");
-        // BSML::parse_and_construct(IncludedAssets::playlistsongs_bsml, transform, this);
+        // AddHotReload(this, "playlistsongs");
+        BSML::parse_and_construct(IncludedAssets::playlistsongs_bsml, transform, this);
     } else
         Refresh();
 }
