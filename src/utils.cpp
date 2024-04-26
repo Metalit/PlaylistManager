@@ -200,6 +200,7 @@ namespace Utils {
         UnityEngine::Color highlightColor
     ) {
         auto parent = text->transform->parent->gameObject;
+        parent->active = false;
         auto ret = parent->AddComponent<HMUI::InputFieldView*>();
         ret->_textView = text;
         ret->_blinkingCaret = caret;
@@ -222,8 +223,7 @@ namespace Utils {
         text->color = textColor;
         placeholder->active = false;
         parent->AddComponent<HMUI::Touchable*>();
-        // not sure why this is necessary or why the selection state doesn't work, InputFieldView should have the same interface
-        parent->AddComponent<PlaylistManager::DragIntercept*>();
+        parent->active = true;
         return ret;
     }
 

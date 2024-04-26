@@ -69,7 +69,7 @@ void PlaylistInfo::PostParse() {
 
     nameInput = Utils::CreateInput(nameText, dummyImage, dummyButton, namePlaceholder, {0, -9}, [this](StringW input) { nameTyped(input); });
     authorInput = Utils::CreateInput(
-        authorText, dummyImage, dummyButton, authorPlaceholder, {0, -3}, [this](StringW input) { authorTyped(input); }, {0.8, 0.8, 0.8, 1}
+        authorText, dummyImage, dummyButton, authorPlaceholder, {0, -3}, [this](StringW input) { authorTyped(input); }, {0.7, 0.7, 0.7, 1}
     );
 
     if (!imageGrid || !creationIconControl || !editIconControl)

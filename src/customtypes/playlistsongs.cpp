@@ -78,6 +78,7 @@ void PlaylistSongs::PostParse() {
     auto existing = UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelCollectionTableView*>()->First([](auto obj) {
         return obj->transform->parent->name == std::string("LevelCollecionViewController");
     });
+    layout->gameObject->active = false;
     levelTable = UnityEngine::Object::Instantiate(existing, layout, false);
     levelTable->_additionalContentModel = existing->_additionalContentModel;
     levelTable->_entitlementModel = existing->_entitlementModel;
@@ -87,6 +88,7 @@ void PlaylistSongs::PostParse() {
     levelTable->_tableView->scrollView->_platformHelper = BSML::Helpers::GetIVRPlatformHelper();
     levelTable->_tableView->selectionType = HMUI::TableViewSelectionType::Multiple;
     levelTable->_showLevelPackHeader = false;
+    layout->gameObject->active = true;
 
     auto currentContent = levelTable->_tableView->scrollView->contentTransform;
     for (auto& cell : currentContent->GetComponentsInChildren<HMUI::TableCell*>()) {

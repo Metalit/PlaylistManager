@@ -141,6 +141,8 @@ MAKE_HOOK_MATCH(StandardLevelDetailView_RefreshContent, &StandardLevelDetailView
         }
 
         auto selection = self->GetComponentInParent<LevelSelectionNavigationController*>();
+        if (!selection || !selection->_levelFilteringNavigationController)
+            return;
         if (selection->_levelFilteringNavigationController->selectedLevelCategory != SelectLevelCategoryViewController::LevelCategory::CustomSongs)
             return;
 
