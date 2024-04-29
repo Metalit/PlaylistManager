@@ -1,5 +1,6 @@
 #include "customtypes/gridcell.hpp"
 
+#include "HMUI/Interactable.hpp"
 #include "System/Single.hpp"
 #include "UnityEngine/EventSystems/EventSystem.hpp"
 #include "UnityEngine/EventSystems/PointerEventData.hpp"
@@ -112,5 +113,6 @@ GridCell* GridCell::Create(UnityEngine::Transform* parent, StringW hover, UnityE
     ret->hoverHint = image->gameObject->AddComponent<HMUI::HoverHint*>();
     ret->hoverHint->_hoverHintController = BSML::Helpers::GetHoverHintController();
     ret->hoverHint->text = hover;
+    image->gameObject->AddComponent<HMUI::Interactable*>();
     return ret;
 }
