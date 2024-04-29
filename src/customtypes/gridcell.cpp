@@ -10,6 +10,7 @@
 #include "VRUIControls/VRInputModule.hpp"
 #include "bsml/shared/BSML-Lite.hpp"
 #include "bsml/shared/Helpers/getters.hpp"
+#include "bsml/shared/Helpers/utilities.hpp"
 #include "main.hpp"
 #include "utils.hpp"
 
@@ -17,8 +18,8 @@ DEFINE_TYPE(PlaylistManager, GridCell);
 
 using namespace PlaylistManager;
 
-static constexpr UnityEngine::Color defaultColor = {1, 1, 1, 1};
-static constexpr UnityEngine::Color highlightColor = {0.6, 0.8, 1, 1};
+static constexpr UnityEngine::Color defaultColor = {1, 1, 1, 0};
+static constexpr UnityEngine::Color highlightColor = {0.0, 0.75, 1, 1};
 
 void GridCell::SetDragging(bool value) {
     isDragging = value;
@@ -50,7 +51,7 @@ UnityEngine::Vector3 GridCell::GetPointerPos(UnityEngine::EventSystems::PointerE
 void GridCell::OnDisable() {
     if (isDragging)
         SetDragging(false);
-    image->color = defaultColor;
+    selectionImage->color = defaultColor;
 }
 
 void GridCell::OnInitializePotentialDrag(UnityEngine::EventSystems::PointerEventData* eventData) {
@@ -72,6 +73,7 @@ void GridCell::OnDrag(UnityEngine::EventSystems::PointerEventData* eventData) {
     }
     if (isDragging) {
         transform->localPosition = UnityEngine::Vector3::op_Addition(pos, pointerGrab);
+        hoverHint->OnPointerEnter(nullptr);
         if (onDrag)
             onDrag();
     }
@@ -89,30 +91,37 @@ void GridCell::OnDrop(UnityEngine::EventSystems::PointerEventData* eventData) {
 }
 
 void GridCell::OnPointerEnter(UnityEngine::EventSystems::PointerEventData* eventData) {
-    image->color = highlightColor;
+    selectionImage->color = highlightColor;
     if (eventData->pointerDrag)
         eventData->pointerPress = gameObject;
 }
 
 void GridCell::OnPointerExit(UnityEngine::EventSystems::PointerEventData* eventData) {
-    image->color = defaultColor;
+    selectionImage->color = defaultColor;
 }
 
 void GridCell::SetData(StringW hover, UnityEngine::Sprite* sprite) {
-    image->sprite = sprite;
+    spriteImage->sprite = sprite;
     hoverHint->text = hover;
 }
 
 GridCell* GridCell::Create(UnityEngine::Transform* parent, StringW hover, UnityEngine::Sprite* sprite) {
-    auto image = BSML::Lite::CreateImage(parent, sprite, {}, {15, 15});
-    image->material = Utils::GetCurvedCornersMaterial();
+    auto playlistImage = BSML::Lite::CreateImage(parent, sprite, {}, {14, 14});
+    playlistImage->material = Utils::GetCurvedCornersMaterial();
+    playlistImage->name = "PlaylistManagerPlaylistImage";
+
+    auto image = BSML::Lite::CreateImage(playlistImage, BSML::Utilities::FindSpriteCached("ArtworkSmallGlow"), {}, {21.0f, 21.0f});
     image->name = "PlaylistManagerGridCell";
-    auto ret = image->gameObject->AddComponent<GridCell*>();
-    ret->image = image;
-    ret->layout = image->GetComponent<UnityEngine::UI::LayoutElement*>();
-    ret->hoverHint = image->gameObject->AddComponent<HMUI::HoverHint*>();
+    image->color = defaultColor;
+    image->m_RaycastTarget = false;
+
+    auto ret = playlistImage->gameObject->AddComponent<GridCell*>();
+    ret->selectionImage = image;
+    ret->spriteImage = playlistImage;
+    ret->layout = playlistImage->GetComponent<UnityEngine::UI::LayoutElement*>();
+    ret->hoverHint = playlistImage->gameObject->AddComponent<HMUI::HoverHint*>();
     ret->hoverHint->_hoverHintController = BSML::Helpers::GetHoverHintController();
     ret->hoverHint->text = hover;
-    image->gameObject->AddComponent<HMUI::Interactable*>();
+    playlistImage->gameObject->AddComponent<HMUI::Interactable*>();
     return ret;
 }

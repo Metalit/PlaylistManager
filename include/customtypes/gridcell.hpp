@@ -29,7 +29,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, GridCell, UnityEngine::MonoBeh
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_FIELD(bool, isDragging);
-    DECLARE_INSTANCE_FIELD_DEFAULT(float, threshold, 15);
+    DECLARE_INSTANCE_FIELD_DEFAULT(float, threshold, 14);
     DECLARE_INSTANCE_METHOD(void, SetDragging, bool value);
     DECLARE_INSTANCE_FIELD(UnityEngine::Vector3, pointerGrab);
     DECLARE_INSTANCE_METHOD(bool, IsPosValid, UES::PointerEventData* eventData);
@@ -43,7 +43,8 @@ DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, GridCell, UnityEngine::MonoBeh
     DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerExit, &UES::IPointerExitHandler::OnPointerExit, UES::PointerEventData* eventData);
 
     DECLARE_INSTANCE_FIELD(HMUI::HoverHint*, hoverHint);
-    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, image);
+    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, selectionImage);
+    DECLARE_INSTANCE_FIELD(HMUI::ImageView*, spriteImage);
     DECLARE_INSTANCE_FIELD(UnityEngine::UI::LayoutElement*, layout);
     DECLARE_INSTANCE_FIELD(UnityEngine::Canvas*, canvas);
     DECLARE_INSTANCE_METHOD(void, SetData, StringW hover = "", UnityEngine::Sprite* sprite = nullptr);
