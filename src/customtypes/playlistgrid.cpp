@@ -15,8 +15,8 @@ using namespace PlaylistManager;
 
 static constexpr int minCols = 5;
 static constexpr int maxCols = 7;
-static constexpr int cellSize = 15;
-static constexpr int cellGap = 2;
+static constexpr int cellSize = 14;
+static constexpr int cellGap = 1;
 
 inline constexpr int roundUpDiv(int a, int b) {
     return (a + b - 1) / b;
