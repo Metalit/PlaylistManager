@@ -200,11 +200,31 @@ void AllSongs::FinishFilterTask() {
 }
 
 void AllSongs::UpdateOptionsButton() {
-    if (!levelTable || !optionsButton || !selectionText)
+    if (!levelTable || !optionsButton || !selectionText || !deleteText || !deleteTextNoClick)
         return;
-    int selected = levelTable->_tableView->_selectedCellIdxs->Count;
-    optionsButton->active = selected > 0;
-    selectionText->text = std::to_string(selected);
+    auto selected = Utils::GetSelected(levelTable->_tableView);
+    optionsButton->active = selected.size() > 0;
+    selectionText->text = std::to_string(selected.size());
+
+    bool canDelete = false;
+    for (auto& idx : selected) {
+        if (il2cpp_utils::try_cast<SongCore::SongLoader::CustomBeatmapLevel>(currentLevels[idx])) {
+            canDelete = true;
+            break;
+        }
+    }
+    deleteText->gameObject->active = canDelete;
+    deleteTextNoClick->active = !canDelete;
+}
+
+void AllSongs::CloseOptions() {
+    if (!optionsModal)
+        return;
+    auto onHide = BSML::MakeSystemAction([modal = optionsModal]() {
+        for (auto text : modal->GetComponentsInChildren<BSML::ClickableText*>())
+            text->set_isHighlighted(false);
+    });
+    optionsModal->Hide(true, onHide);
 }
 
 void AllSongs::SetLoading(bool value) {
@@ -295,18 +315,18 @@ void AllSongs::characteristicSelected(StringW value) {
 
 void AllSongs::addClicked() {
     auto playlist = Manager::GetSelectedPlaylist();
-    if (!playlist || !levelTable || !optionsModal)
+    if (!playlist || !levelTable)
         return;
 
     for (auto& idx : Utils::GetSelected(levelTable->_tableView))
         PlaylistCore::AddSongToPlaylist(playlist, currentLevels[idx]);
 
-    optionsModal->Hide(true, nullptr);
+    CloseOptions();
     PlaylistSongs::GetInstance()->Refresh();
 }
 
 void AllSongs::deleteClicked() {
-    if (!levelTable || !optionsModal)
+    if (!levelTable)
         return;
 
     std::vector<std::shared_future<void>> futures = {};
@@ -318,8 +338,9 @@ void AllSongs::deleteClicked() {
         }
     }
 
-    optionsModal->Hide(true, nullptr);
+    CloseOptions();
     SetLoading(true);
+
     BSML::MainThreadScheduler::ScheduleUntil(
         [futures]() {
             for (auto& future : futures) {
@@ -333,9 +354,9 @@ void AllSongs::deleteClicked() {
 }
 
 void AllSongs::clearClicked() {
-    if (!levelTable || !optionsModal)
+    if (!levelTable)
         return;
     levelTable->_tableView->ClearSelection();
-    optionsModal->Hide(true, nullptr);
+    CloseOptions();
     UpdateOptionsButton();
 }

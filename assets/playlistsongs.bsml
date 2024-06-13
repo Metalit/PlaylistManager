@@ -26,7 +26,8 @@
         <vertical pad="2">
             <clickable-text text=": Remove from playlist" font-size="4" highlight-color="grey" on-click="removeClicked"/>
             <clickable-text text=": Use covers as cover" font-size="4" highlight-color="grey" on-click="coversClicked"/>
-            <clickable-text text=": Delete and remove" font-size="4" highlight-color="grey" on-click="deleteClicked"/>
+            <clickable-text id="deleteText" text=": Delete and remove" font-size="4" highlight-color="grey" on-click="deleteClicked"/>
+            <text id="deleteTextNoClick" text=": Delete and remove" font-size="4" color="#ffffff4d" active="false"/>
             <clickable-text text=": Clear selection" font-size="4" highlight-color="grey" on-click="clearClicked"/>
             <clickable-text text=": Highlight Difficulties" font-size="4" highlight-color="grey" on-click="highlightClicked"/>
         </vertical>

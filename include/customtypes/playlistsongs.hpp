@@ -12,6 +12,7 @@
 #include "System/Threading/Tasks/Task_1.hpp"
 #include "TMPro/TextMeshProUGUI.hpp"
 #include "UnityEngine/UI/VerticalLayoutGroup.hpp"
+#include "bsml/shared/BSML/Components/ClickableText.hpp"
 #include "bsml/shared/BSML/Components/Settings/DropdownListSetting.hpp"
 #include "bsml/shared/BSML/Components/Settings/ToggleSetting.hpp"
 
@@ -30,6 +31,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController,
     DECLARE_INSTANCE_METHOD(void, UpdateHighlightCharacteristics);
     DECLARE_INSTANCE_METHOD(void, UpdateHighlightDifficulties);
     DECLARE_INSTANCE_METHOD(void, UpdateOptionsButton);
+    DECLARE_INSTANCE_METHOD(void, CloseOptions);
     DECLARE_INSTANCE_METHOD(void, SetLoading, bool value);
     DECLARE_INSTANCE_METHOD(void, SetOverrideFilter, GlobalNamespace::LevelFilter* value);
 
@@ -49,6 +51,8 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController,
     DECLARE_INSTANCE_FIELD(BSML::DropdownListSetting*, diffSelector);
     DECLARE_INSTANCE_FIELD(BSML::DropdownListSetting*, charSelector);
     DECLARE_INSTANCE_FIELD(HMUI::ModalView*, optionsModal);
+    DECLARE_INSTANCE_FIELD(BSML::ClickableText*, deleteText);
+    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, deleteTextNoClick);
     DECLARE_INSTANCE_FIELD(HMUI::ModalView*, highlightModal);
     DECLARE_INSTANCE_FIELD(BSML::DropdownListSetting*, highlightCharSelector);
     DECLARE_INSTANCE_FIELD(ArrayW<BSML::ToggleSetting*>, highlightToggles);
