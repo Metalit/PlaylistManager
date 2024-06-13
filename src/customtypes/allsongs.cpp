@@ -52,10 +52,13 @@ void AllSongs::SetupFields() {
     characteristicTexts = ListW<StringW>::New(characteristics->Count);
     for (auto& characteristic : characteristics)
         characteristicTexts->Add(Utils::CharacteristicName(characteristic));
+    // weird const requrement
+    characteristicTextsWithAll = ListW<StringW>::New((std::span<StringW const>) characteristicTexts.ref_to());
+    characteristicTextsWithAll->Insert(0, "All");
 
     filter.searchText = "";
     filter.difficulties = GlobalNamespace::BeatmapDifficultyMask::All;
-    filter.characteristicSerializedName = "Standard";
+    filter.characteristicSerializedName = nullptr;
 
     playerDataModel = filterer->_playerDataModel;
 }
@@ -273,9 +276,12 @@ void AllSongs::difficultySelected(StringW value) {
 }
 
 void AllSongs::characteristicSelected(StringW value) {
-    auto idx = characteristicTexts.index_of(value).value();
-    auto characteristic = characteristics[idx];
-    filter.characteristicSerializedName = characteristic->serializedName;
+    if (value != "All") {
+        auto idx = characteristicTexts.index_of(value).value();
+        auto characteristic = characteristics[idx];
+        filter.characteristicSerializedName = characteristic->serializedName;
+    } else
+        filter.characteristicSerializedName = nullptr;
     Refresh();
 }
 

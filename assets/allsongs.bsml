@@ -21,7 +21,7 @@
             <toggle-setting text="Only Owned" on-change="ownedToggled"/>
             <toggle-setting text="Only Unplayed" on-change="unplayedToggled"/>
             <dropdown-list-setting id="diffSelector" text="Has Difficulty" choices="difficultyTexts" on-change="difficultySelected"/>
-            <dropdown-list-setting id="charSelector" text="Has Characteristic" choices="characteristicTexts" on-change="characteristicSelected"/>
+            <dropdown-list-setting id="charSelector" text="Has Characteristic" choices="characteristicTextsWithAll" on-change="characteristicSelected"/>
         </vertical>
     </modal>
     <modal id="optionsModal" size-delta-x="35" size-delta-y="20" anchor-pos-x="-16" anchor-pos-y="18" move-to-center="false" click-off-closes="true">

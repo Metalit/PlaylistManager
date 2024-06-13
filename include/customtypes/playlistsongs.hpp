@@ -35,6 +35,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController,
 
     DECLARE_INSTANCE_FIELD(ListW<StringW>, difficultyTexts);
     DECLARE_INSTANCE_FIELD(ListW<StringW>, characteristicTexts);
+    DECLARE_INSTANCE_FIELD(ListW<StringW>, characteristicTextsWithAll);
 
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, loadingIndicator);
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, emptyText);
