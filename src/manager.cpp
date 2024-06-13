@@ -1,8 +1,6 @@
 #include "manager.hpp"
 
 #include "GlobalNamespace/LevelFilteringNavigationController.hpp"
-#include "UnityEngine/Networking/DownloadHandler.hpp"
-#include "UnityEngine/Networking/UnityWebRequest.hpp"
 #include "bsml/shared/BSML/MainThreadScheduler.hpp"
 #include "bsml/shared/Helpers/getters.hpp"
 #include "customtypes/allsongs.hpp"
@@ -14,7 +12,8 @@
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "shortcuts.hpp"
 #include "songcore/shared/SongCore.hpp"
-#include "songdownloader/shared/BeatSaverAPI.hpp"
+#include "utils.hpp"
+#include "web-utils/shared/WebUtils.hpp"
 
 using namespace PlaylistManager;
 
@@ -235,49 +234,46 @@ namespace Manager {
         PlaylistInfo::GetInstance()->Refresh();
     }
 
-    void DownloadProgress(int done, int total) {
-        BSML::MainThreadScheduler::Schedule([done, total]() {
+    void DownloadProgress(int total, int done) {
+        BSML::MainThreadScheduler::Schedule([total, done]() {
             logger.info("download progress {} {}/{}", processingPlaylist->name, done, total);
 
             auto progress = MainMenu::GetProgress();
+            progress->gameObject->active = true;
             progress->subText1->text = fmt::format("{} / {}", done, total);
             progress->SetProgress(done / (float) total);
         });
     }
 
     void FinishDownload() {
-        BSML::MainThreadScheduler::Schedule([]() {
-            logger.info("finishing missing songs download {}", processingPlaylist->name);
+        logger.info("finishing missing songs download {}", processingPlaylist->name);
 
-            MainMenu::GetProgress()->gameObject->active = false;
-            PlaylistCore::MarkPlaylistForReload(processingPlaylist);
+        MainMenu::GetProgress()->gameObject->active = false;
+        PlaylistCore::MarkPlaylistForReload(processingPlaylist);
 
-            processingPlaylist = nullptr;
-            downloading = false;
-            SongCore::API::Loading::RefreshSongs();
-            // songloader event will refresh
-        });
+        processingPlaylist = nullptr;
+        downloading = false;
+        SongCore::API::Loading::RefreshSongs();
+        // songloader event will refresh
     }
 
     void FinishSync() {
-        BSML::MainThreadScheduler::Schedule([]() {
-            logger.info("finishing playlist sync {}", processingPlaylist->name);
+        logger.info("finishing playlist sync {}", processingPlaylist->name);
 
-            MainMenu::GetProgress()->gameObject->active = false;
-            PlaylistCore::MarkPlaylistForReload(processingPlaylist);
+        MainMenu::GetProgress()->gameObject->active = false;
+        PlaylistCore::MarkPlaylistForReload(processingPlaylist);
 
-            bool refreshSongs = downloading;
-            processingPlaylist = nullptr;
-            syncing = false;
-            downloading = false;
+        bool refreshSongs = downloading;
+        processingPlaylist = nullptr;
+        syncing = false;
+        downloading = false;
 
-            if (refreshSongs)
-                SongCore::API::Loading::RefreshSongs();
-            else
-                PlaylistCore::ReloadPlaylists();
-            shouldReload = false;
-            // songloader events will refresh
-        });
+        if (refreshSongs)
+            SongCore::API::Loading::RefreshSongs();
+        else
+            PlaylistCore::ReloadPlaylists();
+        shouldReload = false;
+        // songloader events will refresh
     }
 
     void DownloadMissing() {
@@ -290,7 +286,7 @@ namespace Manager {
         downloading = true;
         PlaylistInfo::GetInstance()->RefreshProcessing();
 
-        BeatSaver::API::DownloadMissingSongsFromPlaylist(processingPlaylist, FinishDownload, DownloadProgress);
+        PlaylistCore::DownloadMissingSongsFromPlaylist(processingPlaylist, FinishDownload, DownloadProgress);
     }
 
     void Sync() {
@@ -307,31 +303,37 @@ namespace Manager {
         if (!json.CustomData.has_value() || !json.CustomData->SyncURL.has_value())
             return;
         auto url = *json.CustomData->SyncURL;
-        auto webRequest = UnityEngine::Networking::UnityWebRequest::Get(url);
-        webRequest->SendWebRequest();
 
-        BSML::MainThreadScheduler::ScheduleUntil(
-            [webRequest]() { return webRequest->isDone; },
-            [webRequest, url]() {
-                if (webRequest->GetError() != UnityEngine::Networking::UnityWebRequest::UnityWebRequestError::OK) {
-                    logger.error("web request failed: {} ({})", (int) webRequest->GetError(), url);
+        WebUtils::GetAsync<WebUtils::StringResponse>({url}, [url](WebUtils::StringResponse response) {
+            BSML::MainThreadScheduler::Schedule([url, response]() {
+                if (!response.responseData || !response.IsSuccessful()) {
+                    logger.error("{} request failed: {} {}", url, response.httpCode, response.curlStatus);
+                    processingPlaylist = nullptr;
+                    syncing = false;
+                    PlaylistInfo::GetInstance()->RefreshProcessing();
                     return;
                 }
-                std::string text = webRequest->downloadHandler->text;
                 try {
-                    ReadFromString(text, processingPlaylist->playlistJSON);
+                    ReadFromString(*response.responseData, processingPlaylist->playlistJSON);
                 } catch (JSONException const& exc) {
-                    logger.error("reading web request response failed: {} ({})", exc.what(), url);
+                    logger.error("reading playlist sync response failed: {} ({})", exc.what(), url);
                 }
+                // keep sync url if none is downloaded
+                if (!processingPlaylist->playlistJSON.CustomData)
+                    processingPlaylist->playlistJSON.CustomData.emplace();
+                if (!processingPlaylist->playlistJSON.CustomData->SyncURL)
+                    processingPlaylist->playlistJSON.CustomData->SyncURL = url;
                 processingPlaylist->Save();
+                SetShouldReload(processingPlaylist);
+                Reload();
 
                 if (PlaylistCore::PlaylistHasMissingSongs(processingPlaylist)) {
                     downloading = true;
                     PlaylistInfo::GetInstance()->RefreshProcessing();
-                    BeatSaver::API::DownloadMissingSongsFromPlaylist(processingPlaylist, FinishSync, DownloadProgress);
+                    PlaylistCore::DownloadMissingSongsFromPlaylist(processingPlaylist, FinishSync, DownloadProgress);
                 } else
                     FinishSync();
-            }
-        );
+            });
+        });
     }
 }

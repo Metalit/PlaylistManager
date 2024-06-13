@@ -5,7 +5,6 @@
 #include "GlobalNamespace/BeatmapCharacteristicsDropdown.hpp"
 #include "GlobalNamespace/BeatmapDifficultyMethods.hpp"
 #include "GlobalNamespace/PlayerData.hpp"
-#include "GlobalNamespace/PlayerDataModel.hpp"
 #include "GlobalNamespace/SearchFilterParamsViewController.hpp"
 #include "HMUI/ScrollView.hpp"
 #include "System/Collections/Generic/HashSet_1.hpp"
@@ -57,6 +56,8 @@ void AllSongs::SetupFields() {
     filter.searchText = "";
     filter.difficulties = GlobalNamespace::BeatmapDifficultyMask::All;
     filter.characteristicSerializedName = "Standard";
+
+    playerDataModel = filterer->_playerDataModel;
 }
 
 void AllSongs::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -81,7 +82,6 @@ void AllSongs::PostParse() {
     levelTable->_additionalContentModel = existing->_additionalContentModel;
     levelTable->_entitlementModel = existing->_entitlementModel;
     levelTable->_beatmapLevelsPromoModel = existing->_beatmapLevelsPromoModel;
-    levelTable->_playerDataModel = existing->_playerDataModel;
     levelTable->_tableView->GetComponent<VRUIControls::VRGraphicRaycaster*>()->_physicsRaycaster = BSML::Helpers::GetPhysicsRaycasterWithCache();
     levelTable->_tableView->scrollView->_platformHelper = BSML::Helpers::GetIVRPlatformHelper();
     levelTable->_tableView->selectionType = HMUI::TableViewSelectionType::Multiple;
@@ -138,8 +138,7 @@ void AllSongs::Refresh() {
     auto levelPacks = ArrayW<GlobalNamespace::BeatmapLevelPack*>(1);
     levelPacks[0] = (SongCore::SongLoader::CustomLevelPack*) SongCore::API::Loading::GetCustomLevelPack();
 
-    filterTask =
-        GlobalNamespace::LevelFilter::FilterLevelsAsync(levelPacks, filter, levelTable->_playerDataModel, levelTable->_entitlementModel, nullptr);
+    filterTask = GlobalNamespace::LevelFilter::FilterLevelsAsync(levelPacks, filter, playerDataModel, levelTable->_entitlementModel, nullptr);
 
     if (filterTask->IsCompleted) {
         FinishFilterTask();
@@ -173,7 +172,7 @@ void AllSongs::FinishFilterTask() {
 
     float scrollPos = levelTable->_tableView->contentTransform->anchoredPosition.y;
     auto castLevels = (System::Collections::Generic::IReadOnlyList_1<GlobalNamespace::BeatmapLevel*>*) currentLevels.convert();
-    levelTable->SetData(castLevels, levelTable->_playerDataModel->playerData->favoritesLevelIds, true, true);
+    levelTable->SetData(castLevels, playerDataModel->playerData->favoritesLevelIds, true, true);
     // alphabet scrollbar sorting sometimes disagrees with songcore
     currentLevels = levelTable->_beatmapLevels;
     levelTable->_tableView->scrollView->ScrollTo(scrollPos, false);

@@ -5,6 +5,7 @@
 #include "GlobalNamespace/BeatmapCharacteristicSO.hpp"
 #include "GlobalNamespace/LevelCollectionTableView.hpp"
 #include "GlobalNamespace/LevelFilter.hpp"
+#include "GlobalNamespace/PlayerDataModel.hpp"
 #include "HMUI/InputFieldView.hpp"
 #include "HMUI/ModalView.hpp"
 #include "HMUI/ViewController.hpp"
@@ -74,6 +75,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController,
     DECLARE_INSTANCE_FIELD_DEFAULT(GlobalNamespace::LevelFilter, filter, {});
     DECLARE_INSTANCE_FIELD_DEFAULT(GlobalNamespace::LevelFilter*, overrideFilter, nullptr);
     DECLARE_INSTANCE_FIELD(System::Threading::Tasks::Task_1<ArrayW<GlobalNamespace::BeatmapLevel*>>*, filterTask);
+    DECLARE_INSTANCE_FIELD(GlobalNamespace::PlayerDataModel*, playerDataModel);
 
    private:
     static inline PlaylistSongs* instance;

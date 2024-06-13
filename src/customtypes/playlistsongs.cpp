@@ -5,7 +5,6 @@
 #include "GlobalNamespace/BeatmapCharacteristicsDropdown.hpp"
 #include "GlobalNamespace/BeatmapDifficultyMethods.hpp"
 #include "GlobalNamespace/PlayerData.hpp"
-#include "GlobalNamespace/PlayerDataModel.hpp"
 #include "GlobalNamespace/SearchFilterParamsViewController.hpp"
 #include "HMUI/ScrollView.hpp"
 #include "System/Collections/Generic/HashSet_1.hpp"
@@ -59,6 +58,8 @@ void PlaylistSongs::SetupFields() {
     filter.searchText = "";
     filter.difficulties = GlobalNamespace::BeatmapDifficultyMask::All;
     filter.characteristicSerializedName = "Standard";
+
+    playerDataModel = filterer->_playerDataModel;
 }
 
 void PlaylistSongs::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -83,7 +84,6 @@ void PlaylistSongs::PostParse() {
     levelTable->_additionalContentModel = existing->_additionalContentModel;
     levelTable->_entitlementModel = existing->_entitlementModel;
     levelTable->_beatmapLevelsPromoModel = existing->_beatmapLevelsPromoModel;
-    levelTable->_playerDataModel = existing->_playerDataModel;
     levelTable->_tableView->GetComponent<VRUIControls::VRGraphicRaycaster*>()->_physicsRaycaster = BSML::Helpers::GetPhysicsRaycasterWithCache();
     levelTable->_tableView->scrollView->_platformHelper = BSML::Helpers::GetIVRPlatformHelper();
     levelTable->_tableView->selectionType = HMUI::TableViewSelectionType::Multiple;
@@ -168,8 +168,7 @@ void PlaylistSongs::Refresh() {
     levelPacks[0] = (SongCore::SongLoader::CustomLevelPack*) playlist->playlistCS;
 
     auto& usedFilter = overrideFilter ? *overrideFilter : filter;
-    filterTask =
-        GlobalNamespace::LevelFilter::FilterLevelsAsync(levelPacks, usedFilter, levelTable->_playerDataModel, levelTable->_entitlementModel, nullptr);
+    filterTask = GlobalNamespace::LevelFilter::FilterLevelsAsync(levelPacks, usedFilter, playerDataModel, levelTable->_entitlementModel, nullptr);
 
     if (filterTask->IsCompleted) {
         logger.debug("filtering completed instantly");
@@ -205,7 +204,7 @@ void PlaylistSongs::FinishFilterTask() {
 
     float scrollPos = levelTable->_tableView->contentTransform->anchoredPosition.y;
     auto castLevels = (System::Collections::Generic::IReadOnlyList_1<GlobalNamespace::BeatmapLevel*>*) currentLevels.convert();
-    levelTable->SetData(castLevels, levelTable->_playerDataModel->playerData->favoritesLevelIds, false, false);
+    levelTable->SetData(castLevels, playerDataModel->playerData->favoritesLevelIds, false, false);
     levelTable->_tableView->scrollView->ScrollTo(scrollPos, false);
 
     levelTable->_tableView->ClearSelection();
@@ -419,20 +418,14 @@ void PlaylistSongs::coversClicked() {
         return;
 
     std::string fileName = fmt::format("{}_generated_{}", selectedLevels[0]->songName, selectedLevels.size());
-    fileName = PlaylistCore::Utils::SanitizeFileName(fileName);
 
     auto future = Utils::GenerateCoverImage(selectedLevels);
     BSML::MainThreadScheduler::AwaitFuture(future, [future, fileName]() mutable {
         auto texture = future.get();
         if (texture) {
-            static std::string const dir = "/sdcard/ModData/com.beatgames.beatsaber/Mods/PlaylistManager/Covers/";
-            while (!PlaylistCore::Utils::UniqueFileName(fileName, dir))
-                fileName = "_" + fileName;
-            PlaylistCore::Utils::WriteImageToFile(dir + fileName + ".png", texture);
-            PlaylistCore::LoadCoverImages();
+            int index = PlaylistCore::AddCoverImage(texture, fileName);
             PlaylistInfo::GetInstance()->RefreshImages();
-            logger.debug("setting cover to {}", PlaylistCore::GetLoadedImages().size() - 1);
-            Manager::SetPlaylistCover(PlaylistCore::GetLoadedImages().size() - 1);
+            Manager::SetPlaylistCover(index);
         } else
             Manager::SetPlaylistCover(-1);
     });

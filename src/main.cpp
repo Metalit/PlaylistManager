@@ -157,7 +157,7 @@ MAKE_HOOK_MATCH(StandardLevelDetailView_RefreshContent, &StandardLevelDetailView
             return;
         auto diffs = Utils::GetHighlightedDifficulties(*song, self->_beatmapCharacteristicSegmentedControlController->selectedBeatmapCharacteristic);
 
-        logger.debug("highlighting difficulties {} for level {} in playlist {}", diffs, song->SongName.value_or(song->Hash), playlist->name);
+        logger.debug("highlighting difficulties {} for level {} in playlist {}", diffs, song->SongName.value_or(song->LevelID), playlist->name);
 
         for (int diff : diffs) {
             auto cell = cells[self->_beatmapDifficultySegmentedControlController->GetClosestDifficultyIndex(diff)];

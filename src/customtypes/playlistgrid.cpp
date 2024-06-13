@@ -129,7 +129,8 @@ void PlaylistGrid::Refresh() {
     addCell->SetAsLastSibling();
     fakeCell->SetAsLastSibling();
 
-    grid->StartCoroutine(grid->DelayedSetDirty(grid->rectTransform));
+    if (grid->isActiveAndEnabled)
+        grid->StartCoroutine(grid->DelayedSetDirty(grid->rectTransform));
 }
 
 void PlaylistGrid::addClicked() {

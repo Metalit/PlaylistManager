@@ -273,20 +273,18 @@ namespace Utils {
             return std::any_of(tasks.begin(), tasks.end(), [](auto task) { return !task->IsCompleted; });
         }
         UnityEngine::Texture2D* GetCover(int idx) {
-            auto unreadable = tasks[idx]->Result->texture;
+            auto sprite = tasks[idx]->Result;
+            auto region = sprite->textureRect;
+            auto ret = UnityEngine::Texture2D::New_ctor(region.m_Width, region.m_Height, UnityEngine::TextureFormat::RGBA32, false, false);
+
+            auto unreadable = sprite->texture;
             auto width = unreadable->width;
             auto height = unreadable->height;
-            auto ret = UnityEngine::Texture2D::New_ctor(width, height, UnityEngine::TextureFormat::RGBA32, false, false);
-
             auto tmp = UnityEngine::RenderTexture::GetTemporary(
                 width, height, 0, UnityEngine::RenderTextureFormat::Default, UnityEngine::RenderTextureReadWrite::Default
             );
             UnityEngine::Graphics::Blit(unreadable, tmp);
-            auto active = UnityEngine::RenderTexture::GetActive();
-            UnityEngine::RenderTexture::SetActive(tmp);
-            ret->ReadPixels({0, 0, (float) width, (float) height}, 0, 0);
-            ret->Apply();
-            UnityEngine::RenderTexture::SetActive(active);
+            ret->ReadPixels(region, 0, 0);
             UnityEngine::RenderTexture::ReleaseTemporary(tmp);
 
             return ret;
