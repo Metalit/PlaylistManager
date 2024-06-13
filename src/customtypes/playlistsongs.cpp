@@ -438,15 +438,18 @@ void PlaylistSongs::coversClicked() {
 }
 
 void PlaylistSongs::deleteClicked() {
+    auto playlist = Manager::GetSelectedPlaylist();
     if (!levelTable || !optionsModal)
         return;
 
     std::vector<std::shared_future<void>> futures = {};
     for (auto& idx : Utils::GetSelected(levelTable->_tableView)) {
         auto level = currentLevels[idx];
-        PlaylistCore::RemoveSongFromAllPlaylists(level);
-        if (auto custom = il2cpp_utils::try_cast<SongCore::SongLoader::CustomBeatmapLevel>(level))
+        if (auto custom = il2cpp_utils::try_cast<SongCore::SongLoader::CustomBeatmapLevel>(level)) {
+            PlaylistCore::RemoveSongFromAllPlaylists(level);
             futures.emplace_back(SongCore::API::Loading::DeleteSong(*custom));
+        } else if (playlist)
+            PlaylistCore::RemoveSongFromPlaylist(playlist, level);
     }
 
     optionsModal->Hide(true, nullptr);
@@ -459,10 +462,7 @@ void PlaylistSongs::deleteClicked() {
             }
             return true;
         },
-        [this]() {
-            auto refresh = SongCore::API::Loading::RefreshSongs();
-            BSML::MainThreadScheduler::AwaitFuture(refresh, [this]() { Refresh(); });
-        }
+        [this]() { SongCore::API::Loading::RefreshSongs(); }
     );
 }
 

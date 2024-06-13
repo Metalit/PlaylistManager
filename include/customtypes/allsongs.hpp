@@ -3,6 +3,7 @@
 #include "custom-types/shared/macros.hpp"
 
 #include "GlobalNamespace/BeatmapCharacteristicSO.hpp"
+#include "GlobalNamespace/BeatmapLevelsModel.hpp"
 #include "GlobalNamespace/LevelCollectionTableView.hpp"
 #include "GlobalNamespace/LevelFilter.hpp"
 #include "GlobalNamespace/PlayerDataModel.hpp"
@@ -66,6 +67,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, AllSongs, HMUI::ViewController,
     DECLARE_INSTANCE_FIELD_DEFAULT(GlobalNamespace::LevelFilter, filter, {});
     DECLARE_INSTANCE_FIELD(System::Threading::Tasks::Task_1<ArrayW<GlobalNamespace::BeatmapLevel*>>*, filterTask);
     DECLARE_INSTANCE_FIELD(GlobalNamespace::PlayerDataModel*, playerDataModel);
+    DECLARE_INSTANCE_FIELD(GlobalNamespace::BeatmapLevelsModel*, beatmapLevelsModel);
 
    private:
     static inline AllSongs* instance;

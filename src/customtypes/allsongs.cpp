@@ -61,6 +61,7 @@ void AllSongs::SetupFields() {
     filter.characteristicSerializedName = nullptr;
 
     playerDataModel = filterer->_playerDataModel;
+    beatmapLevelsModel = BSML::Helpers::GetMainFlowCoordinator()->_beatmapLevelsModel;
 }
 
 void AllSongs::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -137,9 +138,16 @@ void AllSongs::Refresh() {
 
     if (unlinkButton->active)
         PlaylistSongs::GetInstance()->Refresh();
-    // todo: osts? would need core support
-    auto levelPacks = ArrayW<GlobalNamespace::BeatmapLevelPack*>(1);
-    levelPacks[0] = (SongCore::SongLoader::CustomLevelPack*) SongCore::API::Loading::GetCustomLevelPack();
+
+    auto osts = beatmapLevelsModel->ostAndExtrasBeatmapLevelsRepository->_beatmapLevelPacks;
+    auto dlcs = beatmapLevelsModel->dlcBeatmapLevelsRepository->_beatmapLevelPacks;
+    auto levelPacks = ArrayW<GlobalNamespace::BeatmapLevelPack*>(osts.size() + dlcs.size() + 1);
+    int i = 0;
+    for (auto& ost : osts)
+        levelPacks[i++] = ost;
+    for (auto& dlc : dlcs)
+        levelPacks[i++] = dlc;
+    levelPacks[i] = SongCore::API::Loading::GetCustomLevelPack();
 
     filterTask = GlobalNamespace::LevelFilter::FilterLevelsAsync(levelPacks, filter, playerDataModel, levelTable->_entitlementModel, nullptr);
 
@@ -304,9 +312,10 @@ void AllSongs::deleteClicked() {
     std::vector<std::shared_future<void>> futures = {};
     for (auto& idx : Utils::GetSelected(levelTable->_tableView)) {
         auto level = currentLevels[idx];
-        PlaylistCore::RemoveSongFromAllPlaylists(level);
-        if (auto custom = il2cpp_utils::try_cast<SongCore::SongLoader::CustomBeatmapLevel>(level))
+        if (auto custom = il2cpp_utils::try_cast<SongCore::SongLoader::CustomBeatmapLevel>(level)) {
+            PlaylistCore::RemoveSongFromAllPlaylists(level);
             futures.emplace_back(SongCore::API::Loading::DeleteSong(*custom));
+        }
     }
 
     optionsModal->Hide(true, nullptr);
@@ -319,10 +328,7 @@ void AllSongs::deleteClicked() {
             }
             return true;
         },
-        [this]() {
-            auto refresh = SongCore::API::Loading::RefreshSongs();
-            BSML::MainThreadScheduler::AwaitFuture(refresh, [this]() { Refresh(); });
-        }
+        []() { SongCore::API::Loading::RefreshSongs(); }
     );
 }
 
