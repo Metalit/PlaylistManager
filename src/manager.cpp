@@ -69,6 +69,7 @@ namespace Manager {
     void OnMenuExit() {
         selectedPlaylist = nullptr;
         addingPlaylist = std::nullopt;
+        addingLevel = nullptr;
         if (shouldReload)
             Reload();
         if (auto nav = UnityEngine::Object::FindObjectOfType<GlobalNamespace::LevelFilteringNavigationController*>())
