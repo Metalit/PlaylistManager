@@ -1,6 +1,7 @@
 #include "manager.hpp"
 
 #include "GlobalNamespace/LevelFilteringNavigationController.hpp"
+#include "UnityEngine/Resources.hpp"
 #include "bsml/shared/BSML/MainThreadScheduler.hpp"
 #include "bsml/shared/Helpers/getters.hpp"
 #include "customtypes/allsongs.hpp"
@@ -21,12 +22,21 @@ namespace Manager {
     std::optional<PlaylistCore::Playlist> addingPlaylist = std::nullopt;
     PlaylistCore::Playlist* selectedPlaylist = nullptr;
     bool shouldReload = false;
+    bool shouldUpdateNav = false;
 
     PlaylistCore::Playlist* processingPlaylist = nullptr;
     bool syncing = false;
     bool downloading = false;
 
     GlobalNamespace::BeatmapLevel* addingLevel = nullptr;
+
+    GlobalNamespace::LevelFilteringNavigationController* filterNav;
+
+    GlobalNamespace::LevelFilteringNavigationController* GetFilterNavigationController() {
+        if (!filterNav)
+            filterNav = UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelFilteringNavigationController*>()->FirstOrDefault();
+        return filterNav;
+    }
 
     void PresentMenu() {
         BSML::Helpers::GetMainFlowCoordinator()->YoungestChildFlowCoordinatorOrSelf()->PresentFlowCoordinator(
@@ -38,9 +48,11 @@ namespace Manager {
         addingPlaylist = std::nullopt;
         selectedPlaylist = nullptr;
         shouldReload = false;
+        shouldUpdateNav = false;
         processingPlaylist = nullptr;
         syncing = false;
         downloading = false;
+        filterNav = nullptr;
         Shortcuts::Invalidate();
     }
 
@@ -72,8 +84,12 @@ namespace Manager {
         addingLevel = nullptr;
         if (shouldReload)
             Reload();
-        if (auto nav = UnityEngine::Object::FindObjectOfType<GlobalNamespace::LevelFilteringNavigationController*>())
+        // fix weird view controller layout issue
+        if (auto nav = GetFilterNavigationController()) {
             nav->LayoutViewControllers(nav->viewControllers);
+            if (shouldUpdateNav)
+                nav->UpdateCustomSongs();
+        }
     }
 
     bool IsCreatingPlaylist() {
@@ -204,6 +220,7 @@ namespace Manager {
         logger.info("deleting playlist {}", selectedPlaylist->name);
         PlaylistCore::DeletePlaylist(selectedPlaylist);
         selectedPlaylist = nullptr;
+        shouldUpdateNav = true;
         Reload();
         MainMenu::GetInstance()->ShowGrid();
     }
