@@ -12,6 +12,7 @@
 
 namespace Shortcuts {
     bool levelShortuctsInitialized = false;
+    std::vector<PlaylistCore::Playlist*> playlists;
     GlobalNamespace::StandardLevelDetailViewController* levelDetailController = nullptr;
     BSML::ScrollView* scrollView;
     UnityEngine::UI::VerticalLayoutGroup* playlistLayout = {};
@@ -49,8 +50,12 @@ namespace Shortcuts {
         levelShortuctsInitialized = true;
     }
 
-    std::pair<HMUI::ImageView*, HMUI::HoverHint*> CreatePlaylistCell(PlaylistCore::Playlist* playlist) {
-        auto image = BSML::Lite::CreateImage(playlistLayout, PlaylistCore::GetCoverImage(playlist));
+    std::pair<HMUI::ImageView*, HMUI::HoverHint*> CreatePlaylistCell(int index) {
+        auto playlist = playlists[index];
+        auto image = BSML::Lite::CreateClickableImage(playlistLayout, PlaylistCore::GetCoverImage(playlist), [index]() {
+            if (index < playlists.size())
+                Manager::PresentEditShortcut(playlists[index]);
+        });
         image->_skew = 0.18;
         image->preserveAspect = true;
         image->rectTransform->sizeDelta = {6, 6};
@@ -62,13 +67,12 @@ namespace Shortcuts {
     void RefreshPlaylistList() {
         if (!levelShortuctsInitialized)
             return;
-        // click to edit playlist?
-        auto playlists = Utils::GetPlaylistsWithSong(levelDetailController->beatmapLevel);
+        playlists = Utils::GetPlaylistsWithSong(levelDetailController->beatmapLevel);
         for (int i = 0; i < playlists.size() || i < playlistCells.size(); i++) {
             if (i >= playlists.size())
                 playlistCells[i].first->gameObject->active = false;
             else if (i >= playlistCells.size())
-                playlistCells.emplace_back(CreatePlaylistCell(playlists[i]));
+                playlistCells.emplace_back(CreatePlaylistCell(i));
             else {
                 playlistCells[i].first->gameObject->active = true;
                 playlistCells[i].first->sprite = PlaylistCore::GetCoverImage(playlists[i]);
@@ -115,6 +119,7 @@ namespace Shortcuts {
 
     void Invalidate() {
         levelShortuctsInitialized = false;
+        playlists.clear();
         levelDetailController = nullptr;
         scrollView = nullptr;
         playlistLayout = nullptr;

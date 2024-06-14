@@ -22,7 +22,7 @@ namespace Manager {
     std::optional<PlaylistCore::Playlist> addingPlaylist = std::nullopt;
     PlaylistCore::Playlist* selectedPlaylist = nullptr;
     bool shouldReload = false;
-    bool shouldUpdateNav = false;
+    std::string packIdFromShortcut = "";
 
     PlaylistCore::Playlist* processingPlaylist = nullptr;
     bool syncing = false;
@@ -48,7 +48,7 @@ namespace Manager {
         addingPlaylist = std::nullopt;
         selectedPlaylist = nullptr;
         shouldReload = false;
-        shouldUpdateNav = false;
+        packIdFromShortcut = "";
         processingPlaylist = nullptr;
         syncing = false;
         downloading = false;
@@ -57,17 +57,25 @@ namespace Manager {
     }
 
     void PresentAddShortcut(GlobalNamespace::BeatmapLevel* level) {
+        if (auto nav = GetFilterNavigationController())
+            packIdFromShortcut = (std::string) nav->selectedBeatmapLevelPack->packID;
         MainMenu::GetInstance()->presentDestination = 0;
         addingLevel = level;
         PresentMenu();
     }
 
-    void PresentEditShortcut(GlobalNamespace::BeatmapLevelPack* pack) {
-        selectedPlaylist = PlaylistCore::GetPlaylistWithPrefix(pack->packID);
-        if (!selectedPlaylist)
+    void PresentEditShortcut(PlaylistCore::Playlist* playlist) {
+        if (!playlist)
             return;
+        if (auto nav = GetFilterNavigationController())
+            packIdFromShortcut = (std::string) nav->selectedBeatmapLevelPack->packID;
+        selectedPlaylist = playlist;
         MainMenu::GetInstance()->presentDestination = 2;
         PresentMenu();
+    }
+
+    void PresentEditShortcut(GlobalNamespace::BeatmapLevelPack* pack) {
+        PresentEditShortcut(PlaylistCore::GetPlaylistWithPrefix(pack->packID));
     }
 
     bool InAddShortcut() {
@@ -84,11 +92,14 @@ namespace Manager {
         addingLevel = nullptr;
         if (shouldReload)
             Reload();
-        // fix weird view controller layout issue
-        if (auto nav = GetFilterNavigationController()) {
+        // fix weird view controller layout issue and update playlists if necessary
+        auto nav = GetFilterNavigationController();
+        if (nav && nav->isInViewControllerHierarchy) {
             nav->LayoutViewControllers(nav->viewControllers);
-            if (shouldUpdateNav)
-                nav->UpdateCustomSongs();
+            if (!packIdFromShortcut.empty())
+                nav->_levelPackIdToBeSelectedAfterPresent = packIdFromShortcut;
+            packIdFromShortcut = "";
+            nav->UpdateCustomSongs();
         }
     }
 
@@ -220,7 +231,6 @@ namespace Manager {
         logger.info("deleting playlist {}", selectedPlaylist->name);
         PlaylistCore::DeletePlaylist(selectedPlaylist);
         selectedPlaylist = nullptr;
-        shouldUpdateNav = true;
         Reload();
         MainMenu::GetInstance()->ShowGrid();
     }
