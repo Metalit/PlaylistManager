@@ -64,6 +64,14 @@ namespace Manager {
         PresentMenu();
     }
 
+    void PresentCreateShortcut() {
+        if (auto nav = GetFilterNavigationController())
+            packIdFromShortcut = (std::string) nav->selectedBeatmapLevelPack->packID;
+        ResetAddition();
+        MainMenu::GetInstance()->presentDestination = 1;
+        PresentMenu();
+    }
+
     void PresentEditShortcut(PlaylistCore::Playlist* playlist) {
         if (!playlist)
             return;

@@ -1,5 +1,8 @@
 #include "shortcuts.hpp"
 
+#include "GlobalNamespace/AnnotatedBeatmapLevelCollectionsViewController.hpp"
+#include "System/Collections/Generic/IReadOnlyCollection_1.hpp"
+#include "System/Collections/Generic/IReadOnlyList_1.hpp"
 #include "UnityEngine/UI/LayoutElement.hpp"
 #include "assets.hpp"
 #include "bsml/shared/BSML-Lite.hpp"
@@ -22,6 +25,9 @@ namespace Shortcuts {
     bool packShortuctsInitialized = false;
     GlobalNamespace::LevelPackDetailViewController* packDetailController = nullptr;
     UnityEngine::UI::Button* editButton = nullptr;
+
+    bool createShortuctsInitialized = false;
+    UnityEngine::RectTransform* createButtonCanvas = nullptr;
 
     void SetupLevelShortcuts(GlobalNamespace::StandardLevelDetailViewController* levelDetail) {
         levelDetailController = levelDetail;
@@ -117,6 +123,40 @@ namespace Shortcuts {
         editButton->gameObject->active = PlaylistCore::GetPlaylistWithPrefix(packDetail->_pack->packID) != nullptr;
     }
 
+    void SetupCreateShortcuts(GlobalNamespace::AnnotatedBeatmapLevelCollectionsViewController* packsView) {
+        createButtonCanvas = BSML::Lite::CreateCanvas()->GetComponent<UnityEngine::RectTransform*>();
+        createButtonCanvas->SetParent(packsView->transform, false);
+        createButtonCanvas->localScale = {1, 1, 1};
+        createButtonCanvas->sizeDelta = {10, 10};
+        createButtonCanvas->GetComponent<UnityEngine::Canvas*>()->overrideSorting = true;
+        auto button = BSML::Lite::CreateUIButton(createButtonCanvas, "+", "ActionButton", []() { Manager::PresentCreateShortcut(); });
+        button->GetComponent<UnityEngine::UI::LayoutElement*>()->preferredWidth = 0;
+        auto rect = button->GetComponent<UnityEngine::RectTransform*>();
+        rect->anchorMin = {0, 0};
+        rect->anchorMax = {1, 1};
+        BSML::Lite::AddHoverHint(button, "Create new playlist");
+        for (auto text : button->GetComponentsInChildren<TMPro::TextMeshProUGUI*>())
+            text->fontStyle = TMPro::FontStyles::Normal;
+        for (auto image : button->GetComponentsInChildren<HMUI::ImageView*>()) {
+            image->_skew = 0;
+            image->__Refresh();
+        }
+        createShortuctsInitialized = true;
+    }
+
+    void RefreshCreateShortcuts(GlobalNamespace::LevelFilteringNavigationController* filterController) {
+        auto packsView = filterController->_annotatedBeatmapLevelCollectionsViewController;
+        if (!createShortuctsInitialized)
+            SetupCreateShortcuts(packsView);
+        if (filterController->selectedLevelCategory == GlobalNamespace::SelectLevelCategoryViewController::LevelCategory::CustomSongs) {
+            int count = packsView->_annotatedBeatmapLevelCollections->i___System__Collections__Generic__IReadOnlyCollection_1_T_()->Count;
+            count = std::min(count, 6);
+            createButtonCanvas->anchoredPosition = {(float) count * 15 - 39, 3};
+            createButtonCanvas->gameObject->active = true;
+        } else
+            createButtonCanvas->gameObject->active = false;
+    }
+
     void Invalidate() {
         levelShortuctsInitialized = false;
         playlists.clear();
@@ -129,5 +169,8 @@ namespace Shortcuts {
         packShortuctsInitialized = false;
         packDetailController = nullptr;
         editButton = nullptr;
+
+        createShortuctsInitialized = false;
+        createButtonCanvas = nullptr;
     }
 }

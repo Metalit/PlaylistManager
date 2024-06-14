@@ -7,6 +7,7 @@ namespace Manager {
     void Invalidate();
 
     void PresentAddShortcut(GlobalNamespace::BeatmapLevel* level);
+    void PresentCreateShortcut();
     void PresentEditShortcut(PlaylistCore::Playlist* playlist);
     void PresentEditShortcut(GlobalNamespace::BeatmapLevelPack* pack);
     bool InAddShortcut();

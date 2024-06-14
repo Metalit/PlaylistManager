@@ -18,7 +18,6 @@ void MainMenu::DidActivate(bool firstActivation, bool addedToHierarchy, bool scr
     instance = this;
 
     auto nav = GetNavigationController();
-    nav->ClearChildViewControllers();
     switch (presentDestination) {
         case 0:
             inDetail = false;
@@ -106,6 +105,8 @@ BSML::ProgressBar* MainMenu::GetProgress() {
 
 void MainMenu::ShowGrid() {
     auto controller = GetNavigationController();
+    if (!controller->isInViewControllerHierarchy)
+        return;
     if (inDetail) {
         controller->PopViewControllers(3, nullptr, true);
         controller->PushViewController(PlaylistGrid::GetInstance(), nullptr, false);
@@ -116,6 +117,8 @@ void MainMenu::ShowGrid() {
 
 void MainMenu::ShowCreation() {
     auto controller = GetNavigationController();
+    if (!controller->isInViewControllerHierarchy)
+        return;
     if (inDetail) {
         controller->PopViewControllers(3, nullptr, true);
         controller->PushViewController(PlaylistGrid::GetInstance(), nullptr, true);
@@ -129,6 +132,8 @@ void MainMenu::ShowDetail() {
     if (inDetail)
         return;
     auto controller = GetNavigationController();
+    if (!controller->isInViewControllerHierarchy)
+        return;
     controller->PopViewControllers(controller->viewControllers->Count, nullptr, true);
     controller->PushViewController(AllSongs::GetInstance(), nullptr, true);
     controller->PushViewController(PlaylistSongs::GetInstance(), nullptr, true);

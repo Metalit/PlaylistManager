@@ -126,6 +126,19 @@ MAKE_HOOK_MATCH(
     Shortcuts::RefreshPackShortcuts(self);
 }
 
+// show shortcut next to playlist selector
+MAKE_HOOK_MATCH(
+    LevelFilteringNavigationController_ShowPacksInSecondChildController,
+    &LevelFilteringNavigationController::ShowPacksInSecondChildController,
+    void,
+    LevelFilteringNavigationController* self,
+    System::Collections::Generic::IReadOnlyList_1<BeatmapLevelPack*>* beatmapLevelPacks
+) {
+    LevelFilteringNavigationController_ShowPacksInSecondChildController(self, beatmapLevelPacks);
+
+    Shortcuts::RefreshCreateShortcuts(self);
+}
+
 // highlight level difficulties
 MAKE_HOOK_MATCH(StandardLevelDetailView_RefreshContent, &StandardLevelDetailView::RefreshContent, void, StandardLevelDetailView* self) {
 
@@ -187,6 +200,7 @@ extern "C" void late_load() {
     INSTALL_HOOK(logger, VRInputModule_ProcessMousePress);
     INSTALL_HOOK(logger, StandardLevelDetailViewController_ShowOwnedContent);
     INSTALL_HOOK(logger, LevelPackDetailViewController_ShowContent);
+    INSTALL_HOOK(logger, LevelFilteringNavigationController_ShowPacksInSecondChildController);
     INSTALL_HOOK(logger, StandardLevelDetailView_RefreshContent);
     logger.info("Installed all hooks!");
 
