@@ -75,31 +75,6 @@ MAKE_HOOK_MATCH(
         TableView_HandleCellSelectionDidChange(self, selectableCell, transitionType, changeOwner);
 }
 
-// drop dragged items even when not hovered
-MAKE_HOOK_MATCH(
-    VRInputModule_ProcessMousePress,
-    &VRUIControls::VRInputModule::ProcessMousePress,
-    void,
-    VRUIControls::VRInputModule* self,
-    VRUIControls::MouseButtonEventData* data
-) {
-    using namespace UnityEngine::EventSystems;
-
-    auto buttonData = data->buttonData;
-    if (data->ReleasedThisFrame() && buttonData->pointerDrag && buttonData->dragging) {
-        auto hovered = buttonData->pointerCurrentRaycast.gameObject;
-        if (ExecuteEvents::GetEventHandler<IDragHandler*>(hovered) != buttonData->pointerDrag) {
-            static auto execute = il2cpp_utils::FindMethodUnsafe(classof(ExecuteEvents*), "Execute", 3);
-            static auto generic = THROW_UNLESS(il2cpp_utils::MakeGenericMethod(execute, std::array<Il2CppClass const*, 1>{classof(IDragHandler*)}));
-            cordl_internals::RunMethodRethrow<bool, false>(nullptr, generic, buttonData->pointerDrag, buttonData, ExecuteEvents::get_dropHandler());
-            // ExecuteEvents::Execute(buttonData->pointerDrag, buttonData, ExecuteEvents::get_dropHandler());
-            buttonData->dragging = false;
-        }
-    }
-
-    VRInputModule_ProcessMousePress(self, data);
-}
-
 // show shortcuts on a selected level
 MAKE_HOOK_MATCH(
     StandardLevelDetailViewController_ShowOwnedContent,
@@ -197,7 +172,6 @@ extern "C" void late_load() {
     logger.info("Installing hooks...");
     INSTALL_HOOK(logger, AnnotatedBeatmapLevelCollectionCell_RefreshAvailabilityAsync);
     INSTALL_HOOK(logger, TableView_HandleCellSelectionDidChange);
-    INSTALL_HOOK(logger, VRInputModule_ProcessMousePress);
     INSTALL_HOOK(logger, StandardLevelDetailViewController_ShowOwnedContent);
     INSTALL_HOOK(logger, LevelPackDetailViewController_ShowContent);
     INSTALL_HOOK(logger, LevelFilteringNavigationController_ShowPacksInSecondChildController);

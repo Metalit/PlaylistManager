@@ -79,7 +79,7 @@ void GridCell::OnDrag(UnityEngine::EventSystems::PointerEventData* eventData) {
     }
 }
 
-void GridCell::OnDrop(UnityEngine::EventSystems::PointerEventData* eventData) {
+void GridCell::OnEndDrag(UnityEngine::EventSystems::PointerEventData* eventData) {
     bool wasDragging = isDragging;
     if (isDragging)
         SetDragging(false);

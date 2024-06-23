@@ -125,7 +125,7 @@ void LevelCell::OnDrag(UnityEngine::EventSystems::PointerEventData* eventData) {
     }
 }
 
-void LevelCell::OnDrop(UnityEngine::EventSystems::PointerEventData* eventData) {
+void LevelCell::OnEndDrag(UnityEngine::EventSystems::PointerEventData* eventData) {
     bool wasDragging = isDragging;
     if (isDragging)
         SetDragging(false);

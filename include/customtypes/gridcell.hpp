@@ -7,7 +7,7 @@
 #include "UnityEngine/Canvas.hpp"
 #include "UnityEngine/EventSystems/IInitializePotentialDragHandler.hpp"
 #include "UnityEngine/EventSystems/IDragHandler.hpp"
-#include "UnityEngine/EventSystems/IDropHandler.hpp"
+#include "UnityEngine/EventSystems/IEndDragHandler.hpp"
 #include "UnityEngine/EventSystems/IPointerEnterHandler.hpp"
 #include "UnityEngine/EventSystems/IPointerExitHandler.hpp"
 #include "UnityEngine/MonoBehaviour.hpp"
@@ -20,7 +20,7 @@
 #define INTERFACES std::vector<Il2CppClass*>({ \
     classof(UES::IInitializePotentialDragHandler*), \
     classof(UES::IDragHandler*), \
-    classof(UES::IDropHandler*), \
+    classof(UES::IEndDragHandler*), \
     classof(UES::IPointerEnterHandler*), \
     classof(UES::IPointerExitHandler*), \
 })
@@ -38,7 +38,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, GridCell, UnityEngine::MonoBeh
     DECLARE_INSTANCE_METHOD(void, OnDisable);
     DECLARE_OVERRIDE_METHOD_MATCH(void, OnInitializePotentialDrag, &UES::IInitializePotentialDragHandler::OnInitializePotentialDrag, UES::PointerEventData* eventData);
     DECLARE_OVERRIDE_METHOD_MATCH(void, OnDrag, &UES::IDragHandler::OnDrag, UES::PointerEventData* eventData);
-    DECLARE_OVERRIDE_METHOD_MATCH(void, OnDrop, &UES::IDropHandler::OnDrop, UES::PointerEventData* eventData);
+    DECLARE_OVERRIDE_METHOD_MATCH(void, OnEndDrag, &UES::IEndDragHandler::OnEndDrag, UES::PointerEventData* eventData);
     DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerEnter, &UES::IPointerEnterHandler::OnPointerEnter, UES::PointerEventData* eventData);
     DECLARE_OVERRIDE_METHOD_MATCH(void, OnPointerExit, &UES::IPointerExitHandler::OnPointerExit, UES::PointerEventData* eventData);
 
