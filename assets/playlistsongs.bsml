@@ -8,9 +8,11 @@
         <text id="emptyText" text="No songs" active="false"/>
     </horizontal>
     <horizontal id="levelList" spacing="1" anchor-pos-y="-6" pref-height="64" child-align="UpperLeft" child-expand-width="false">
-        <vertical child-align="UpperCenter" horizontal-fit="PreferredSize" min-width="4" child-expand-height="false">
-            <clickable-image id="optionsButton" src="PlaylistManager_options_png" pref-width="4" pref-height="4" preserve-aspect="true" on-click="optionsModal#Show"/>
-            <text id="selectionText" text="0" align="Center" font-size="2"/>
+        <vertical child-align="UpperCenter" pref-width="3" child-expand-height="false" child-control-height="false">
+            <background size-delta-x="3" size-delta-y="5" bg="round-rect-panel">
+                <clickable-image id="optionsButton" src="PlaylistManager_options_png" default-color="orange" highlight-color="yellow" hover-hint="Selection options" size-delta-y="5" preserve-aspect="true" on-click="optionsModal#Show"/>
+            </background>
+            <text id="selectionText" text="0" align="Top" font-size="2"/>
         </vertical>
         <bg id="layout"/>
     </horizontal>

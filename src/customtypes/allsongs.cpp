@@ -36,7 +36,7 @@ void AllSongs::OnEnable() {
     name = "AllSongs";
     rectTransform->anchorMin = {0.5, 0.5};
     rectTransform->anchorMax = {0.5, 0.5};
-    rectTransform->sizeDelta = {75, 80};
+    rectTransform->sizeDelta = {79, 80};
 }
 
 void AllSongs::SetupFields() {
@@ -203,6 +203,7 @@ void AllSongs::UpdateOptionsButton() {
         return;
     auto selected = Utils::GetSelected(levelTable->_tableView);
     optionsButton->active = selected.size() > 0;
+    optionsButton->transform->parent->gameObject->active = selected.size() > 0;
     selectionText->text = std::to_string(selected.size());
 
     bool canDelete = false;

@@ -298,6 +298,7 @@ void PlaylistSongs::UpdateOptionsButton() {
         return;
     auto selected = Utils::GetSelected(levelTable->_tableView);
     optionsButton->active = selected.size() > 0;
+    optionsButton->transform->parent->gameObject->active = selected.size() > 0;
     selectionText->text = std::to_string(selected.size());
 
     bool canDelete = false;
