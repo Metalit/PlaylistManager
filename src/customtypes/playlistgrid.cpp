@@ -55,10 +55,9 @@ void PlaylistGrid::OnEnable() {
 }
 
 void PlaylistGrid::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
-    if (firstActivation) {
-        // AddHotReload(this, "playlistgrid");
-        BSML::parse_and_construct(IncludedAssets::playlistgrid_bsml, transform, this);
-    } else
+    if (firstActivation)
+        BSML_FILE(playlistgrid);
+    else
         Refresh();
     if (scroller)
         scroller->ScrollTo(0, false);

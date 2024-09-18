@@ -28,6 +28,11 @@ add_compile_options(-O3)
 add_compile_definitions(VERSION=\"${MOD_VERSION}\")
 add_compile_definitions(MOD_ID=\"${MOD_ID}\")
 
+if (HOT_RELOAD)
+    message("Building with hot reload")
+    add_compile_definitions(HOT_RELOAD=\"\")
+endif()
+
 # recursively get all src files
 RECURSE_FILES(cpp_file_list ${SOURCE_DIR}/*.cpp)
 RECURSE_FILES(c_file_list ${SOURCE_DIR}/*.c)

@@ -3,6 +3,9 @@ Param(
     [Switch] $clean,
 
     [Parameter(Mandatory=$false)]
+    [Switch] $hotReload,
+
+    [Parameter(Mandatory=$false)]
     [Switch] $help
 )
 
@@ -27,5 +30,10 @@ if (($clean.IsPresent) -or (-not (Test-Path -Path "build"))) {
     new-item -Path build -ItemType Directory
 }
 
-& cmake -G "Ninja" -DCMAKE_BUILD_TYPE="RelWithDebInfo" -B build
+$def = "OFF"
+if ($hotReload.IsPresent) {
+    $def = "ON"
+}
+
+& cmake -G "Ninja" -DCMAKE_BUILD_TYPE="RelWithDebInfo" -DHOT_RELOAD="$def" -B build
 & cmake --build ./build

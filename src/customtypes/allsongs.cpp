@@ -67,8 +67,7 @@ void AllSongs::SetupFields() {
 void AllSongs::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     if (firstActivation) {
         SetupFields();
-        // AddHotReload(this, "allsongs");
-        BSML::parse_and_construct(IncludedAssets::allsongs_bsml, transform, this);
+        BSML_FILE(allsongs);
     } else
         Refresh();
 }

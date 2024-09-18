@@ -49,8 +49,7 @@ void PlaylistInfo::SetupFields() {
 void PlaylistInfo::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     if (firstActivation) {
         SetupFields();
-        // AddHotReload(this, "playlistinfo");
-        BSML::parse_and_construct(IncludedAssets::playlistinfo_bsml, transform, this);
+        BSML_FILE(playlistinfo);
     } else
         Refresh();
 }
