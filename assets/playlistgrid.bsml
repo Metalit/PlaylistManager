@@ -1,5 +1,5 @@
 <bg xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/RedBrumbler/Quest-BSML-Docs/gh-pages/schema.xsd">
-    <scrollable-container id="scroller" mask-overflow="false" anchor-pos-y="-5">
+    <scrollable-container id="scroller" mask-overflow="true" size-delta-y="-6">
         <grid id="grid" cell-size-x="14" cell-size-y="14" spacing-x="1" spacing-y="1">
             <horizontal id="addCell" pref-width="14" pref-height="14" pad-left="1" child-align="UpperLeft" child-control-width="false" child-control-height="false">
                 <action-button text="+" hover-hint="Create new playlist" pref-width="0" on-click="addClicked" italics="false"/>
@@ -7,4 +7,15 @@
             <horizontal id="fakeCell" pref-width="14" pref-height="14" active="false"/>
         </grid>
     </scrollable-container>
+    <vertical id="scrollBar" vertical-fit="PreferredSize" active="false">
+        <horizontal>
+            <page-button tags="PageUpFor:scroller" direction="Up" pref-height="3" pref-width="3"/>
+        </horizontal>
+        <horizontal horizontal-fit="MinSize" min-width="1.5" pref-width="1.5" pref-height="65">
+            <scroll-indicator tags="IndicatorFor:scroller"/>
+        </horizontal>
+        <horizontal>
+            <page-button tags="PageDownFor:scroller" direction="Down" pref-height="3" pref-width="3"/>
+        </horizontal>
+    </vertical>
 </bg>

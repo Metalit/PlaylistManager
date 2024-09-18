@@ -87,7 +87,7 @@ PlaylistGrid* PlaylistGrid::GetInstance() {
 }
 
 void PlaylistGrid::Refresh() {
-    if (!grid || !addCell || !fakeCell)
+    if (!grid || !addCell || !fakeCell || !scrollBar)
         return;
 
     auto playlists = PlaylistCore::GetLoadedPlaylists();
@@ -95,7 +95,11 @@ void PlaylistGrid::Refresh() {
     float height = rectTransform->sizeDelta.y;
     int cols = calcCols(height, size + 1);
     grid->constraintCount = cols;
-    rectTransform->sizeDelta = {calcWidth(cols), height};
+    int rows = roundUpDiv(size + 1, cols);
+    bool overflow = rows > calcParts(height);
+    rectTransform->sizeDelta = {calcWidth(cols) + (overflow ? 8 : 0), height};
+    scrollBar->anchoredPosition = {calcWidth(cols) / 2 + 1, 0};
+    scrollBar->gameObject->active = overflow;
 
     usedCells = 0;
     for (int i = 0; i < playlists.size(); i++) {

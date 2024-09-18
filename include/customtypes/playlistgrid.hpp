@@ -21,6 +21,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistGrid, HMUI::ViewController,
     DECLARE_INSTANCE_METHOD(GridCell*, GetCell, StringW name, UnityEngine::Sprite* image);
 
     DECLARE_INSTANCE_FIELD(BSML::ScrollableContainer*, scroller);
+    DECLARE_INSTANCE_FIELD(UnityEngine::RectTransform*, scrollBar);
     DECLARE_INSTANCE_FIELD(UnityEngine::UI::GridLayoutGroup*, grid);
     DECLARE_INSTANCE_FIELD(UnityEngine::Transform*, addCell);
     DECLARE_INSTANCE_FIELD(UnityEngine::Transform*, fakeCell);
