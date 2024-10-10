@@ -10,10 +10,11 @@ constexpr auto logger = Paper::ConstLoggerContext(MOD_ID);
 
 #ifdef HOT_RELOAD
 inline void AddHotReload(HMUI::ViewController* host, char const* path) {
-    auto watcher = host->get_gameObject()->AddComponent<BSML::HotReloadFileWatcher*>();
+    auto watcher = host->gameObject->AddComponent<BSML::HotReloadFileWatcher*>();
     watcher->host = host;
     watcher->filePath = fmt::format("/sdcard/{}.bsml", path);
     watcher->checkInterval = 5;
+    watcher->Reload();
 }
 #define BSML_FILE(name) AddHotReload(this, #name)
 #else
