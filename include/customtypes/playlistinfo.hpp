@@ -12,7 +12,7 @@
 #include "UnityEngine/UI/Button.hpp"
 #include "UnityEngine/UI/GridLayoutGroup.hpp"
 
-DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistInfo, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistInfo, HMUI::ViewController) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_METHOD(void, OnEnable);
@@ -74,4 +74,4 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistInfo, HMUI::ViewController,
 
    private:
     static inline PlaylistInfo* instance;
-)
+};

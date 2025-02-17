@@ -7,6 +7,7 @@
 #include "GlobalNamespace/PlayerData.hpp"
 #include "GlobalNamespace/SearchFilterParamsViewController.hpp"
 #include "HMUI/ScrollView.hpp"
+#include "HMUI/ModalViewBase.hpp"
 #include "System/Collections/Generic/HashSet_1.hpp"
 #include "System/Collections/Generic/IEnumerable_1.hpp"
 #include "System/Collections/Generic/IEnumerator_1.hpp"
@@ -110,8 +111,8 @@ void AllSongs::PostParse() {
     searchInput = BSML::Lite::CreateStringSetting(searchBar, "Search", "", {}, {0, -35, 0}, [this](StringW value) { searchInputTyped(value); });
     searchInput->transform->SetAsFirstSibling();
 
-    diffSelector->dropdown->_modalView->_animateParentCanvas = false;
-    charSelector->dropdown->_modalView->_animateParentCanvas = false;
+    //diffSelector->dropdown->_modalView->_animateParentCanvas = false;
+    //charSelector->dropdown->_modalView->_animateParentCanvas = false;
     Utils::AddModalAnimations(diffSelector->dropdown, filterModal);
     Utils::AddModalAnimations(charSelector->dropdown, filterModal);
 

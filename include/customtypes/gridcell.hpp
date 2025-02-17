@@ -17,15 +17,14 @@
 
 #define UES UnityEngine::EventSystems
 
-#define INTERFACES std::vector<Il2CppClass*>({ \
-    classof(UES::IInitializePotentialDragHandler*), \
-    classof(UES::IDragHandler*), \
-    classof(UES::IEndDragHandler*), \
-    classof(UES::IPointerEnterHandler*), \
-    classof(UES::IPointerExitHandler*), \
-})
+#define INTERFACES \
+    UES::IInitializePotentialDragHandler*, \
+    UES::IDragHandler*, \
+    UES::IEndDragHandler*, \
+    UES::IPointerEnterHandler*, \
+    UES::IPointerExitHandler*
 
-DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, GridCell, UnityEngine::MonoBehaviour, INTERFACES,
+DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, GridCell, UnityEngine::MonoBehaviour, INTERFACES) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_FIELD(bool, isDragging);
@@ -55,7 +54,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, GridCell, UnityEngine::MonoBeh
     std::function<void()> onClick = nullptr;
     std::function<void()> onDrag = nullptr;
     std::function<void()> onEndDrag = nullptr;
-)
+};
 
 #undef INTERFACES
 #undef UES

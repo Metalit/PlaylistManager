@@ -6,7 +6,7 @@
 #include "HMUI/FlowCoordinator.hpp"
 #include "HMUI/NavigationController.hpp"
 
-DECLARE_CLASS_CODEGEN(PlaylistManager, MainMenu, HMUI::FlowCoordinator,
+DECLARE_CLASS_CODEGEN(PlaylistManager, MainMenu, HMUI::FlowCoordinator) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &HMUI::FlowCoordinator::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
@@ -30,4 +30,4 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, MainMenu, HMUI::FlowCoordinator,
     HMUI::NavigationController* navigationController;
     static inline MainMenu* instance;
     static inline BSML::ProgressBar* progress;
-)
+};

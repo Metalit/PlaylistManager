@@ -84,14 +84,14 @@ namespace Utils {
         std::vector<PlaylistCore::Playlist*> ret;
         auto playlists = PlaylistCore::GetLoadedPlaylists();
         for (auto playlist : playlists) {
-            if (playlist->playlistCS->beatmapLevels.contains(level))
+            if (playlist->playlistCS->_beatmapLevels.contains(level))
                 ret.emplace_back(playlist);
         }
         return ret;
     }
 
     int GetLevelIndex(PlaylistCore::Playlist* playlist, GlobalNamespace::BeatmapLevel* level) {
-        return playlist->playlistCS->beatmapLevels.index_of(level).value_or(-1);
+        return playlist->playlistCS->_beatmapLevels.index_of(level).value_or(-1);
     }
 
     PlaylistCore::BPSong* GetLevelJson(PlaylistCore::Playlist* playlist, GlobalNamespace::BeatmapLevel* level) {
@@ -267,7 +267,7 @@ namespace Utils {
         CoverGetter(std::span<GlobalNamespace::BeatmapLevel*> levels, size_t num) {
             levels = levels.subspan(0, std::min(levels.size(), num));
             for (auto& level : levels)
-                tasks.emplace_back(level->previewMediaData->GetCoverSpriteAsync(nullptr));
+                tasks.emplace_back(level->previewMediaData->GetCoverSpriteAsync());
         }
         bool ShouldWait() {
             return std::any_of(tasks.begin(), tasks.end(), [](auto task) { return !task->IsCompleted; });

@@ -13,13 +13,12 @@
 
 #define UES UnityEngine::EventSystems
 
-#define INTERFACES std::vector<Il2CppClass*>({ \
-    classof(UES::IInitializePotentialDragHandler*), \
-    classof(UES::IDragHandler*), \
-    classof(UES::IEndDragHandler*), \
-})
+#define INTERFACES \
+    UES::IInitializePotentialDragHandler*, \
+    UES::IDragHandler*, \
+    UES::IEndDragHandler*
 
-DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, LevelCell, UnityEngine::MonoBehaviour, INTERFACES,
+DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, LevelCell, UnityEngine::MonoBehaviour, INTERFACES) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_FIELD(bool, isDragging);
@@ -39,7 +38,7 @@ DECLARE_CLASS_CODEGEN_INTERFACES(PlaylistManager, LevelCell, UnityEngine::MonoBe
     DECLARE_OVERRIDE_METHOD_MATCH(void, OnEndDrag, &UES::IEndDragHandler::OnEndDrag, UES::PointerEventData* eventData);
 
     DECLARE_INSTANCE_FIELD(GlobalNamespace::LevelListTableCell*, cell);
-)
+};
 
 #undef INTERFACES
 #undef UES

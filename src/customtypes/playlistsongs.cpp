@@ -119,9 +119,9 @@ void PlaylistSongs::PostParse() {
     searchInput->transform->SetAsFirstSibling();
 
     highlightModal->_animateParentCanvas = false;
-    diffSelector->dropdown->_modalView->_animateParentCanvas = false;
-    charSelector->dropdown->_modalView->_animateParentCanvas = false;
-    highlightCharSelector->dropdown->_modalView->_animateParentCanvas = false;
+    //diffSelector->dropdown->_modalView->_animateParentCanvas = false;
+    //charSelector->dropdown->_modalView->_animateParentCanvas = false;
+    //highlightCharSelector->dropdown->_modalView->_animateParentCanvas = false;
     Utils::AddModalAnimations(diffSelector->dropdown, filterModal);
     Utils::AddModalAnimations(charSelector->dropdown, filterModal);
     Utils::AddModalAnimations(highlightCharSelector->dropdown, highlightModal);

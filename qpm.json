@@ -1,11 +1,12 @@
 {
+  "$schema": "https://raw.githubusercontent.com/QuestPackageManager/QPM.Package/refs/heads/main/qpm.schema.json",
   "version": "0.1.0",
   "sharedDir": "shared",
   "dependenciesDir": "extern",
   "info": {
     "name": "PlaylistManager",
     "id": "playlistmanager",
-    "version": "1.3.1",
+    "version": "1.3.2",
     "url": "https://github.com/Metalit/PlaylistManager",
     "additionalData": {
       "overrideSoName": "libplaylistmanager.so",
@@ -41,70 +42,70 @@
         "pwsh ./scripts/pull-tombstone.ps1 -analyze"
       ]
     },
-    "qmodIncludeDirs": [],
+    "ndk": "^27.2.12479018",
+    "qmodIncludeDirs": [
+      "build",
+      "extern/libs"
+    ],
     "qmodIncludeFiles": [],
-    "qmodOutput": null
+    "qmodOutput": "./PlaylistManager.qmod"
   },
   "dependencies": [
     {
       "id": "beatsaber-hook",
-      "versionRange": "^5.1.6",
-      "additionalData": {
-        "extraFiles": [
-          "src/inline-hook"
-        ]
-      }
+      "versionRange": "^6.4.0",
+      "additionalData": {}
+    },
+    {
+      "id": "beatsaverplusplus",
+      "versionRange": "^0.2.1",
+      "additionalData": {}
+    },
+    {
+      "id": "bs-cordl",
+      "versionRange": "4030.*",
+      "additionalData": {}
+    },
+    {
+      "id": "bsml",
+      "versionRange": "^0.4.50",
+      "additionalData": {}
+    },
+    {
+      "id": "config-utils",
+      "versionRange": "^2.0.2",
+      "additionalData": {}
+    },
+    {
+      "id": "custom-types",
+      "versionRange": "^0.18.2",
+      "additionalData": {}
+    },
+    {
+      "id": "paper2_scotland2",
+      "versionRange": "^4.6.1",
+      "additionalData": {}
+    },
+    {
+      "id": "playlistcore",
+      "versionRange": "^1.4.4",
+      "additionalData": {}
     },
     {
       "id": "scotland2",
-      "versionRange": "^0.1.4",
+      "versionRange": "^0.1.6",
       "additionalData": {
         "includeQmod": false
       }
     },
     {
-      "id": "bs-cordl",
-      "versionRange": "^3700.0.0",
-      "additionalData": {}
-    },
-    {
-      "id": "paper",
-      "versionRange": "^3.6.3",
-      "additionalData": {}
-    },
-    {
-      "id": "custom-types",
-      "versionRange": "^0.17.6",
-      "additionalData": {}
-    },
-    {
-      "id": "playlistcore",
-      "versionRange": "^1.4.1",
-      "additionalData": {}
-    },
-    {
-      "id": "bsml",
-      "versionRange": "^0.4.22",
-      "additionalData": {}
-    },
-    {
-      "id": "config-utils",
-      "versionRange": "^1.4.2",
-      "additionalData": {}
-    },
-    {
       "id": "songcore",
-      "versionRange": "^1.1.8",
-      "additionalData": {}
-    },
-    {
-      "id": "beatsaverplusplus",
-      "versionRange": "^0.1.3",
+      "versionRange": "^1.1.19",
       "additionalData": {}
     },
     {
       "id": "web-utils",
-      "versionRange": "^0.6.5",
+      "versionRange": "^0.6.7",
       "additionalData": {}
     }
   ]

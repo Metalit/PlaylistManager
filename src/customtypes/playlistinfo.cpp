@@ -33,17 +33,17 @@ void PlaylistInfo::OnDisable() {
 void PlaylistInfo::SetupFields() {
     using Item = HMUI::IconSegmentedControl::DataItem;
     creationButtonData = ListW<Item*>::New(4);
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save), "Add playlist"));
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save_edit), "Add and edit playlist"));
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(reset), "Reset playlist details"));
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Cancel addition"));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save), "Add playlist", true));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save_edit), "Add and edit playlist", true));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(reset), "Reset playlist details", true));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Cancel addition", true));
     editButtonData = ListW<Item*>::New(6);
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Delete playlist"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_highlight), "Clear highlighted difficulties"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_download), "Remove undownloaded songs"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_sync), "Remove sync url"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(download), "Download missing songs"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(sync), "Sync playlist"));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Delete playlist", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_highlight), "Clear highlighted difficulties", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_download), "Remove undownloaded songs", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_sync), "Remove sync url", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(download), "Download missing songs", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(sync), "Sync playlist", true));
 }
 
 void PlaylistInfo::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {

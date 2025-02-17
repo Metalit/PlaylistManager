@@ -7,7 +7,7 @@
 #include "bsml/shared/BSML/Components/ScrollableContainer.hpp"
 #include "customtypes/gridcell.hpp"
 
-DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistGrid, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistGrid, HMUI::ViewController) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_METHOD(void, OnEnable);
@@ -33,4 +33,4 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistGrid, HMUI::ViewController,
 
    private:
     static inline PlaylistGrid* instance;
-)
+};

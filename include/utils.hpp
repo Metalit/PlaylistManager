@@ -6,6 +6,7 @@
 #include "HMUI/ModalView.hpp"
 #include "HMUI/SimpleTextDropdown.hpp"
 #include "HMUI/TableView.hpp"
+#include "HMUI/ImageView.hpp"
 #include "UnityEngine/UI/Toggle.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 

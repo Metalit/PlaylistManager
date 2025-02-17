@@ -15,7 +15,7 @@
 #include "bsml/shared/BSML/Components/ClickableText.hpp"
 #include "bsml/shared/BSML/Components/Settings/DropdownListSetting.hpp"
 
-DECLARE_CLASS_CODEGEN(PlaylistManager, AllSongs, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(PlaylistManager, AllSongs, HMUI::ViewController) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_METHOD(void, OnEnable);
@@ -75,4 +75,4 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, AllSongs, HMUI::ViewController,
 
    private:
     static inline AllSongs* instance;
-)
+};
