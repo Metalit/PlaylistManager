@@ -9,6 +9,7 @@
 #include "customtypes/playlistsongs.hpp"
 #include "main.hpp"
 #include "manager.hpp"
+#include "metacore/shared/game.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "utils.hpp"
 
@@ -33,17 +34,17 @@ void PlaylistInfo::OnDisable() {
 void PlaylistInfo::SetupFields() {
     using Item = HMUI::IconSegmentedControl::DataItem;
     creationButtonData = ListW<Item*>::New(4);
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save), "Add playlist"));
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save_edit), "Add and edit playlist"));
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(reset), "Reset playlist details"));
-    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Cancel addition"));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save), "Add playlist", true));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(save_edit), "Add and edit playlist", true));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(reset), "Reset playlist details", true));
+    creationButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Cancel addition", true));
     editButtonData = ListW<Item*>::New(6);
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Delete playlist"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_highlight), "Clear highlighted difficulties"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_download), "Remove undownloaded songs"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_sync), "Remove sync url"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(download), "Download missing songs"));
-    editButtonData->Add(Item::New_ctor(PNG_SPRITE(sync), "Sync playlist"));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(delete), "Delete playlist", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_highlight), "Clear highlighted difficulties", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_download), "Remove undownloaded songs", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(clear_sync), "Remove sync url", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(download), "Download missing songs", true));
+    editButtonData->Add(Item::New_ctor(PNG_SPRITE(sync), "Sync playlist", true));
 }
 
 void PlaylistInfo::DidActivate(bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
@@ -58,7 +59,7 @@ void PlaylistInfo::PostParse() {
     if (!coverImage || !infoScroll || !nameText || !authorText || !namePlaceholder || !authorPlaceholder || !dummyButton || !dummyImage)
         return;
 
-    coverImage->material = Utils::GetCurvedCornersMaterial();
+    coverImage->material = MetaCore::Game::GetCurvedCornersMaterial();
 
     infoScroll->viewportTransform->sizeDelta = {0, 0};
     infoScroll->add_scrollPositionChangedEvent(BSML::MakeSystemAction((std::function<void(float)>) [this](float) { UpdateKeyboardOffsets(); }));
@@ -121,12 +122,15 @@ void PlaylistInfo::Refresh() {
         bool canDownload = PlaylistCore::PlaylistHasMissingSongs(playlist);
         bool canSync = playlist->playlistJSON.CustomData && playlist->playlistJSON.CustomData->SyncURL.has_value();
         bool canProcess = !Manager::GetSyncing() && !Manager::GetDownloading();
-        Utils::SetCellInteractable(editIconControl, 2, canDownload);
-        Utils::SetCellInteractable(editIconControl, 3, canSync);
-        Utils::SetCellInteractable(editIconControl, 4, canDownload && canProcess);
-        Utils::SetCellInteractable(editIconControl, 5, canSync && canProcess);
-    } else
-        Utils::SetCellInteractable(creationIconControl, 1, !Manager::InAddShortcut());
+        editIconControl->_dataItems[2]->interactable = canDownload;
+        editIconControl->_dataItems[3]->interactable = canSync;
+        editIconControl->_dataItems[4]->interactable = canDownload && canProcess;
+        editIconControl->_dataItems[5]->interactable = canSync && canProcess;
+        editIconControl->ReloadData();
+    } else {
+        creationIconControl->_dataItems[1]->interactable = !Manager::InAddShortcut();
+        creationIconControl->ReloadData();
+    }
 
     RefreshProcessing();
     UpdateInfoLayout();

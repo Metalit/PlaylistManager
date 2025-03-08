@@ -1,24 +1,25 @@
 #pragma once
 
-#include "custom-types/shared/macros.hpp"
-
-#include "HMUI/ViewController.hpp"
-#include "HMUI/ImageView.hpp"
 #include "HMUI/IconSegmentedControl.hpp"
+#include "HMUI/ImageView.hpp"
 #include "HMUI/InputFieldView.hpp"
 #include "HMUI/ModalView.hpp"
 #include "HMUI/TextPageScrollView.hpp"
+#include "HMUI/ViewController.hpp"
 #include "UnityEngine/GameObject.hpp"
 #include "UnityEngine/UI/Button.hpp"
 #include "UnityEngine/UI/GridLayoutGroup.hpp"
+#include "custom-types/shared/macros.hpp"
 
-DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistInfo, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistInfo, HMUI::ViewController) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_METHOD(void, OnEnable);
     DECLARE_INSTANCE_METHOD(void, OnDisable);
     DECLARE_INSTANCE_METHOD(void, SetupFields);
-    DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
+    DECLARE_OVERRIDE_METHOD_MATCH(
+        void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling
+    );
     DECLARE_INSTANCE_METHOD(void, PostParse);
     DECLARE_INSTANCE_METHOD(void, OnDestroy);
     DECLARE_STATIC_METHOD(PlaylistInfo*, GetInstance);
@@ -74,4 +75,4 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistInfo, HMUI::ViewController,
 
    private:
     static inline PlaylistInfo* instance;
-)
+};

@@ -25,6 +25,7 @@
 #include "customtypes/tablecallbacks.hpp"
 #include "main.hpp"
 #include "manager.hpp"
+#include "metacore/shared/ui.hpp"
 #include "songcore/shared/SongCore.hpp"
 #include "utils.hpp"
 
@@ -110,10 +111,8 @@ void AllSongs::PostParse() {
     searchInput = BSML::Lite::CreateStringSetting(searchBar, "Search", "", {}, {0, -35, 0}, [this](StringW value) { searchInputTyped(value); });
     searchInput->transform->SetAsFirstSibling();
 
-    diffSelector->dropdown->_modalView->_animateParentCanvas = false;
-    charSelector->dropdown->_modalView->_animateParentCanvas = false;
-    Utils::AddModalAnimations(diffSelector->dropdown, filterModal);
-    Utils::AddModalAnimations(charSelector->dropdown, filterModal);
+    MetaCore::UI::AddModalAnimations(diffSelector->dropdown, filterModal);
+    MetaCore::UI::AddModalAnimations(charSelector->dropdown, filterModal);
 
     diffSelector->set_Value(diffSelector->values[0]);
     charSelector->set_Value(charSelector->values[0]);

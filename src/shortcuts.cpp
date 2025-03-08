@@ -11,6 +11,7 @@
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "customtypes/mainmenu.hpp"
 #include "manager.hpp"
+#include "metacore/shared/game.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "utils.hpp"
 
@@ -31,7 +32,7 @@ namespace Shortcuts {
     UnityEngine::RectTransform* createButtonCanvas = nullptr;
 
     void SetupLevelShortcuts(GlobalNamespace::StandardLevelDetailViewController* levelDetail) {
-        PlaylistManager::MainMenu::GetInstance(); // ensures invalidate will be called when needed
+        PlaylistManager::MainMenu::GetInstance();  // ensures invalidate will be called when needed
         levelDetailController = levelDetail;
         auto canvas = BSML::Lite::CreateCanvas()->GetComponent<UnityEngine::RectTransform*>();
         canvas->SetParent(levelDetail->_standardLevelDetailView->transform, false);
@@ -67,7 +68,7 @@ namespace Shortcuts {
         image->_skew = 0.18;
         image->preserveAspect = true;
         image->rectTransform->sizeDelta = {6, 6};
-        image->material = Utils::GetCurvedCornersMaterial();
+        image->material = MetaCore::Game::GetCurvedCornersMaterial();
         auto hover = BSML::Lite::AddHoverHint(image, playlist->name);
         return {image, hover};
     }
@@ -102,7 +103,7 @@ namespace Shortcuts {
     }
 
     void SetupPackShortcuts(GlobalNamespace::LevelPackDetailViewController* packDetail) {
-        PlaylistManager::MainMenu::GetInstance(); // ensures invalidate will be called when needed
+        PlaylistManager::MainMenu::GetInstance();  // ensures invalidate will be called when needed
         packDetailController = packDetail;
         editButton = BSML::Lite::CreateUIButton(packDetail->_detailWrapper, "", "ActionButton", {61, -4}, []() {
             if (packDetailController)
@@ -127,7 +128,7 @@ namespace Shortcuts {
     }
 
     void SetupCreateShortcuts(GlobalNamespace::AnnotatedBeatmapLevelCollectionsViewController* packsView) {
-        PlaylistManager::MainMenu::GetInstance(); // ensures invalidate will be called when needed
+        PlaylistManager::MainMenu::GetInstance();  // ensures invalidate will be called when needed
         createButtonCanvas = BSML::Lite::CreateCanvas()->GetComponent<UnityEngine::RectTransform*>();
         createButtonCanvas->SetParent(packsView->transform, false);
         createButtonCanvas->localScale = {1, 1, 1};

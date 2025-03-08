@@ -12,7 +12,7 @@
 #include "bsml/shared/Helpers/getters.hpp"
 #include "bsml/shared/Helpers/utilities.hpp"
 #include "main.hpp"
-#include "utils.hpp"
+#include "metacore/shared/game.hpp"
 
 DEFINE_TYPE(PlaylistManager, GridCell);
 
@@ -107,7 +107,7 @@ void GridCell::SetData(StringW hover, UnityEngine::Sprite* sprite) {
 
 GridCell* GridCell::Create(UnityEngine::Transform* parent, StringW hover, UnityEngine::Sprite* sprite) {
     auto playlistImage = BSML::Lite::CreateImage(parent, sprite, {}, {14, 14});
-    playlistImage->material = Utils::GetCurvedCornersMaterial();
+    playlistImage->material = MetaCore::Game::GetCurvedCornersMaterial();
     playlistImage->name = "PlaylistManagerPlaylistImage";
 
     auto image = BSML::Lite::CreateImage(playlistImage, BSML::Utilities::FindSpriteCached("ArtworkSmallGlow"), {}, {21.0f, 21.0f});

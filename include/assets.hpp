@@ -1,63 +1,86 @@
 #pragma once
 
-#include <string_view>
+#include "metacore/shared/assets.hpp"
 
-#include "beatsaber-hook/shared/utils/typedefs.h"
+#define DECLARE_ASSET(name, binary)       \
+    const IncludedAsset name {            \
+        Externs::_binary_##binary##_start, \
+        Externs::_binary_##binary##_end    \
+    };
 
-struct IncludedAsset {
-
-    IncludedAsset(uint8_t* start, uint8_t* end) : array(reinterpret_cast<Array<uint8_t>*>(start)) {
-        array->klass = nullptr;
-        array->monitor = nullptr;
-        array->bounds = nullptr;
-        array->max_length = end - start - 32;
-        *(end - 1) = '\0';
-    }
-
-    operator ArrayW<uint8_t>() const {
-        init();
-        return array;
-    }
-
-    operator std::string_view() const { return {reinterpret_cast<char*>(array->_values), array->get_Length()}; }
-
-    operator std::span<uint8_t>() const { return {array->_values, array->get_Length()}; }
-
-    void init() const {
-        if (!array->klass)
-            array->klass = classof(Array<uint8_t>*);
-    }
-
-   private:
-    Array<uint8_t>* array;
-};
-
-#define DECLARE_FILE(name)                       \
-    extern "C" uint8_t _binary_##name##_start[]; \
-    extern "C" uint8_t _binary_##name##_end[];   \
-    const IncludedAsset name {_binary_##name##_start, _binary_##name##_end};
-
-#define PNG_SPRITE(name) \
-    BSML::Utilities::LoadSpriteRaw(static_cast<ArrayW<uint8_t>>(IncludedAssets::name##_png))
+#define DECLARE_ASSET_NS(namespaze, name, binary) \
+    namespace namespaze { DECLARE_ASSET(name, binary) }
 
 namespace IncludedAssets {
-    DECLARE_FILE(allsongs_bsml)
-    DECLARE_FILE(clear_download_png)
-    DECLARE_FILE(clear_highlight_png)
-    DECLARE_FILE(clear_sync_png)
-    DECLARE_FILE(delete_png)
-    DECLARE_FILE(download_png)
-    DECLARE_FILE(edit_png)
-    DECLARE_FILE(link_png)
-    DECLARE_FILE(options_png)
-    DECLARE_FILE(playlistgrid_bsml)
-    DECLARE_FILE(playlistinfo_bsml)
-    DECLARE_FILE(playlistsongs_bsml)
-    DECLARE_FILE(reset_png)
-    DECLARE_FILE(save_png)
-    DECLARE_FILE(save_edit_png)
-    DECLARE_FILE(sync_png)
-    DECLARE_FILE(unlink_png)
-}
+    namespace Externs {
+        extern "C" uint8_t _binary_allsongs_bsml_start[];
+        extern "C" uint8_t _binary_allsongs_bsml_end[];
+        extern "C" uint8_t _binary_clear_download_png_start[];
+        extern "C" uint8_t _binary_clear_download_png_end[];
+        extern "C" uint8_t _binary_clear_highlight_png_start[];
+        extern "C" uint8_t _binary_clear_highlight_png_end[];
+        extern "C" uint8_t _binary_clear_sync_png_start[];
+        extern "C" uint8_t _binary_clear_sync_png_end[];
+        extern "C" uint8_t _binary_delete_png_start[];
+        extern "C" uint8_t _binary_delete_png_end[];
+        extern "C" uint8_t _binary_download_png_start[];
+        extern "C" uint8_t _binary_download_png_end[];
+        extern "C" uint8_t _binary_edit_png_start[];
+        extern "C" uint8_t _binary_edit_png_end[];
+        extern "C" uint8_t _binary_link_png_start[];
+        extern "C" uint8_t _binary_link_png_end[];
+        extern "C" uint8_t _binary_options_png_start[];
+        extern "C" uint8_t _binary_options_png_end[];
+        extern "C" uint8_t _binary_playlistgrid_bsml_start[];
+        extern "C" uint8_t _binary_playlistgrid_bsml_end[];
+        extern "C" uint8_t _binary_playlistinfo_bsml_start[];
+        extern "C" uint8_t _binary_playlistinfo_bsml_end[];
+        extern "C" uint8_t _binary_playlistsongs_bsml_start[];
+        extern "C" uint8_t _binary_playlistsongs_bsml_end[];
+        extern "C" uint8_t _binary_reset_png_start[];
+        extern "C" uint8_t _binary_reset_png_end[];
+        extern "C" uint8_t _binary_save_png_start[];
+        extern "C" uint8_t _binary_save_png_end[];
+        extern "C" uint8_t _binary_save_edit_png_start[];
+        extern "C" uint8_t _binary_save_edit_png_end[];
+        extern "C" uint8_t _binary_sync_png_start[];
+        extern "C" uint8_t _binary_sync_png_end[];
+        extern "C" uint8_t _binary_unlink_png_start[];
+        extern "C" uint8_t _binary_unlink_png_end[];
+    }
 
-#undef DECLARE_FILE
+    // allsongs.bsml
+    DECLARE_ASSET(allsongs_bsml, allsongs_bsml);
+    // clear_download.png
+    DECLARE_ASSET(clear_download_png, clear_download_png);
+    // clear_highlight.png
+    DECLARE_ASSET(clear_highlight_png, clear_highlight_png);
+    // clear_sync.png
+    DECLARE_ASSET(clear_sync_png, clear_sync_png);
+    // delete.png
+    DECLARE_ASSET(delete_png, delete_png);
+    // download.png
+    DECLARE_ASSET(download_png, download_png);
+    // edit.png
+    DECLARE_ASSET(edit_png, edit_png);
+    // link.png
+    DECLARE_ASSET(link_png, link_png);
+    // options.png
+    DECLARE_ASSET(options_png, options_png);
+    // playlistgrid.bsml
+    DECLARE_ASSET(playlistgrid_bsml, playlistgrid_bsml);
+    // playlistinfo.bsml
+    DECLARE_ASSET(playlistinfo_bsml, playlistinfo_bsml);
+    // playlistsongs.bsml
+    DECLARE_ASSET(playlistsongs_bsml, playlistsongs_bsml);
+    // reset.png
+    DECLARE_ASSET(reset_png, reset_png);
+    // save.png
+    DECLARE_ASSET(save_png, save_png);
+    // save_edit.png
+    DECLARE_ASSET(save_edit_png, save_edit_png);
+    // sync.png
+    DECLARE_ASSET(sync_png, sync_png);
+    // unlink.png
+    DECLARE_ASSET(unlink_png, unlink_png);
+}

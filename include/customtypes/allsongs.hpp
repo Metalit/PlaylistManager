@@ -1,7 +1,5 @@
 #pragma once
 
-#include "custom-types/shared/macros.hpp"
-
 #include "GlobalNamespace/BeatmapCharacteristicSO.hpp"
 #include "GlobalNamespace/BeatmapLevelsModel.hpp"
 #include "GlobalNamespace/LevelCollectionTableView.hpp"
@@ -14,13 +12,16 @@
 #include "UnityEngine/UI/VerticalLayoutGroup.hpp"
 #include "bsml/shared/BSML/Components/ClickableText.hpp"
 #include "bsml/shared/BSML/Components/Settings/DropdownListSetting.hpp"
+#include "custom-types/shared/macros.hpp"
 
-DECLARE_CLASS_CODEGEN(PlaylistManager, AllSongs, HMUI::ViewController,
+DECLARE_CLASS_CODEGEN(PlaylistManager, AllSongs, HMUI::ViewController) {
     DECLARE_DEFAULT_CTOR();
 
     DECLARE_INSTANCE_METHOD(void, OnEnable);
     DECLARE_INSTANCE_METHOD(void, SetupFields);
-    DECLARE_OVERRIDE_METHOD_MATCH(void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling);
+    DECLARE_OVERRIDE_METHOD_MATCH(
+        void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling
+    );
     DECLARE_INSTANCE_METHOD(void, PostParse);
     DECLARE_INSTANCE_METHOD(void, OnDestroy);
     DECLARE_STATIC_METHOD(AllSongs*, GetInstance);
@@ -75,4 +76,4 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, AllSongs, HMUI::ViewController,
 
    private:
     static inline AllSongs* instance;
-)
+};

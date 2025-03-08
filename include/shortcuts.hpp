@@ -1,8 +1,8 @@
 #pragma once
 
+#include "GlobalNamespace/LevelFilteringNavigationController.hpp"
 #include "GlobalNamespace/LevelPackDetailViewController.hpp"
 #include "GlobalNamespace/StandardLevelDetailViewController.hpp"
-#include "GlobalNamespace/LevelFilteringNavigationController.hpp"
 
 namespace Shortcuts {
     void RefreshPlaylistList();

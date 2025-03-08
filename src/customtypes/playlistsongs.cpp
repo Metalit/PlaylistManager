@@ -25,6 +25,7 @@
 #include "customtypes/tablecallbacks.hpp"
 #include "main.hpp"
 #include "manager.hpp"
+#include "metacore/shared/ui.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "playlistcore/shared/Utils.hpp"
 #include "songcore/shared/SongCore.hpp"
@@ -119,12 +120,9 @@ void PlaylistSongs::PostParse() {
     searchInput->transform->SetAsFirstSibling();
 
     highlightModal->_animateParentCanvas = false;
-    diffSelector->dropdown->_modalView->_animateParentCanvas = false;
-    charSelector->dropdown->_modalView->_animateParentCanvas = false;
-    highlightCharSelector->dropdown->_modalView->_animateParentCanvas = false;
-    Utils::AddModalAnimations(diffSelector->dropdown, filterModal);
-    Utils::AddModalAnimations(charSelector->dropdown, filterModal);
-    Utils::AddModalAnimations(highlightCharSelector->dropdown, highlightModal);
+    MetaCore::UI::AddModalAnimations(diffSelector->dropdown, filterModal);
+    MetaCore::UI::AddModalAnimations(charSelector->dropdown, filterModal);
+    MetaCore::UI::AddModalAnimations(highlightCharSelector->dropdown, highlightModal);
     highlightModal->add_blockerClickedEvent(BSML::MakeSystemAction([modal = optionsModal]() {
         modal->Show(false, false, nullptr);  // hides when disabled
         modal->gameObject->active = true;
@@ -289,7 +287,7 @@ void PlaylistSongs::UpdateHighlightDifficulties() {
         bool selected = diffsInSelection.contains(i);
         highlightToggles[i]->set_interactable(selected);
         bool selectionAllHighlighted = !selected ? false : diffsInSelection[i];
-        Utils::InstantSetToggle(highlightToggles[i]->toggle, selectionAllHighlighted);
+        MetaCore::UI::InstantSetToggle(highlightToggles[i], selectionAllHighlighted);
     }
 }
 

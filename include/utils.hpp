@@ -2,6 +2,7 @@
 
 #include "GlobalNamespace/BeatmapCharacteristicSO.hpp"
 #include "HMUI/IconSegmentedControl.hpp"
+#include "HMUI/ImageView.hpp"
 #include "HMUI/InputFieldView.hpp"
 #include "HMUI/ModalView.hpp"
 #include "HMUI/SimpleTextDropdown.hpp"
@@ -10,15 +11,9 @@
 #include "playlistcore/shared/PlaylistCore.hpp"
 
 namespace Utils {
-    bool CaseInsensitiveEquals(std::string a, std::string b);
-
     std::set<int> GetSelected(HMUI::TableView* tableView);
 
     StringW CharacteristicName(GlobalNamespace::BeatmapCharacteristicSO* characteristic);
-
-    void AnimateModal(HMUI::ModalView* modal, bool out);
-
-    void AddModalAnimations(HMUI::SimpleTextDropdown* dropdown, HMUI::ModalView* behindModal);
 
     std::vector<PlaylistCore::Playlist*> GetPlaylistsWithSong(GlobalNamespace::BeatmapLevel* level);
 
@@ -36,10 +31,6 @@ namespace Utils {
 
     void DeselectAllCells(HMUI::IconSegmentedControl* iconControl);
 
-    void SetCellInteractable(HMUI::IconSegmentedControl* iconControl, int idx, bool interactable);
-
-    void InstantSetToggle(UnityEngine::UI::Toggle* toggle, bool value);
-
     HMUI::InputFieldView* CreateInput(
         TMPro::TextMeshProUGUI* text,
         HMUI::ImageView* caret,
@@ -52,6 +43,4 @@ namespace Utils {
     );
 
     std::shared_future<UnityEngine::Texture2D*> GenerateCoverImage(std::span<GlobalNamespace::BeatmapLevel*> levels);
-
-    UnityEngine::Material* GetCurvedCornersMaterial();
 }
