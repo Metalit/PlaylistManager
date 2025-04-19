@@ -205,7 +205,7 @@ namespace Utils {
                     co_yield nullptr;
 
                 auto texture = UnityEngine::Texture2D::New_ctor(512, 512, UnityEngine::TextureFormat::RGBA32, false, false);
-                texture->SetPixels(MetaCore::Unity::ScalePixels(getter.GetCover(0), 512, 512));
+                texture->SetPixels(MetaCore::Engine::ScalePixels(getter.GetCover(0), 512, 512));
                 texture->Apply();
 
                 co_yield nullptr;
@@ -218,10 +218,10 @@ namespace Utils {
                     co_yield nullptr;
 
                 auto texture = UnityEngine::Texture2D::New_ctor(512, 512, UnityEngine::TextureFormat::RGBA32, false, false);
-                texture->SetPixels(0, 0, 512, 512, MetaCore::Unity::ScalePixels(getter.GetCover(0), 512, 512));
+                texture->SetPixels(0, 0, 512, 512, MetaCore::Engine::ScalePixels(getter.GetCover(0), 512, 512));
                 auto cropped = texture->GetPixels(0, 0, 256, 512);
                 co_yield nullptr;
-                texture->SetPixels(0, 0, 512, 512, MetaCore::Unity::ScalePixels(getter.GetCover(1), 512, 512));
+                texture->SetPixels(0, 0, 512, 512, MetaCore::Engine::ScalePixels(getter.GetCover(1), 512, 512));
                 co_yield nullptr;
                 texture->SetPixels(0, 0, 256, 512, cropped);
                 texture->Apply();
@@ -236,11 +236,11 @@ namespace Utils {
                     co_yield nullptr;
 
                 auto texture = UnityEngine::Texture2D::New_ctor(512, 512, UnityEngine::TextureFormat::RGBA32, false, false);
-                texture->SetPixels(0, 0, 512, 512, MetaCore::Unity::ScalePixels(getter.GetCover(0), 512, 512));
+                texture->SetPixels(0, 0, 512, 512, MetaCore::Engine::ScalePixels(getter.GetCover(0), 512, 512));
                 co_yield nullptr;
-                texture->SetPixels(256, 0, 256, 256, MetaCore::Unity::ScalePixels(getter.GetCover(1), 256, 256));
+                texture->SetPixels(256, 0, 256, 256, MetaCore::Engine::ScalePixels(getter.GetCover(1), 256, 256));
                 co_yield nullptr;
-                texture->SetPixels(256, 256, 256, 256, MetaCore::Unity::ScalePixels(getter.GetCover(2), 256, 256));
+                texture->SetPixels(256, 256, 256, 256, MetaCore::Engine::ScalePixels(getter.GetCover(2), 256, 256));
                 texture->Apply();
 
                 co_yield nullptr;
@@ -253,13 +253,13 @@ namespace Utils {
                     co_yield nullptr;
 
                 auto texture = UnityEngine::Texture2D::New_ctor(512, 512, UnityEngine::TextureFormat::RGBA32, false, false);
-                texture->SetPixels(0, 0, 256, 256, MetaCore::Unity::ScalePixels(getter.GetCover(0), 256, 256));
+                texture->SetPixels(0, 0, 256, 256, MetaCore::Engine::ScalePixels(getter.GetCover(0), 256, 256));
                 co_yield nullptr;
-                texture->SetPixels(256, 0, 256, 256, MetaCore::Unity::ScalePixels(getter.GetCover(1), 256, 256));
+                texture->SetPixels(256, 0, 256, 256, MetaCore::Engine::ScalePixels(getter.GetCover(1), 256, 256));
                 co_yield nullptr;
-                texture->SetPixels(0, 256, 256, 256, MetaCore::Unity::ScalePixels(getter.GetCover(2), 256, 256));
+                texture->SetPixels(0, 256, 256, 256, MetaCore::Engine::ScalePixels(getter.GetCover(2), 256, 256));
                 co_yield nullptr;
-                texture->SetPixels(256, 256, 256, 256, MetaCore::Unity::ScalePixels(getter.GetCover(3), 256, 256));
+                texture->SetPixels(256, 256, 256, 256, MetaCore::Engine::ScalePixels(getter.GetCover(3), 256, 256));
                 texture->Apply();
 
                 co_yield nullptr;
