@@ -112,7 +112,7 @@ namespace Shortcuts {
         auto buttonLayout = editButton->GetComponent<UnityEngine::UI::LayoutElement*>();
         buttonLayout->preferredWidth = 7;
         buttonLayout->preferredHeight = 7;
-        auto editIcon = BSML::Lite::CreateImage(editButton, PNG_SPRITE(edit));
+        auto editIcon = BSML::Lite::CreateImage(editButton, PNG_SPRITE(icons::edit));
         editIcon->preserveAspect = true;
         for (auto image : editButton->GetComponentsInChildren<HMUI::ImageView*>()) {
             image->_skew = 0;

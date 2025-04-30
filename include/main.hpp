@@ -18,5 +18,5 @@ inline void AddHotReload(HMUI::ViewController* host, char const* path) {
 }
 #define BSML_FILE(name) AddHotReload(this, #name)
 #else
-#define BSML_FILE(name) BSML::parse_and_construct(IncludedAssets::name##_bsml, transform, this)
+#define BSML_FILE(name) BSML::parse_and_construct(IncludedAssets::bsml::name##_bsml, transform, this)
 #endif

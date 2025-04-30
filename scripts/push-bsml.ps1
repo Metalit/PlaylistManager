@@ -3,7 +3,7 @@ Param(
     [Switch] $clear,
 
     [Parameter(Mandatory=$false)]
-    [String] $location = "assets",
+    [String] $location = "assets/bsml",
 
     [Parameter(Mandatory=$false)]
     [String] $destination = "/sdcard"

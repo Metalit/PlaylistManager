@@ -194,7 +194,7 @@ extern "C" void late_load() {
 
 #define BSML_IMAGE(name) \
 BSML_DATACACHE(name##_png) { \
-    return IncludedAssets::name##_png; \
+    return IncludedAssets::icons::name##_png; \
 }
 
 BSML_IMAGE(clear_download);
