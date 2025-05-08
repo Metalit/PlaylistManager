@@ -1,7 +1,9 @@
 #include "manager.hpp"
 
+#include "GlobalNamespace/LevelCollectionNavigationController.hpp"
+#include "GlobalNamespace/LevelCollectionViewController.hpp"
 #include "GlobalNamespace/LevelFilteringNavigationController.hpp"
-#include "UnityEngine/Resources.hpp"
+#include "GlobalNamespace/LevelSelectionNavigationController.hpp"
 #include "bsml/shared/BSML/MainThreadScheduler.hpp"
 #include "bsml/shared/Helpers/getters.hpp"
 #include "customtypes/allsongs.hpp"
@@ -10,6 +12,7 @@
 #include "customtypes/playlistinfo.hpp"
 #include "customtypes/playlistsongs.hpp"
 #include "main.hpp"
+#include "metacore/shared/songs.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "shortcuts.hpp"
 #include "songcore/shared/SongCore.hpp"
@@ -21,6 +24,7 @@ using namespace PlaylistManager;
 namespace Manager {
     std::optional<PlaylistCore::Playlist> addingPlaylist = std::nullopt;
     PlaylistCore::Playlist* selectedPlaylist = nullptr;
+    GlobalNamespace::BeatmapLevel* selectedLevel = nullptr;
     bool shouldReload = false;
     std::string packIdFromShortcut = "";
 
@@ -30,15 +34,16 @@ namespace Manager {
 
     GlobalNamespace::BeatmapLevel* addingLevel = nullptr;
 
-    GlobalNamespace::LevelFilteringNavigationController* filterNav;
+    GlobalNamespace::LevelSelectionNavigationController* selectionController;
 
-    GlobalNamespace::LevelFilteringNavigationController* GetFilterNavigationController() {
-        if (!filterNav)
-            filterNav = UnityEngine::Resources::FindObjectsOfTypeAll<GlobalNamespace::LevelFilteringNavigationController*>()->FirstOrDefault();
-        return filterNav;
+    GlobalNamespace::LevelSelectionNavigationController* GetSelectionNavigationController() {
+        if (!selectionController)
+            selectionController = UnityEngine::Object::FindObjectOfType<GlobalNamespace::LevelSelectionNavigationController*>(true);
+        return selectionController;
     }
 
     void PresentMenu() {
+        selectedLevel = MetaCore::Songs::GetSelectedLevel(false);
         BSML::Helpers::GetMainFlowCoordinator()->YoungestChildFlowCoordinatorOrSelf()->PresentFlowCoordinator(
             MainMenu::GetInstance(), nullptr, HMUI::ViewController::AnimationDirection::Horizontal, false, false
         );
@@ -47,17 +52,18 @@ namespace Manager {
     void Invalidate() {
         addingPlaylist = std::nullopt;
         selectedPlaylist = nullptr;
+        selectedLevel = nullptr;
         shouldReload = false;
         packIdFromShortcut = "";
         processingPlaylist = nullptr;
         syncing = false;
         downloading = false;
-        filterNav = nullptr;
+        selectionController = nullptr;
         Shortcuts::Invalidate();
     }
 
     void PresentAddShortcut(GlobalNamespace::BeatmapLevel* level) {
-        if (auto nav = GetFilterNavigationController())
+        if (auto nav = GetSelectionNavigationController())
             packIdFromShortcut = (std::string) nav->selectedBeatmapLevelPack->packID;
         MainMenu::GetInstance()->presentDestination = 0;
         addingLevel = level;
@@ -65,7 +71,7 @@ namespace Manager {
     }
 
     void PresentCreateShortcut() {
-        if (auto nav = GetFilterNavigationController())
+        if (auto nav = GetSelectionNavigationController())
             packIdFromShortcut = (std::string) nav->selectedBeatmapLevelPack->packID;
         ResetAddition();
         MainMenu::GetInstance()->presentDestination = 1;
@@ -75,7 +81,7 @@ namespace Manager {
     void PresentEditShortcut(PlaylistCore::Playlist* playlist) {
         if (!playlist)
             return;
-        if (auto nav = GetFilterNavigationController())
+        if (auto nav = GetSelectionNavigationController())
             packIdFromShortcut = (std::string) nav->selectedBeatmapLevelPack->packID;
         selectedPlaylist = playlist;
         MainMenu::GetInstance()->presentDestination = 2;
@@ -95,20 +101,25 @@ namespace Manager {
     }
 
     void OnMenuExit() {
-        selectedPlaylist = nullptr;
-        addingPlaylist = std::nullopt;
-        addingLevel = nullptr;
         if (shouldReload)
             Reload();
         // fix weird view controller layout issue and update playlists if necessary
-        auto nav = GetFilterNavigationController();
-        if (nav && nav->isInViewControllerHierarchy) {
-            nav->LayoutViewControllers(nav->viewControllers);
+        auto nav = GetSelectionNavigationController();
+        if (nav && nav->_levelFilteringNavigationController->isInViewControllerHierarchy) {
+            auto filter = nav->_levelFilteringNavigationController;
+            filter->LayoutViewControllers(filter->viewControllers);
             if (!packIdFromShortcut.empty())
-                nav->_levelPackIdToBeSelectedAfterPresent = packIdFromShortcut;
-            packIdFromShortcut = "";
-            nav->UpdateCustomSongs();
+                filter->_levelPackIdToBeSelectedAfterPresent = packIdFromShortcut;
+            filter->UpdateCustomSongs();
+            // check that the task is completed instantly (it should be)
+            if (!filter->_cancellationTokenSource && selectedLevel)
+                nav->_levelCollectionNavigationController->SelectLevel(selectedLevel);
         }
+        selectedPlaylist = nullptr;
+        selectedLevel = nullptr;
+        addingPlaylist = std::nullopt;
+        addingLevel = nullptr;
+        packIdFromShortcut = "";
     }
 
     bool IsCreatingPlaylist() {
