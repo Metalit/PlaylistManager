@@ -2,8 +2,8 @@
     <text text="All songs" font-size="3" align="Center" anchor-pos-x="-28" anchor-pos-y="28.5"/>
     <horizontal id="searchBar" anchor-pos-y="35" child-control-width="true" spacing="3" pad-right="3">
         <icon-button pref-width="9" pref-height="9" on-click="filterModal#Show" icon="#FilterIcon"/>
-        <clickable-image id="linkButton" src="PlaylistManager_link_png" hover-hint="Sync search and filter" preserve-aspect="true" highlight-color="grey" on-click="linkClicked"/>
-        <clickable-image id="unlinkButton" src="PlaylistManager_unlink_png" hover-hint="Separate search and filter" preserve-aspect="true" highlight-color="grey" on-click="unlinkClicked" active="false"/>
+        <clickable-image id="linkButton" src="PlaylistManager_link_png" hover-hint="Sync search and filter" preserve-aspect="true" highlight-color="#c7c7c7" on-click="linkClicked"/>
+        <clickable-image id="unlinkButton" src="PlaylistManager_unlink_png" hover-hint="Separate search and filter" preserve-aspect="true" highlight-color="#c7c7c7" on-click="unlinkClicked" active="false"/>
     </horizontal>
     <horizontal child-align="MiddleCenter" child-expand-width="false">
         <loading-indicator id="loadingIndicator" preserve-aspect="true" pref-width="10" pref-height="10" active="false"/>
@@ -28,10 +28,10 @@
     </modal>
     <modal id="optionsModal" size-delta-x="35" size-delta-y="20" anchor-pos-x="-16" anchor-pos-y="18" move-to-center="false" click-off-closes="true">
         <vertical pad="2">
-            <clickable-text text=": Add to playlist" font-size="4" highlight-color="grey" on-click="addClicked"/>
-            <clickable-text id="deleteText" text=": Delete selected songs" font-size="4" highlight-color="grey" on-click="deleteClicked"/>
+            <clickable-text text=": Add to playlist" font-size="4" highlight-color="#c7c7c7" on-click="addClicked"/>
+            <clickable-text id="deleteText" text=": Delete selected songs" font-size="4" highlight-color="#c7c7c7" on-click="deleteClicked"/>
             <text id="deleteTextNoClick" text=": Delete selected songs" font-size="4" color="#ffffff4d" active="false"/>
-            <clickable-text text=": Clear selection" font-size="4" highlight-color="grey" on-click="clearClicked"/>
+            <clickable-text text=": Clear selection" font-size="4" highlight-color="#c7c7c7" on-click="clearClicked"/>
         </vertical>
     </modal>
 </bg>

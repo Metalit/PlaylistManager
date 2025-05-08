@@ -9,11 +9,11 @@
             <scroll-view id="infoScroll" size-delta-x="50" size-delta-y="15" child-control-width="true">
                 <stack pad-left="2" pref-width="40" vertical-fit="PreferredSize">
                     <text id="nameText" align="Left" overflow-mode="Ellipsis"/>
-                    <text id="namePlaceholder" text="Name" align="Left" italics="true" color="grey"/>
+                    <text id="namePlaceholder" text="Name" align="Left" italics="true" color="#c7c7c7"/>
                 </stack>
                 <stack pad-left="2" pref-width="40" vertical-fit="PreferredSize">
                     <text id="authorText" align="Left" word-wrapping="true"/>
-                    <text id="authorPlaceholder" text="Author" align="Left" italics="true" color="grey"/>
+                    <text id="authorPlaceholder" text="Author" align="Left" italics="true" color="#c7c7c7"/>
                 </stack>
             </scroll-view>
         </horizontal>

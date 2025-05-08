@@ -26,12 +26,12 @@
     </modal>
     <modal id="optionsModal" size-delta-x="35" size-delta-y="30" anchor-pos-x="-16" anchor-pos-y="13" move-to-center="false" click-off-closes="true">
         <vertical pad="2">
-            <clickable-text text=": Remove from playlist" font-size="4" highlight-color="grey" on-click="removeClicked"/>
-            <clickable-text text=": Use covers as cover" font-size="4" highlight-color="grey" on-click="coversClicked"/>
-            <clickable-text id="deleteText" text=": Delete and remove" font-size="4" highlight-color="grey" on-click="deleteClicked"/>
+            <clickable-text text=": Remove from playlist" font-size="4" highlight-color="#c7c7c7" on-click="removeClicked"/>
+            <clickable-text text=": Use covers as cover" font-size="4" highlight-color="#c7c7c7" on-click="coversClicked"/>
+            <clickable-text id="deleteText" text=": Delete and remove" font-size="4" highlight-color="#c7c7c7" on-click="deleteClicked"/>
             <text id="deleteTextNoClick" text=": Delete and remove" font-size="4" color="#ffffff4d" active="false"/>
-            <clickable-text text=": Clear selection" font-size="4" highlight-color="grey" on-click="clearClicked"/>
-            <clickable-text text=": Highlight Difficulties" font-size="4" highlight-color="grey" on-click="highlightClicked"/>
+            <clickable-text text=": Clear selection" font-size="4" highlight-color="#c7c7c7" on-click="clearClicked"/>
+            <clickable-text text=": Highlight Difficulties" font-size="4" highlight-color="#c7c7c7" on-click="highlightClicked"/>
         </vertical>
     </modal>
     <modal id="highlightModal" size-delta-x="43" size-delta-y="50" anchor-pos-x="-12" anchor-pos-y="3" move-to-center="false" click-off-closes="true">
