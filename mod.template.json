@@ -10,6 +10,7 @@
   "description": "Manage all your songs and playlists!",
   "coverImage": "cover.png",
   "dependencies": [],
+  "lateModFiles": ["${binary}"],
   "libraryFiles": [],
   "fileCopies": []
 }
