@@ -7,7 +7,7 @@
     "info": {
       "name": "PlaylistManager",
       "id": "playlistmanager",
-      "version": "1.4.0",
+      "version": "1.4.1",
       "url": "https://github.com/Metalit/PlaylistManager",
       "additionalData": {
         "overrideSoName": "libplaylistmanager.so",
@@ -21,6 +21,9 @@
         ],
         "build": [
           "pwsh ./scripts/build.ps1 $0?"
+        ],
+        "clean": [
+          "pwsh ./scripts/build.ps1 -clean $0?"
         ],
         "copy": [
           "pwsh ./scripts/copy.ps1 $0:?",
@@ -43,14 +46,18 @@
           "pwsh ./scripts/pull-tombstone.ps1 -analyze"
         ]
       },
-      "qmodIncludeDirs": [],
+      "ndk": "^27.2.12479018",
+      "qmodIncludeDirs": [
+        "build",
+        "extern/libs"
+      ],
       "qmodIncludeFiles": [],
-      "qmodOutput": null
+      "qmodOutput": "PlaylistManager.qmod"
     },
     "dependencies": [
       {
         "id": "beatsaber-hook",
-        "versionRange": "^6.4.0",
+        "versionRange": "^6.4.2",
         "additionalData": {}
       },
       {
@@ -62,32 +69,32 @@
       },
       {
         "id": "bs-cordl",
-        "versionRange": "^4006.0.0",
+        "versionRange": "4007.*",
         "additionalData": {}
       },
       {
         "id": "custom-types",
-        "versionRange": "^0.18.2",
+        "versionRange": "^0.18.3",
         "additionalData": {}
       },
       {
         "id": "playlistcore",
-        "versionRange": "^1.5.0",
+        "versionRange": "^1.5.3",
         "additionalData": {}
       },
       {
         "id": "bsml",
-        "versionRange": "^0.4.22",
+        "versionRange": "^0.4.54",
         "additionalData": {}
       },
       {
         "id": "config-utils",
-        "versionRange": "^2.0.0",
+        "versionRange": "^2.0.3",
         "additionalData": {}
       },
       {
         "id": "songcore",
-        "versionRange": "^1.1.8",
+        "versionRange": "^1.1.23",
         "additionalData": {}
       },
       {
@@ -97,17 +104,17 @@
       },
       {
         "id": "web-utils",
-        "versionRange": "^0.6.5",
+        "versionRange": "^0.6.7",
         "additionalData": {}
       },
       {
         "id": "paper2_scotland2",
-        "versionRange": "^4.6.1",
+        "versionRange": "^4.6.4",
         "additionalData": {}
       },
       {
         "id": "metacore",
-        "versionRange": "^1.3.0",
+        "versionRange": "^1.3.3",
         "additionalData": {}
       }
     ]
@@ -131,10 +138,10 @@
     {
       "dependency": {
         "id": "bs-cordl",
-        "versionRange": "=4006.0.0",
+        "versionRange": "=4007.0.0",
         "additionalData": {
           "headersOnly": true,
-          "branchName": "version/v4006_0_0",
+          "branchName": "version/v4007_0_0",
           "compileOptions": {
             "includePaths": [
               "include"
@@ -150,21 +157,21 @@
           }
         }
       },
-      "version": "4006.0.0"
+      "version": "4007.0.0"
     },
     {
       "dependency": {
         "id": "metacore",
-        "versionRange": "=1.3.1",
+        "versionRange": "=1.3.3",
         "additionalData": {
-          "soLink": "https://github.com/Metalit/MetaCore/releases/download/v1.3.1/libmetacore.so",
+          "soLink": "https://github.com/Metalit/MetaCore/releases/download/v1.3.3/libmetacore.so",
           "overrideSoName": "libmetacore.so",
-          "modLink": "https://github.com/Metalit/MetaCore/releases/download/v1.3.1/MetaCore.qmod",
-          "branchName": "version/v1_3_1",
+          "modLink": "https://github.com/Metalit/MetaCore/releases/download/v1.3.3/MetaCore.qmod",
+          "branchName": "version/v1_3_3",
           "cmake": true
         }
       },
-      "version": "1.3.1"
+      "version": "1.3.3"
     },
     {
       "dependency": {
@@ -312,15 +319,15 @@
     {
       "dependency": {
         "id": "playlistcore",
-        "versionRange": "=1.5.2",
+        "versionRange": "=1.5.3",
         "additionalData": {
-          "soLink": "https://github.com/Metalit/PlaylistCore/releases/download/v1.5.2/libplaylistcore.so",
+          "soLink": "https://github.com/Metalit/PlaylistCore/releases/download/v1.5.3/libplaylistcore.so",
           "overrideSoName": "libplaylistcore.so",
-          "modLink": "https://github.com/Metalit/PlaylistCore/releases/download/v1.5.2/PlaylistCore.qmod",
-          "branchName": "version/v1_5_2"
+          "modLink": "https://github.com/Metalit/PlaylistCore/releases/download/v1.5.3/PlaylistCore.qmod",
+          "branchName": "version/v1_5_3"
         }
       },
-      "version": "1.5.2"
+      "version": "1.5.3"
     },
     {
       "dependency": {
@@ -344,33 +351,33 @@
     },
     {
       "dependency": {
-        "id": "songcore",
-        "versionRange": "=1.1.22",
+        "id": "bsml",
+        "versionRange": "=0.4.54",
         "additionalData": {
-          "soLink": "https://github.com/raineaeternal/Quest-SongCore/releases/download/v1.1.22/libsongcore.so",
-          "debugSoLink": "https://github.com/raineaeternal/Quest-SongCore/releases/download/v1.1.22/debug_libsongcore.so",
-          "overrideSoName": "libsongcore.so",
-          "modLink": "https://github.com/raineaeternal/Quest-SongCore/releases/download/v1.1.22/SongCore.qmod",
-          "branchName": "version/v1_1_22",
+          "soLink": "https://github.com/bsq-ports/Quest-BSML/releases/download/v0.4.54/libbsml.so",
+          "debugSoLink": "https://github.com/bsq-ports/Quest-BSML/releases/download/v0.4.54/debug_libbsml.so",
+          "overrideSoName": "libbsml.so",
+          "modLink": "https://github.com/bsq-ports/Quest-BSML/releases/download/v0.4.54/BSML.qmod",
+          "branchName": "version/v0_4_54",
           "cmake": true
         }
       },
-      "version": "1.1.22"
+      "version": "0.4.54"
     },
     {
       "dependency": {
-        "id": "bsml",
-        "versionRange": "=0.4.53",
+        "id": "songcore",
+        "versionRange": "=1.1.23",
         "additionalData": {
-          "soLink": "https://github.com/bsq-ports/Quest-BSML/releases/download/v0.4.53/libbsml.so",
-          "debugSoLink": "https://github.com/bsq-ports/Quest-BSML/releases/download/v0.4.53/debug_libbsml.so",
-          "overrideSoName": "libbsml.so",
-          "modLink": "https://github.com/bsq-ports/Quest-BSML/releases/download/v0.4.53/BSML.qmod",
-          "branchName": "version/v0_4_53",
+          "soLink": "https://github.com/raineaeternal/Quest-SongCore/releases/download/v1.1.23/libsongcore.so",
+          "debugSoLink": "https://github.com/raineaeternal/Quest-SongCore/releases/download/v1.1.23/debug_libsongcore.so",
+          "overrideSoName": "libsongcore.so",
+          "modLink": "https://github.com/raineaeternal/Quest-SongCore/releases/download/v1.1.23/SongCore.qmod",
+          "branchName": "version/v1_1_23",
           "cmake": true
         }
       },
-      "version": "0.4.53"
+      "version": "1.1.23"
     }
   ]
 }
