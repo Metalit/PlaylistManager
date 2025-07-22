@@ -9,6 +9,7 @@
 #include "customtypes/playlistsongs.hpp"
 #include "main.hpp"
 #include "manager.hpp"
+#include "metacore/shared/delegates.hpp"
 #include "metacore/shared/game.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "utils.hpp"
@@ -62,7 +63,7 @@ void PlaylistInfo::PostParse() {
     coverImage->material = MetaCore::Game::GetCurvedCornersMaterial();
 
     infoScroll->viewportTransform->sizeDelta = {0, 0};
-    infoScroll->add_scrollPositionChangedEvent(BSML::MakeSystemAction((std::function<void(float)>) [this](float) { UpdateKeyboardOffsets(); }));
+    infoScroll->add_scrollPositionChangedEvent(MetaCore::Delegates::MakeSystemAction([this](float) { UpdateKeyboardOffsets(); }));
 
     for (auto& stack : infoScroll->GetComponentsInChildren<HMUI::StackLayoutGroup*>())
         stack->childForceExpandHeight = false;

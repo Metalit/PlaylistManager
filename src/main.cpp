@@ -26,7 +26,6 @@
 #include "customtypes/playlistgrid.hpp"
 #include "customtypes/playlistinfo.hpp"
 #include "customtypes/playlistsongs.hpp"
-#include "customtypes/tablecallbacks.hpp"
 #include "manager.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "scotland2/shared/modloader.h"
@@ -51,28 +50,6 @@ MAKE_HOOK_MATCH(
 
     if (PlaylistCore::GetPlaylistWithPrefix(self->_beatmapLevelPack->packID))
         self->SetDownloadIconVisible(false);
-}
-
-// notify when deselecting a cell in a multi select
-MAKE_HOOK_MATCH(
-    TableView_HandleCellSelectionDidChange,
-    &HMUI::TableView::HandleCellSelectionDidChange,
-    void,
-    HMUI::TableView* self,
-    HMUI::SelectableCell* selectableCell,
-    HMUI::SelectableCell::TransitionType transitionType,
-    System::Object* changeOwner
-) {
-    if (auto handler = self->GetComponent<TableCallbacks*>()) {
-        int cellIdx = ((HMUI::TableCell*) selectableCell)->idx;
-        bool wasSelected = self->_selectedCellIdxs->Contains(cellIdx);
-
-        TableView_HandleCellSelectionDidChange(self, selectableCell, transitionType, changeOwner);
-
-        if (!selectableCell->selected && wasSelected && handler->onCellDeselected)
-            handler->onCellDeselected(cellIdx);
-    } else
-        TableView_HandleCellSelectionDidChange(self, selectableCell, transitionType, changeOwner);
 }
 
 // show shortcuts on a selected level
@@ -171,7 +148,6 @@ extern "C" void late_load() {
 
     logger.info("Installing hooks...");
     INSTALL_HOOK(logger, AnnotatedBeatmapLevelCollectionCell_RefreshAvailabilityAsync);
-    INSTALL_HOOK(logger, TableView_HandleCellSelectionDidChange);
     INSTALL_HOOK(logger, StandardLevelDetailViewController_ShowOwnedContent);
     INSTALL_HOOK(logger, LevelPackDetailViewController_ShowContent);
     INSTALL_HOOK(logger, LevelFilteringNavigationController_ShowPacksInSecondChildController);

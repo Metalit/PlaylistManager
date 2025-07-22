@@ -7,6 +7,5 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, TableCallbacks, UnityEngine::MonoBehaviou
     DECLARE_DEFAULT_CTOR();
 
    public:
-    std::function<void(int)> onCellDeselected = nullptr;
     std::function<void(int, int)> onCellDragReordered = nullptr;
 };

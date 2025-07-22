@@ -35,7 +35,7 @@
 #include "metacore/shared/unity.hpp"
 
 namespace Utils {
-    static std::vector<std::string> const diffNames = {"Easy", "Normal", "Hard", "Expert", "ExpertPlus"};
+    static std::vector<std::string> const DiffNames = {"Easy", "Normal", "Hard", "Expert", "ExpertPlus"};
 
     std::set<int> GetSelected(HMUI::TableView* tableView) {
         std::set<int> ret;
@@ -43,6 +43,22 @@ namespace Utils {
         while (enumerator.MoveNext())
             ret.emplace(enumerator.Current);
         return ret;
+    }
+
+    void AddSelected(HMUI::TableView* tableView, int start, int end) {
+        if (start > end)
+            std::swap(start, end);
+        for (int i = start; i <= end; i++)
+            tableView->_selectedCellIdxs->Add(i);
+        tableView->RefreshCells(true, false);
+    }
+
+    void InvertSelected(HMUI::TableView* tableView) {
+        for (int i = 0; i < tableView->_numberOfCells; i++) {
+            if (!tableView->_selectedCellIdxs->Add(i))
+                tableView->_selectedCellIdxs->Remove(i);
+        }
+        tableView->RefreshCells(true, false);
     }
 
     StringW CharacteristicName(GlobalNamespace::BeatmapCharacteristicSO* characteristic) {
@@ -85,9 +101,9 @@ namespace Utils {
             if (!MetaCore::Strings::IEquals(diff.Characteristic, characteristic->serializedName))
                 continue;
             auto namePos =
-                std::find_if(diffNames.begin(), diffNames.end(), [&diff](auto& name) { return MetaCore::Strings::IEquals(name, diff.Name); });
-            if (namePos != diffNames.end())
-                ret.emplace(std::distance(diffNames.begin(), namePos));
+                std::find_if(DiffNames.begin(), DiffNames.end(), [&diff](auto& name) { return MetaCore::Strings::IEquals(name, diff.Name); });
+            if (namePos != DiffNames.end())
+                ret.emplace(std::distance(DiffNames.begin(), namePos));
         }
         return ret;
     }
@@ -98,7 +114,7 @@ namespace Utils {
         for (auto& diff : *song.Difficulties) {
             if (!MetaCore::Strings::IEquals(diff.Characteristic, characteristic->serializedName))
                 continue;
-            if (MetaCore::Strings::IEquals(diff.Name, diffNames[difficulty]))
+            if (MetaCore::Strings::IEquals(diff.Name, DiffNames[difficulty]))
                 return true;
         }
         return false;
@@ -113,7 +129,7 @@ namespace Utils {
         for (auto itr = diffs.begin(); itr != diffs.end(); itr++) {
             if (!MetaCore::Strings::IEquals(itr->Characteristic, characteristicSerializedName))
                 continue;
-            if (MetaCore::Strings::IEquals(itr->Name, diffNames[difficulty])) {
+            if (MetaCore::Strings::IEquals(itr->Name, DiffNames[difficulty])) {
                 if (foundItr == diffs.end())
                     foundItr = itr;
                 else
@@ -124,7 +140,7 @@ namespace Utils {
         if (value && !found) {
             auto& added = diffs.emplace_back();
             added.Characteristic = characteristicSerializedName;
-            added.Name = diffNames[difficulty];
+            added.Name = DiffNames[difficulty];
         } else if (!value && found)
             diffs.erase(foundItr);
     }
@@ -163,8 +179,9 @@ namespace Utils {
         ret->_placeholderText = placeholder;
         ret->_keyboardPositionOffset = {keyboardOffset.x, keyboardOffset.y, 0};
         ret->_textLengthLimit = 9999;
-        ret->onValueChanged->AddListener(MetaCore::Delegates::MakeUnityAction([onInput](UnityW<HMUI::InputFieldView> input) { onInput(input->text); })
-        );
+        ret->onValueChanged->AddListener(MetaCore::Delegates::MakeUnityAction([onInput](UnityW<HMUI::InputFieldView> input) {
+            onInput(input->text);
+        }));
         ret->selectionStateDidChangeEvent =
             MetaCore::Delegates::MakeSystemAction([text, textColor, highlightColor](HMUI::InputFieldView::SelectionState state) {
                 if (state == HMUI::InputFieldView::SelectionState::Highlighted)

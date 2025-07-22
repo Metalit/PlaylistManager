@@ -13,6 +13,10 @@
 namespace Utils {
     std::set<int> GetSelected(HMUI::TableView* tableView);
 
+    void AddSelected(HMUI::TableView* tableView, int start, int end);
+
+    void InvertSelected(HMUI::TableView* tableView);
+
     StringW CharacteristicName(GlobalNamespace::BeatmapCharacteristicSO* characteristic);
 
     std::vector<PlaylistCore::Playlist*> GetPlaylistsWithSong(GlobalNamespace::BeatmapLevel* level);

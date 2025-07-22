@@ -22,9 +22,9 @@
 #include "customtypes/dragintercept.hpp"
 #include "customtypes/levelcell.hpp"
 #include "customtypes/playlistsongs.hpp"
-#include "customtypes/tablecallbacks.hpp"
 #include "main.hpp"
 #include "manager.hpp"
+#include "metacore/shared/delegates.hpp"
 #include "metacore/shared/ui.hpp"
 #include "songcore/shared/SongCore.hpp"
 #include "utils.hpp"
@@ -102,11 +102,9 @@ void AllSongs::PostParse() {
     }
 
     levelTable->_tableView->didSelectCellWithIdxEvent =
-        BSML::MakeSystemAction((std::function<void(UnityW<HMUI::TableView>, int)>) [this](auto, int idx) { levelSelected(idx); });
-    auto callbacks = levelTable->_tableView->gameObject->AddComponent<TableCallbacks*>();
-    callbacks->onCellDeselected = [this](int idx) {
-        levelDeselected(idx);
-    };
+        MetaCore::Delegates::MakeSystemAction([this](UnityW<HMUI::TableView>, int idx) { levelSelected(idx); });
+    levelTable->_tableView->didDeselectCellWithIdxEvent =
+        MetaCore::Delegates::MakeSystemAction([this](UnityW<HMUI::TableView>, int idx) { levelDeselected(idx); });
 
     searchInput = BSML::Lite::CreateStringSetting(searchBar, "Search", "", {}, {0, -35, 0}, [this](StringW value) { searchInputTyped(value); });
     searchInput->transform->SetAsFirstSibling();
@@ -194,11 +192,20 @@ void AllSongs::FinishFilterTask() {
     levelTable->_tableView->RefreshCells(true, false);
     // bool canScroll = levelTable->_tableView->scrollView->_verticalScrollIndicator->gameObject->active;
     // levelTable->GetComponent<UnityEngine::RectTransform*>()->sizeDelta = {(float) (canScroll ? -8 : 0), 0};
+
+    // keep selections order only if nothing is newly missing
+    for (auto level : selectionsOrder) {
+        if (!currentLevels.contains(level)) {
+            selectionsOrder.clear();
+            break;
+        }
+    }
+
     UpdateOptionsButton();
 }
 
 void AllSongs::UpdateOptionsButton() {
-    if (!levelTable || !optionsButton || !selectionText || !deleteText || !deleteTextNoClick)
+    if (!levelTable || !optionsButton || !selectionText || !deleteText || !deleteTextNoClick || !betweenText || !betweenTextNoClick)
         return;
     auto selected = Utils::GetSelected(levelTable->_tableView);
     optionsButton->active = selected.size() > 0;
@@ -214,12 +221,16 @@ void AllSongs::UpdateOptionsButton() {
     }
     deleteText->gameObject->active = canDelete;
     deleteTextNoClick->active = !canDelete;
+
+    bool canSelectBetween = selectionsOrder.size() >= 2;
+    betweenText->gameObject->active = canSelectBetween;
+    betweenTextNoClick->active = !canSelectBetween;
 }
 
 void AllSongs::CloseOptions() {
     if (!optionsModal)
         return;
-    auto onHide = BSML::MakeSystemAction([modal = optionsModal]() {
+    auto onHide = MetaCore::Delegates::MakeSystemAction([modal = optionsModal]() {
         for (auto text : modal->GetComponentsInChildren<BSML::ClickableText*>())
             text->set_isHighlighted(false);
     });
@@ -254,10 +265,12 @@ void AllSongs::unlinkClicked() {
 }
 
 void AllSongs::levelSelected(int idx) {
+    selectionsOrder.emplace_back(currentLevels[idx]);
     UpdateOptionsButton();
 }
 
 void AllSongs::levelDeselected(int idx) {
+    std::erase(selectionsOrder, currentLevels[idx]);
     UpdateOptionsButton();
 }
 
@@ -337,6 +350,7 @@ void AllSongs::deleteClicked() {
         }
     }
 
+    selectionsOrder.clear();
     CloseOptions();
     SetLoading(true);
 
@@ -350,6 +364,27 @@ void AllSongs::deleteClicked() {
         },
         []() { SongCore::API::Loading::RefreshSongs(); }
     );
+}
+
+void AllSongs::betweenClicked() {
+    if (!levelTable || selectionsOrder.size() < 2)
+        return;
+    auto start = currentLevels.index_of(selectionsOrder[selectionsOrder.size() - 1]);
+    auto end = currentLevels.index_of(selectionsOrder[selectionsOrder.size() - 2]);
+    selectionsOrder.clear();  // choosing not to have it go back to the previous pair if you click it again
+    if (start && end)
+        Utils::AddSelected(levelTable->_tableView, *start, *end);
+    CloseOptions();
+    UpdateOptionsButton();
+}
+
+void AllSongs::invertClicked() {
+    if (!levelTable)
+        return;
+    selectionsOrder.clear();
+    Utils::InvertSelected(levelTable->_tableView);
+    CloseOptions();
+    UpdateOptionsButton();
 }
 
 void AllSongs::clearClicked() {

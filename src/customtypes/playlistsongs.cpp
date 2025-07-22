@@ -25,6 +25,7 @@
 #include "customtypes/tablecallbacks.hpp"
 #include "main.hpp"
 #include "manager.hpp"
+#include "metacore/shared/delegates.hpp"
 #include "metacore/shared/ui.hpp"
 #include "playlistcore/shared/PlaylistCore.hpp"
 #include "playlistcore/shared/Utils.hpp"
@@ -74,6 +75,12 @@ void PlaylistSongs::DidActivate(bool firstActivation, bool addedToHierarchy, boo
         Refresh();
 }
 
+void PlaylistSongs::DidDeactivate(bool removedFromHierarchy, bool screenSystemDisabling) {
+    if (levelTable)
+        levelTable->_tableView->ClearSelection();
+    selectionsOrder.clear();
+}
+
 void PlaylistSongs::PostParse() {
     if (!layout || !searchBar || !diffSelector || !charSelector || !highlightCharSelector)
         return;
@@ -102,11 +109,10 @@ void PlaylistSongs::PostParse() {
     }
 
     levelTable->_tableView->didSelectCellWithIdxEvent =
-        BSML::MakeSystemAction((std::function<void(UnityW<HMUI::TableView>, int)>) [this](auto, int idx) { levelSelected(idx); });
+        MetaCore::Delegates::MakeSystemAction([this](UnityW<HMUI::TableView>, int idx) { levelSelected(idx); });
+    levelTable->_tableView->didDeselectCellWithIdxEvent =
+        MetaCore::Delegates::MakeSystemAction([this](UnityW<HMUI::TableView>, int idx) { levelDeselected(idx); });
     auto callbacks = levelTable->_tableView->gameObject->AddComponent<TableCallbacks*>();
-    callbacks->onCellDeselected = [this](int idx) {
-        levelDeselected(idx);
-    };
     callbacks->onCellDragReordered = [this](int oldIdx, int newIdx) {
         levelReordered(oldIdx, newIdx);
     };
@@ -123,7 +129,7 @@ void PlaylistSongs::PostParse() {
     MetaCore::UI::AddModalAnimations(diffSelector->dropdown, filterModal);
     MetaCore::UI::AddModalAnimations(charSelector->dropdown, filterModal);
     MetaCore::UI::AddModalAnimations(highlightCharSelector->dropdown, highlightModal);
-    highlightModal->add_blockerClickedEvent(BSML::MakeSystemAction([modal = optionsModal]() {
+    highlightModal->add_blockerClickedEvent(MetaCore::Delegates::MakeSystemAction([modal = optionsModal]() {
         modal->Show(false, false, nullptr);  // hides when disabled
         modal->gameObject->active = true;
     }));
@@ -171,7 +177,6 @@ void PlaylistSongs::Refresh() {
     filterTask = GlobalNamespace::LevelFilter::FilterLevelsAsync(levelPacks, usedFilter, playerDataModel, levelTable->_entitlementModel, nullptr);
 
     if (filterTask->IsCompleted) {
-        logger.debug("filtering completed instantly");
         FinishFilterTask();
         return;
     }
@@ -183,7 +188,6 @@ void PlaylistSongs::Refresh() {
         [this, correctFilter = filterTask]() {
             if (!filterTask || filterTask != correctFilter)
                 return;
-            logger.debug("filtering completed");
             FinishFilterTask();
         }
     );
@@ -215,6 +219,15 @@ void PlaylistSongs::FinishFilterTask() {
     levelTable->_tableView->RefreshCells(true, false);
     // bool canScroll = levelTable->_tableView->scrollView->_verticalScrollIndicator->gameObject->active;
     // levelTable->GetComponent<UnityEngine::RectTransform*>()->sizeDelta = {(float) (canScroll ? -8 : 0), 0};
+
+    // keep selections order only if nothing is newly missing
+    for (auto level : selectionsOrder) {
+        if (!currentLevels.contains(level)) {
+            selectionsOrder.clear();
+            break;
+        }
+    }
+
     UpdateOptionsButton();
 }
 
@@ -292,7 +305,7 @@ void PlaylistSongs::UpdateHighlightDifficulties() {
 }
 
 void PlaylistSongs::UpdateOptionsButton() {
-    if (!levelTable || !optionsButton || !selectionText || !deleteText || !deleteTextNoClick)
+    if (!levelTable || !optionsButton || !selectionText || !deleteText || !deleteTextNoClick || !betweenText || !betweenTextNoClick)
         return;
     auto selected = Utils::GetSelected(levelTable->_tableView);
     optionsButton->active = selected.size() > 0;
@@ -308,12 +321,16 @@ void PlaylistSongs::UpdateOptionsButton() {
     }
     deleteText->gameObject->active = canDelete;
     deleteTextNoClick->active = !canDelete;
+
+    bool canSelectBetween = selectionsOrder.size() >= 2;
+    betweenText->gameObject->active = canSelectBetween;
+    betweenTextNoClick->active = !canSelectBetween;
 }
 
 void PlaylistSongs::CloseOptions() {
     if (!optionsModal)
         return;
-    auto onHide = BSML::MakeSystemAction([modal = optionsModal]() {
+    auto onHide = MetaCore::Delegates::MakeSystemAction([modal = optionsModal]() {
         for (auto text : modal->GetComponentsInChildren<BSML::ClickableText*>())
             text->set_isHighlighted(false);
     });
@@ -339,10 +356,12 @@ void PlaylistSongs::SetOverrideFilter(GlobalNamespace::LevelFilter* value) {
 }
 
 void PlaylistSongs::levelSelected(int idx) {
+    selectionsOrder.emplace_back(currentLevels[idx]);
     UpdateOptionsButton();
 }
 
 void PlaylistSongs::levelDeselected(int idx) {
+    std::erase(selectionsOrder, currentLevels[idx]);
     UpdateOptionsButton();
 }
 
@@ -425,6 +444,7 @@ void PlaylistSongs::removeClicked() {
     for (auto& idx : Utils::GetSelected(levelTable->_tableView))
         PlaylistCore::RemoveSongFromPlaylist(playlist, currentLevels[idx]);
 
+    selectionsOrder.clear();
     CloseOptions();
     Refresh();
 }
@@ -470,6 +490,7 @@ void PlaylistSongs::deleteClicked() {
             PlaylistCore::RemoveSongFromPlaylist(playlist, level);
     }
 
+    selectionsOrder.clear();
     CloseOptions();
     SetLoading(true);
 
@@ -485,10 +506,32 @@ void PlaylistSongs::deleteClicked() {
     );
 }
 
+void PlaylistSongs::betweenClicked() {
+    if (!levelTable || selectionsOrder.size() < 2)
+        return;
+    auto start = currentLevels.index_of(selectionsOrder[selectionsOrder.size() - 1]);
+    auto end = currentLevels.index_of(selectionsOrder[selectionsOrder.size() - 2]);
+    selectionsOrder.clear();  // choosing not to have it go back to the previous pair if you click it again
+    if (start && end)
+        Utils::AddSelected(levelTable->_tableView, *start, *end);
+    CloseOptions();
+    UpdateOptionsButton();
+}
+
+void PlaylistSongs::invertClicked() {
+    if (!levelTable)
+        return;
+    selectionsOrder.clear();
+    Utils::InvertSelected(levelTable->_tableView);
+    CloseOptions();
+    UpdateOptionsButton();
+}
+
 void PlaylistSongs::clearClicked() {
     if (!levelTable)
         return;
     levelTable->_tableView->ClearSelection();
+    selectionsOrder.clear();
     CloseOptions();
     UpdateOptionsButton();
 }
@@ -497,7 +540,7 @@ void PlaylistSongs::highlightClicked() {
     if (!highlightModal || !optionsModal)
         return;
     UpdateHighlightCharacteristics();
-    highlightModal->Show(true, false, BSML::MakeSystemAction([modal = optionsModal]() { modal->gameObject->active = false; }));
+    highlightModal->Show(true, false, MetaCore::Delegates::MakeSystemAction([modal = optionsModal]() { modal->gameObject->active = false; }));
 }
 
 void PlaylistSongs::highlightCharSelected(StringW value) {

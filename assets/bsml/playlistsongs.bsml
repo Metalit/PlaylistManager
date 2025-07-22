@@ -24,14 +24,17 @@
             <dropdown-list-setting id="charSelector" text="Has Characteristic" choices="characteristicTextsWithAll" on-change="characteristicSelected"/>
         </vertical>
     </modal>
-    <modal id="optionsModal" size-delta-x="35" size-delta-y="30" anchor-pos-x="-16" anchor-pos-y="13" move-to-center="false" click-off-closes="true">
+    <modal id="optionsModal" size-delta-x="35" size-delta-y="40" anchor-pos-x="-16" anchor-pos-y="8" move-to-center="false" click-off-closes="true">
         <vertical pad="2">
             <clickable-text text=": Remove from playlist" font-size="4" highlight-color="#c7c7c7" on-click="removeClicked"/>
             <clickable-text text=": Use covers as cover" font-size="4" highlight-color="#c7c7c7" on-click="coversClicked"/>
             <clickable-text id="deleteText" text=": Delete and remove" font-size="4" highlight-color="#c7c7c7" on-click="deleteClicked"/>
             <text id="deleteTextNoClick" text=": Delete and remove" font-size="4" color="#ffffff4d" active="false"/>
+            <clickable-text id="betweenText" text=": Select between" font-size="4" highlight-color="#c7c7c7" on-click="betweenClicked"/>
+            <text id="betweenTextNoClick" text=": Select between" font-size="4" color="#ffffff4d" active="false"/>
+            <clickable-text text=": Invert selection" font-size="4" highlight-color="#c7c7c7" on-click="invertClicked"/>
             <clickable-text text=": Clear selection" font-size="4" highlight-color="#c7c7c7" on-click="clearClicked"/>
-            <clickable-text text=": Highlight Difficulties" font-size="4" highlight-color="#c7c7c7" on-click="highlightClicked"/>
+            <clickable-text text=": Highlight difficulties" font-size="4" highlight-color="#c7c7c7" on-click="highlightClicked"/>
         </vertical>
     </modal>
     <modal id="highlightModal" size-delta-x="43" size-delta-y="50" anchor-pos-x="-12" anchor-pos-y="3" move-to-center="false" click-off-closes="true">

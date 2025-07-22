@@ -26,11 +26,14 @@
             <dropdown-list-setting id="charSelector" text="Has Characteristic" choices="characteristicTextsWithAll" on-change="characteristicSelected"/>
         </vertical>
     </modal>
-    <modal id="optionsModal" size-delta-x="35" size-delta-y="20" anchor-pos-x="-16" anchor-pos-y="18" move-to-center="false" click-off-closes="true">
+    <modal id="optionsModal" size-delta-x="35" size-delta-y="30" anchor-pos-x="-16" anchor-pos-y="13" move-to-center="false" click-off-closes="true">
         <vertical pad="2">
             <clickable-text text=": Add to playlist" font-size="4" highlight-color="#c7c7c7" on-click="addClicked"/>
             <clickable-text id="deleteText" text=": Delete selected songs" font-size="4" highlight-color="#c7c7c7" on-click="deleteClicked"/>
             <text id="deleteTextNoClick" text=": Delete selected songs" font-size="4" color="#ffffff4d" active="false"/>
+            <clickable-text id="betweenText" text=": Select between" font-size="4" highlight-color="#c7c7c7" on-click="betweenClicked"/>
+            <text id="betweenTextNoClick" text=": Select between" font-size="4" color="#ffffff4d" active="false"/>
+            <clickable-text text=": Invert selection" font-size="4" highlight-color="#c7c7c7" on-click="invertClicked"/>
             <clickable-text text=": Clear selection" font-size="4" highlight-color="#c7c7c7" on-click="clearClicked"/>
         </vertical>
     </modal>

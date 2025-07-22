@@ -23,6 +23,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController) {
     DECLARE_OVERRIDE_METHOD_MATCH(
         void, DidActivate, &HMUI::ViewController::DidActivate, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling
     );
+    DECLARE_OVERRIDE_METHOD_MATCH(void, DidDeactivate, &HMUI::ViewController::DidDeactivate, bool removedFromHierarchy, bool screenSystemDisabling);
     DECLARE_INSTANCE_METHOD(void, PostParse);
     DECLARE_INSTANCE_METHOD(void, OnDestroy);
     DECLARE_STATIC_METHOD(PlaylistSongs*, GetInstance);
@@ -54,6 +55,8 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController) {
     DECLARE_INSTANCE_FIELD(HMUI::ModalView*, optionsModal);
     DECLARE_INSTANCE_FIELD(BSML::ClickableText*, deleteText);
     DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, deleteTextNoClick);
+    DECLARE_INSTANCE_FIELD(BSML::ClickableText*, betweenText);
+    DECLARE_INSTANCE_FIELD(UnityEngine::GameObject*, betweenTextNoClick);
     DECLARE_INSTANCE_FIELD(HMUI::ModalView*, highlightModal);
     DECLARE_INSTANCE_FIELD(BSML::DropdownListSetting*, highlightCharSelector);
     DECLARE_INSTANCE_FIELD(ArrayW<BSML::ToggleSetting*>, highlightToggles);
@@ -71,6 +74,8 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController) {
     DECLARE_INSTANCE_METHOD(void, removeClicked);
     DECLARE_INSTANCE_METHOD(void, coversClicked);
     DECLARE_INSTANCE_METHOD(void, deleteClicked);
+    DECLARE_INSTANCE_METHOD(void, betweenClicked);
+    DECLARE_INSTANCE_METHOD(void, invertClicked);
     DECLARE_INSTANCE_METHOD(void, clearClicked);
     DECLARE_INSTANCE_METHOD(void, highlightClicked);
     DECLARE_INSTANCE_METHOD(void, highlightCharSelected, StringW value);
@@ -84,5 +89,7 @@ DECLARE_CLASS_CODEGEN(PlaylistManager, PlaylistSongs, HMUI::ViewController) {
     DECLARE_INSTANCE_FIELD(GlobalNamespace::PlayerDataModel*, playerDataModel);
 
    private:
+    std::vector<GlobalNamespace::BeatmapLevel*> selectionsOrder;
+
     static inline PlaylistSongs* instance;
 };
