@@ -85,9 +85,8 @@ namespace Utils {
     PlaylistCore::BPSong* GetLevelJson(PlaylistCore::Playlist* playlist, GlobalNamespace::BeatmapLevel* level) {
         if (!level)
             return nullptr;
-        auto& songs = playlist->playlistJSON.Songs;
-        for (auto& song : songs) {
-            if (song.Hash == MetaCore::Songs::GetHash(level))
+        for (auto& song : playlist->playlistJSON.Songs) {
+            if (song.LevelID == level->levelID || song.Hash && MetaCore::Strings::IEquals(*song.Hash, MetaCore::Songs::GetHash(level)))
                 return &song;
         }
         return nullptr;
