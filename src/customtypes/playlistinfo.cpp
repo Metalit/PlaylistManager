@@ -127,9 +127,11 @@ void PlaylistInfo::Refresh() {
         editIconControl->_dataItems[4]->interactable = canDownload && canProcess;
         editIconControl->_dataItems[5]->interactable = canSync && canProcess;
         editIconControl->ReloadData();
+        Utils::DeselectAllCells(editIconControl);
     } else {
         creationIconControl->_dataItems[1]->interactable = !Manager::InAddShortcut();
         creationIconControl->ReloadData();
+        Utils::DeselectAllCells(creationIconControl);
     }
 
     RefreshProcessing();
