@@ -5,7 +5,7 @@
   "info": {
     "name": "PlaylistManager",
     "id": "playlistmanager",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "url": "https://github.com/Metalit/PlaylistManager",
     "additionalData": {
       "overrideSoName": "libplaylistmanager.so",
@@ -60,7 +60,7 @@
     },
     {
       "id": "bs-cordl",
-      "versionRange": "^4006.0.0",
+      "versionRange": "^4007.0.0",
       "additionalData": {}
     },
     {
